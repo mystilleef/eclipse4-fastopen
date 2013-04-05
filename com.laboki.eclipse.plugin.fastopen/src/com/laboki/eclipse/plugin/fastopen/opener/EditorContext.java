@@ -20,12 +20,15 @@ import java.util.List;
 import java.util.logging.Level;
 
 import lombok.Synchronized;
+import lombok.val;
 import lombok.extern.java.Log;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
@@ -102,25 +105,38 @@ public final class EditorContext {
 
 	public static boolean isValid(final IResource file) {
 		if (!EditorContext.isTextFile(file)) return false;
-		final IFile file1 = (IFile) file;
-		if (EditorContext.isHidden(file1) || file1.getName().endsWith(".prefs")) return false;
-		if (file1.isDerived() || file1.isVirtual() || file1.isPhantom() || file1.isTeamPrivateMember()) return false;
-		if (!file1.isSynchronized(IResource.DEPTH_INFINITE)) return false;
+		if (EditorContext.isHiddenFile((IFile) file)) return false;
 		return true;
-	}
-
-	static boolean isHidden(final IFile file) {
-		return file.getLocation().toFile().isHidden() || file.isHidden();
 	}
 
 	private static boolean isTextFile(final IResource file) {
+		if (file.getType() != IResource.FILE) return false;
+		if (EditorContext.getBaseTypeID((IFile) file).equals("org.eclipse.core.runtime.text")) return true;
+		return false;
+	}
+
+	private static String getBaseTypeID(final IFile file) {
 		try {
-			if (file.getType() != IResource.FILE) return false;
-			if (((IFile) file).getContentDescription().getCharset() == null) return false;
+			return EditorContext.getBaseType(file).getId().trim();
 		} catch (final Exception e) {
-			return false;
+			return "";
 		}
-		return true;
+	}
+
+	private static IContentType getBaseType(final IFile file) throws CoreException {
+		val contentType = file.getContentDescription().getContentType();
+		val baseType = contentType.getBaseType();
+		return baseType == null ? contentType : baseType;
+	}
+
+	static boolean isHiddenFile(final IFile file) {
+		return file.getLocation().toFile().isHidden() || file.isHidden();
+	}
+
+	@SuppressWarnings("unused")
+	private static boolean isWierdFile(final IFile file) {
+		if (file.isDerived() || file.isVirtual() || file.isPhantom() || file.isTeamPrivateMember()) return true;
+		return false;
 	}
 
 	public static String getURIPath(final IResource resource) {
