@@ -206,6 +206,7 @@ public final class Dialog {
 	protected void updateViewer(final List<File> files) {
 		Dialog.VIEWER.getControl().setRedraw(false);
 		EditorContext.flushEvents();
+		Dialog.VIEWER.getTable().clearAll();
 		Dialog.VIEWER.setInput(files.toArray(new File[files.size()]));
 		Dialog.VIEWER.setItemCount(files.size());
 		Dialog.refresh();
