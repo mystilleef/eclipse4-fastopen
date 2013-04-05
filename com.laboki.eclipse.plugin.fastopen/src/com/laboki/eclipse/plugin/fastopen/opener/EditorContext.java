@@ -20,13 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Synchronized;
-import lombok.val;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -45,8 +44,11 @@ public final class EditorContext {
 	public static final String PLUGIN_NAME = "com.laboki.eclipse.plugin.fastopen";
 	private static EditorContext instance;
 	private static final FlushEventsRunnable FLUSH_EVENTS_RUNNABLE = new EditorContext.FlushEventsRunnable();
+	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
 
-	private EditorContext() {}
+	private EditorContext() {
+		System.out.println(EditorContext.CONTENT_TYPE_TEXT);
+	}
 
 	@Synchronized
 	public static EditorContext instance() {
@@ -107,33 +109,24 @@ public final class EditorContext {
 	}
 
 	public static boolean isValid(final IResource file) {
-		if (!EditorContext.isTextFile(file)) return false;
-		if (EditorContext.isHiddenFile((IFile) file)) return false;
-		return true;
+		if (EditorContext.isHiddenFile(file)) return false;
+		return EditorContext.isTextFile(file);
 	}
 
 	private static boolean isTextFile(final IResource file) {
 		if (file.getType() != IResource.FILE) return false;
-		if (EditorContext.getBaseTypeID((IFile) file).equals("org.eclipse.core.runtime.text")) return true;
+		return EditorContext.isTextContent(file);
+	}
+
+	private static boolean isTextContent(final IResource file) {
+		try {
+			return ((IFile) file).getContentDescription().getContentType().isKindOf(EditorContext.CONTENT_TYPE_TEXT);
+		} catch (final Exception e) {}
 		return false;
 	}
 
-	private static String getBaseTypeID(final IFile file) {
-		try {
-			return EditorContext.getBaseType(file).getId().trim();
-		} catch (final Exception e) {
-			return "";
-		}
-	}
-
-	private static IContentType getBaseType(final IFile file) throws CoreException {
-		val contentType = file.getContentDescription().getContentType();
-		val baseType = contentType.getBaseType();
-		return baseType == null ? contentType : baseType;
-	}
-
-	static boolean isHiddenFile(final IFile file) {
-		return file.getLocation().toFile().isHidden() || file.isHidden();
+	static boolean isHiddenFile(final IResource file) {
+		return file.getLocation().toFile().isHidden() || file.getParent().getLocation().toFile().isHidden();
 	}
 
 	@SuppressWarnings("unused")
