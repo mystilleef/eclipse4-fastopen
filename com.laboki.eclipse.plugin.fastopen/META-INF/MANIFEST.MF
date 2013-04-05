@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: FastOpen
 Bundle-SymbolicName: com.laboki.eclipse.plugin.fastopen;singleton:=true
-Bundle-Version: 20130405
+Bundle-Version: 20130405.2
 Bundle-Vendor: laboki
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime;bundle-version="3.8.0",
