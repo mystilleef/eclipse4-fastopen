@@ -55,9 +55,7 @@ public final class EditorContext {
 	}
 
 	public static Display getDisplay() {
-		Display display = Display.getCurrent();
-		if (display == null) display = Display.getDefault();
-		return display;
+		return PlatformUI.getWorkbench().getDisplay();
 	}
 
 	public static Shell getShell() {
