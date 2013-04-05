@@ -73,7 +73,7 @@ public final class RecentResourcesFilter {
 
 	@Synchronized("files")
 	private List<File> getFiles() {
-		return this.files;
+		return Lists.newArrayList(this.files);
 	}
 
 	private static boolean matches(final File file, final String string) {
