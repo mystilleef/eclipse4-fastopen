@@ -266,7 +266,7 @@ public final class Dialog {
 		@Override
 		public String getText(final Object file) {
 			val _file = (File) file;
-			return _file.getName() + " - " + _file.getFilePath();
+			return _file.getName() + " - " + _file.getFolder();
 		}
 
 		@Override
