@@ -8,22 +8,37 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 import com.google.common.collect.ImmutableList;
-import com.google.inject.Inject;
+import com.google.common.collect.Lists;
+import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.Subscribe;
+import com.laboki.eclipse.plugin.fastopen.DelayedTask;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.events.WorkspaceFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.listeners.OpenerResourceChangeListener;
 
-public final class ModifiedFiles implements IResourceDeltaVisitor, Runnable {
+public final class ModifiedFiles implements IResourceDeltaVisitor {
 
-	private final List<String> modifiedFiles;
+	private final List<String> modifiedFiles = Lists.newArrayList();
 	private final OpenerResourceChangeListener listener = new OpenerResourceChangeListener(this);
 
-	@Inject
-	public ModifiedFiles(final WorkspaceFiles workspaceFiles) {
-		this.modifiedFiles = workspaceFiles.getFilePaths();
+	public ModifiedFiles() {
 		this.listener.start();
-		EventBus.post(this.emitFileEvent());
+	}
+
+	@Subscribe
+	@AllowConcurrentEvents
+	public void worskpaceFiles(final WorkspaceFilesEvent event) {
+		EditorContext.asyncExec(new DelayedTask("", 50) {
+
+			@Override
+			public void execute() {
+				ModifiedFiles.this.modifiedFiles.clear();
+				ModifiedFiles.this.modifiedFiles.addAll(event.getFiles());
+				ModifiedFiles.this.postEvent();
+			}
+		});
 	}
 
 	@Override
@@ -50,25 +65,16 @@ public final class ModifiedFiles implements IResourceDeltaVisitor, Runnable {
 		final String filepath = EditorContext.getURIPath(resource);
 		this.modifiedFiles.remove(filepath);
 		this.modifiedFiles.add(0, filepath);
-		EventBus.post(this.emitFileEvent());
+		this.postEvent();
 	}
 
 	private void remove(final IResource resource) {
 		this.modifiedFiles.remove(EditorContext.getURIPath(resource));
-		EventBus.post(this.emitFileEvent());
+		this.postEvent();
 	}
 
-	@Override
-	public void run() {
-		EventBus.post(this.emitFileEvent());
-	}
-
-	protected ModifiedFilesEvent emitFileEvent() {
-		this.removeFakePaths();
-		return new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles));
-	}
-
-	private void removeFakePaths() {
-		this.modifiedFiles.removeAll(EditorContext.nonExistentFilePaths(this.modifiedFiles));
+	private void postEvent() {
+		EditorContext.removeFakePaths(this.modifiedFiles);
+		EventBus.post(new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles)));
 	}
 }
