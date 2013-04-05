@@ -76,12 +76,10 @@ public final class Dialog {
 	private static void backspace() {
 		final int end = Dialog.TEXT.getCaretPosition();
 		if (end < 1) return;
-		// Dialog.TEXT.clearSelection();
 		final int start = end - 1;
 		Dialog.TEXT.setSelection(start, end);
 		Dialog.TEXT.cut();
 		Dialog.TEXT.setSelection(start, start);
-		// Dialog.TEXT.clearSelection();
 	}
 
 	private static void updateText(final char character) {
