@@ -1,5 +1,5 @@
 #FindBugs User Preferences
-#Thu Mar 21 06:38:38 EDT 2013
+#Fri Apr 05 09:26:00 EDT 2013
 cloud_id=edu.umd.cs.findbugs.cloud.appengine.findbugs-cloud
 detectorAppendingToAnObjectOutputStream=AppendingToAnObjectOutputStream|true
 detectorAtomicityProblem=AtomicityProblem|true
@@ -161,4 +161,4 @@ effort=max
 excludefilter0=/home/lateef/Dropbox/findbug_exclude_pattern.xml|true
 filter_settings=High|BAD_PRACTICE,CORRECTNESS,EXPERIMENTAL,MALICIOUS_CODE,MT_CORRECTNESS,PERFORMANCE,SECURITY,STYLE|false|20
 filter_settings_neg=NOISE,I18N|
-run_at_full_build=true
+run_at_full_build=false
