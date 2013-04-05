@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
+import com.laboki.eclipse.plugin.fastopen.DelayedTask;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
@@ -64,7 +65,7 @@ public final class RecentFiles {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void accessedFilesChanged(final AccessedFilesEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new DelayedTask("", 50) {
 
 			private final List<String> rfiles = RecentFiles.this.getRecentFiles();
 
