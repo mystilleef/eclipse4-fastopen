@@ -84,40 +84,6 @@ public final class Dialog {
 		// Dialog.TEXT.clearSelection();
 	}
 
-	@SuppressWarnings("unused")
-	private static void delete() {
-		final int start = Dialog.TEXT.getCaretPosition();
-		Dialog.TEXT.setSelection(start, start + 1);
-		Dialog.TEXT.cut();
-	}
-
-	@SuppressWarnings("unused")
-	private static void moveCaretForward() {
-		val position = Dialog.TEXT.getCaretPosition() + 1;
-		Dialog.TEXT.clearSelection();
-		Dialog.TEXT.setSelection(position, position);
-	}
-
-	@SuppressWarnings("unused")
-	private static void moveCaretBackward() {
-		val position = Dialog.TEXT.getCaretPosition() - 1;
-		Dialog.TEXT.clearSelection();
-		Dialog.TEXT.setSelection(position, position);
-	}
-
-	@SuppressWarnings("unused")
-	private static void moveCaretToStart() {
-		Dialog.TEXT.clearSelection();
-		Dialog.TEXT.setSelection(0, 0);
-	}
-
-	@SuppressWarnings("unused")
-	private static void moveCaretToEnd() {
-		val position = Dialog.TEXT.getCharCount();
-		Dialog.TEXT.clearSelection();
-		Dialog.TEXT.setSelection(position, position);
-	}
-
 	private static void updateText(final char character) {
 		Dialog.TEXT.insert(String.valueOf(character));
 	}
@@ -258,26 +224,28 @@ public final class Dialog {
 	@Synchronized
 	protected void updateViewer(final List<File> files) {
 		Dialog.VIEWER.getControl().setRedraw(false);
+		EditorContext.flushEvents();
 		Dialog.VIEWER.setInput(files.toArray(new File[files.size()]));
 		Dialog.VIEWER.setItemCount(files.size());
 		Dialog.focusViewer();
+		EditorContext.flushEvents();
 		Dialog.VIEWER.getControl().setRedraw(true);
 	}
 
 	private final class ContentProvider implements ILazyContentProvider {
-	
+
 		private File[] files;
-	
+
 		public ContentProvider() {}
-	
+
 		@Override
 		public void dispose() {}
-	
+
 		@Override
 		public void inputChanged(final Viewer arg0, final Object oldInput, final Object newInput) {
 			this.files = (File[]) newInput;
 		}
-	
+
 		@Override
 		public void updateElement(final int index) {
 			try {
@@ -287,30 +255,31 @@ public final class Dialog {
 	}
 
 	private final class LabelProvider implements ILabelProvider {
-	
+
 		public LabelProvider() {}
-	
+
 		@Override
 		public Image getImage(final Object arg0) {
 			return null;
 		}
-	
+
 		@Override
-		public String getText(final Object arg0) {
-			return ((File) arg0).getName();
+		public String getText(final Object file) {
+			val _file = (File) file;
+			return _file.getName() + " - " + _file.getFilePath();
 		}
-	
+
 		@Override
 		public void addListener(final ILabelProviderListener arg0) {}
-	
+
 		@Override
 		public void dispose() {}
-	
+
 		@Override
 		public boolean isLabelProperty(final Object arg0, final String arg1) {
 			return false;
 		}
-	
+
 		@Override
 		public void removeListener(final ILabelProviderListener arg0) {}
 	}
@@ -388,15 +357,15 @@ public final class Dialog {
 	}
 
 	private final class ShellKeyListener implements KeyListener {
-	
+
 		public ShellKeyListener() {}
-	
+
 		@Override
 		public void keyPressed(final KeyEvent event) {
 			if (Dialog.isValidCharacter(String.valueOf(event.character))) {
 				event.doit = false;
 				EditorContext.asyncExec(new Task("") {
-	
+
 					@Override
 					public void execute() {
 						Dialog.updateText(event.character);
@@ -406,7 +375,7 @@ public final class Dialog {
 				event.doit = false;
 				EditorContext.asyncExec(new Task("") {
 					;
-	
+
 					@Override
 					public void execute() {
 						Dialog.backspace();
@@ -415,7 +384,7 @@ public final class Dialog {
 			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
 				event.doit = false;
 				EditorContext.asyncExec(new Task("") {
-	
+
 					@Override
 					public void execute() {
 						Dialog.openFiles();
@@ -423,19 +392,19 @@ public final class Dialog {
 				});
 			}
 		}
-	
+
 		@Override
 		public void keyReleased(final KeyEvent event) {}
 	}
 
 	private final class TextModifyListener implements ModifyListener {
-	
+
 		public TextModifyListener() {}
-	
+
 		@Override
 		public void modifyText(final ModifyEvent arg0) {
 			EditorContext.asyncExec(new Task("") {
-	
+
 				@Override
 				public void execute() {
 					Dialog.filterViewer();
@@ -446,5 +415,39 @@ public final class Dialog {
 
 	public static void reset() {
 		Dialog.TEXT.setText("");
+	}
+
+	@SuppressWarnings("unused")
+	private static void delete() {
+		final int start = Dialog.TEXT.getCaretPosition();
+		Dialog.TEXT.setSelection(start, start + 1);
+		Dialog.TEXT.cut();
+	}
+
+	@SuppressWarnings("unused")
+	private static void moveCaretForward() {
+		val position = Dialog.TEXT.getCaretPosition() + 1;
+		Dialog.TEXT.clearSelection();
+		Dialog.TEXT.setSelection(position, position);
+	}
+
+	@SuppressWarnings("unused")
+	private static void moveCaretBackward() {
+		val position = Dialog.TEXT.getCaretPosition() - 1;
+		Dialog.TEXT.clearSelection();
+		Dialog.TEXT.setSelection(position, position);
+	}
+
+	@SuppressWarnings("unused")
+	private static void moveCaretToStart() {
+		Dialog.TEXT.clearSelection();
+		Dialog.TEXT.setSelection(0, 0);
+	}
+
+	@SuppressWarnings("unused")
+	private static void moveCaretToEnd() {
+		val position = Dialog.TEXT.getCharCount();
+		Dialog.TEXT.clearSelection();
+		Dialog.TEXT.setSelection(position, position);
 	}
 }
