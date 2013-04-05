@@ -15,13 +15,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import lombok.Synchronized;
 import lombok.val;
-import lombok.extern.java.Log;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -38,7 +37,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
-@Log
+import com.laboki.eclipse.plugin.fastopen.Activator;
+
 public final class EditorContext {
 
 	public static final Display DISPLAY = EditorContext.getDisplay();
@@ -177,9 +177,7 @@ public final class EditorContext {
 			} finally {
 				output.close();
 			}
-		} catch (final IOException ex) {
-			EditorContext.log.log(Level.SEVERE, "Cannot perform output.", ex);
-		}
+		} catch (final Exception ex) {}
 	}
 
 	public static Object deserialize(final String filePath) {
@@ -192,12 +190,16 @@ public final class EditorContext {
 			} finally {
 				input.close();
 			}
-		} catch (final ClassNotFoundException ex) {
-			EditorContext.log.log(Level.SEVERE, "Cannot perform input. Class not found.", ex);
-		} catch (final IOException ex) {
-			EditorContext.log.log(Level.SEVERE, "Cannot perform input.", ex);
-		}
+		} catch (final Exception ex) {}
 		return null;
+	}
+
+	public static String getSerializableFilePath(final String fileName) {
+		return Paths.get(EditorContext.getPluginFolderPath(), fileName).toString();
+	}
+
+	public static String getPluginFolderPath() {
+		return Activator.getInstance().getStateLocation().toOSString();
 	}
 
 	public static IPartService getPartService() {

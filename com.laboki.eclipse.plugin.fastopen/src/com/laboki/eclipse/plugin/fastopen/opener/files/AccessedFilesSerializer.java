@@ -15,10 +15,10 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class AccessedFilesSerializer {
 
-	public static final String SERIALIZABLE_FILE_STRING = "accessed_files_list_test.ser";
+	public static final String SERIALIZABLE_FILE_PATH = EditorContext.getSerializableFilePath("accessed.files.ser");
 
 	public AccessedFilesSerializer() {
-		EditorContext.emptyFile(AccessedFilesSerializer.SERIALIZABLE_FILE_STRING);
+		EditorContext.emptyFile(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
 		AccessedFilesSerializer.postEvent();
 	}
 
@@ -28,7 +28,7 @@ public final class AccessedFilesSerializer {
 
 	@SuppressWarnings("unchecked")
 	private static List<String> deserialize() {
-		final Object files = EditorContext.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_STRING);
+		final Object files = EditorContext.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
 		if (files == null) return Lists.newArrayList();
 		return (List<String>) files;
 	}
@@ -47,6 +47,6 @@ public final class AccessedFilesSerializer {
 
 	private static void serialize(final Collection<String> files) {
 		if (files.size() == 0) return;
-		EditorContext.serialize(AccessedFilesSerializer.SERIALIZABLE_FILE_STRING, files);
+		EditorContext.serialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH, files);
 	}
 }
