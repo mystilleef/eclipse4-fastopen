@@ -101,17 +101,26 @@ public final class EditorContext {
 	}
 
 	public static boolean isValid(final IResource file) {
-		if (file.getType() != IResource.FILE) return false;
+		if (!EditorContext.isTextFile(file)) return false;
 		final IFile file1 = (IFile) file;
-		if (EditorContext.isHidden(file1) || file1.getName().startsWith(".") || file1.getName().endsWith(".prefs")) return false;
-		if (file1.isDerived() || file1.isLinked()) return false;
-		if (file1.isVirtual() || file1.isPhantom() || file1.isTeamPrivateMember()) return false;
+		if (EditorContext.isHidden(file1) || file1.getName().endsWith(".prefs")) return false;
+		if (file1.isDerived() || file1.isVirtual() || file1.isPhantom() || file1.isTeamPrivateMember()) return false;
 		if (!file1.isSynchronized(IResource.DEPTH_INFINITE)) return false;
 		return true;
 	}
 
 	static boolean isHidden(final IFile file) {
 		return file.getLocation().toFile().isHidden() || file.isHidden();
+	}
+
+	private static boolean isTextFile(final IResource file) {
+		try {
+			if (file.getType() != IResource.FILE) return false;
+			if (((IFile) file).getContentDescription().getCharset() == null) return false;
+		} catch (final Exception e) {
+			return false;
+		}
+		return true;
 	}
 
 	public static String getURIPath(final IResource resource) {
