@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import lombok.Getter;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -15,17 +13,21 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
+import com.google.common.collect.ImmutableList;
+import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.events.WorkspaceFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
-final class WorkspaceFiles implements IResourceVisitor, Comparator<IFile> {
+public final class WorkspaceFiles implements IResourceVisitor, Comparator<IFile> {
 
 	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 	private final IWorkspaceRoot root = this.workspace.getRoot();
-	@Getter private final List<IFile> files = new ArrayList<>();
+	private final List<IFile> files = new ArrayList<>();
 
 	public WorkspaceFiles() {
 		this.updateFilesFromWorkspace();
 		this.sortFilesByModificationTime();
+		this.postEvent();
 	}
 
 	private void updateFilesFromWorkspace() {
@@ -38,7 +40,7 @@ final class WorkspaceFiles implements IResourceVisitor, Comparator<IFile> {
 		Collections.sort(this.files, this);
 	}
 
-	public List<String> getFilePaths() {
+	private List<String> getFilePaths() {
 		final List<String> list = new ArrayList<>();
 		for (final IFile iFile : this.files)
 			list.add(iFile.getLocationURI().getPath());
@@ -60,5 +62,9 @@ final class WorkspaceFiles implements IResourceVisitor, Comparator<IFile> {
 		final long lastModified = o1.getLocation().toFile().lastModified();
 		final long lastModified2 = o2.getLocation().toFile().lastModified();
 		return lastModified < lastModified2 ? 1 : (lastModified > lastModified2 ? -1 : 0);
+	}
+
+	private void postEvent() {
+		EventBus.post(new WorkspaceFilesEvent(ImmutableList.copyOf(this.getFilePaths())));
 	}
 }
