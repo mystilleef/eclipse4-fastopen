@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+		point="org.eclipse.ui.commands">
+			<category
+				id="com.laboki.eclipse.plugin.fastopen.commands.category"
+				name="Fast Open"
+				description="Shows a dialog to open, or navigate to, files quickly.">
+			</category>
+			<command
+				categoryId="com.laboki.eclipse.plugin.fastopen.commands.category"
+				id="com.laboki.eclipse.plugin.fastopen.command.fastopen"
+				defaultHandler="com.laboki.eclipse.plugin.fastopen.Startup"
+				description="Shows a dialog to open, or navigate to, files quickly."
+				name="Fast Open">
+			</command>
+	</extension>
+	<extension
+		point="org.eclipse.ui.bindings">
+			<key
+				sequence="M1+R"
+				commandId="com.laboki.eclipse.plugin.fastopen.command.fastopen"
+				contextId="org.eclipse.ui.contexts.window"
+				schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+			</key>
+	</extension>
+</plugin>
