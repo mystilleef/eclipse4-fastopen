@@ -160,25 +160,6 @@ public final class Dialog {
 		Dialog.VIEWER.setUseHashlookup(true);
 	}
 
-	private static void focusViewer() {
-		Dialog._focusViewer();
-		Dialog.VIEWER.getTable().setSelection(Dialog.VIEWER.getTable().getTopIndex());
-	}
-
-	private static void refocusViewer() {
-		Dialog._focusViewer();
-		Dialog.VIEWER.getTable().setSelection(Dialog.VIEWER.getTable().getSelectionIndex());
-	}
-
-	private static void _focusViewer() {
-		Dialog.refresh();
-		Dialog.VIEWER.getTable().forceFocus();
-	}
-
-	private static void refresh() {
-		Dialog.VIEWER.refresh(true, true);
-	}
-
 	private static boolean isValidCharacter(final String character) {
 		return Dialog.TEXT_PATTERN.matcher(character).matches();
 	}
@@ -227,9 +208,28 @@ public final class Dialog {
 		EditorContext.flushEvents();
 		Dialog.VIEWER.setInput(files.toArray(new File[files.size()]));
 		Dialog.VIEWER.setItemCount(files.size());
-		Dialog.focusViewer();
+		Dialog.refresh();
 		EditorContext.flushEvents();
 		Dialog.VIEWER.getControl().setRedraw(true);
+		Dialog.focusViewer();
+	}
+
+	private static void refresh() {
+		Dialog.VIEWER.refresh(true, true);
+	}
+
+	private static void focusViewer() {
+		Dialog._focusViewer();
+		Dialog.VIEWER.getTable().setSelection(Dialog.VIEWER.getTable().getTopIndex());
+	}
+
+	private static void refocusViewer() {
+		Dialog._focusViewer();
+		Dialog.VIEWER.getTable().setSelection(Dialog.VIEWER.getTable().getSelectionIndex());
+	}
+
+	private static void _focusViewer() {
+		Dialog.VIEWER.getTable().forceFocus();
 	}
 
 	private final class ContentProvider implements ILazyContentProvider {
