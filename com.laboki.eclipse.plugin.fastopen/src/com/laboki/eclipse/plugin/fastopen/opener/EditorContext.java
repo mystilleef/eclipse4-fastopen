@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartService;
@@ -57,6 +58,10 @@ public final class EditorContext {
 		Display display = Display.getCurrent();
 		if (display == null) display = Display.getDefault();
 		return display;
+	}
+
+	public static Shell getShell() {
+		return PlatformUI.getWorkbench().getModalDialogShellProvider().getShell();
 	}
 
 	public static void asyncExec(final Runnable runnable) {
