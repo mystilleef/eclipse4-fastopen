@@ -15,6 +15,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
@@ -38,6 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 
+import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
 
 public final class EditorContext {
@@ -48,9 +52,7 @@ public final class EditorContext {
 	private static final FlushEventsRunnable FLUSH_EVENTS_RUNNABLE = new EditorContext.FlushEventsRunnable();
 	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
 
-	private EditorContext() {
-		System.out.println(EditorContext.CONTENT_TYPE_TEXT);
-	}
+	private EditorContext() {}
 
 	@Synchronized
 	public static EditorContext instance() {
@@ -117,6 +119,7 @@ public final class EditorContext {
 	public static boolean isValidResourceFile(final IResource resource) {
 		if (EditorContext.isNotResourceFile(resource)) return false;
 		if (EditorContext.isHiddenFile((IFile) resource)) return false;
+		if (EditorContext.isWierd((IFile) resource)) return false;
 		return EditorContext.isTextFile((IFile) resource);
 	}
 
@@ -132,16 +135,34 @@ public final class EditorContext {
 		return file.getLocation().toFile().isHidden() || file.getParent().getLocation().toFile().isHidden();
 	}
 
-	private static boolean isTextFile(final IFile file) {
-		return EditorContext.isTextContent(file);
+	public static boolean isWierd(final IFile file) {
+		return file.isHidden() || file.isDerived() || file.isPhantom() || file.isTeamPrivateMember() || file.isVirtual();
 	}
 
-	private static boolean isTextContent(final IFile file) {
+	private static boolean isTextFile(final IFile file) {
+		return EditorContext.isContentTypeText(file) || EditorContext.hasValidCharSet(file) || file.isLinked();
+	}
+
+	private static boolean isContentTypeText(final IFile file) {
 		try {
 			return file.getContentDescription().getContentType().isKindOf(EditorContext.CONTENT_TYPE_TEXT);
 		} catch (final Exception e) {
-			return file.isLinked();
+			return EditorContext.isMediaTypeText(file);
 		}
+	}
+
+	private static boolean isMediaTypeText(final IFile file) {
+		try {
+			return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file)))).is(MediaType.ANY_TEXT_TYPE);
+		} catch (final Exception e) {}
+		return false;
+	}
+
+	private static boolean hasValidCharSet(final IFile file) {
+		try {
+			if (file.getCharset(false) != null) return true;
+		} catch (final CoreException e) {}
+		return false;
 	}
 
 	public static String getURIPath(final IResource resource) {
