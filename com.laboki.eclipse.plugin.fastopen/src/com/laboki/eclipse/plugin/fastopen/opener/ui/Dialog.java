@@ -63,8 +63,13 @@ public final class Dialog {
 
 	private static void openFiles() {
 		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices())
-			Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
-		Dialog.SHELL.close();
+			EditorContext.asyncExec(new Task("") {
+
+				@Override
+				public void execute() {
+					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
+				}
+			});
 	}
 
 	private static void openFile(final IFile file) {
@@ -396,6 +401,7 @@ public final class Dialog {
 
 					@Override
 					public void execute() {
+						Dialog.SHELL.close();
 						Dialog.openFiles();
 					}
 				});
