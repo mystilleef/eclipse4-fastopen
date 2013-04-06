@@ -1,4 +1,4 @@
-package com.laboki.eclipse.plugin.fastopen.opener;
+package com.laboki.eclipse.plugin.fastopen.opener.resources;
 
 import java.util.Date;
 

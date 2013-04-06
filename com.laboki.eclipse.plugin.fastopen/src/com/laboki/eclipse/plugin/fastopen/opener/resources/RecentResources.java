@@ -20,7 +20,6 @@ import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
-import com.laboki.eclipse.plugin.fastopen.opener.File;
 
 public final class RecentResources {
 

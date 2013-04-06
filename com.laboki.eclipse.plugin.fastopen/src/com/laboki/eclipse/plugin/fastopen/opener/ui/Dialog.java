@@ -38,7 +38,7 @@ import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
-import com.laboki.eclipse.plugin.fastopen.opener.File;
+import com.laboki.eclipse.plugin.fastopen.opener.resources.File;
 
 public final class Dialog {
 

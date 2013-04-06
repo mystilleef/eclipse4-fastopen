@@ -3,7 +3,7 @@ package com.laboki.eclipse.plugin.fastopen.events;
 import lombok.Getter;
 
 import com.google.common.collect.ImmutableList;
-import com.laboki.eclipse.plugin.fastopen.opener.File;
+import com.laboki.eclipse.plugin.fastopen.opener.resources.File;
 
 public final class FilterRecentFilesResultEvent {
 
