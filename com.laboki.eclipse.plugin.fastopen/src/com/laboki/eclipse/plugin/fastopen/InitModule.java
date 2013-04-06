@@ -8,12 +8,12 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.laboki.eclipse.plugin.fastopen.opener.Factory;
-import com.laboki.eclipse.plugin.fastopen.opener.RecentResources;
-import com.laboki.eclipse.plugin.fastopen.opener.RecentResourcesFilter;
 import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFiles;
 import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFilesSerializer;
 import com.laboki.eclipse.plugin.fastopen.opener.files.RecentFiles;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.FileResources;
+import com.laboki.eclipse.plugin.fastopen.opener.resources.RecentResources;
+import com.laboki.eclipse.plugin.fastopen.opener.resources.RecentResourcesFilter;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.WorkspaceResources;
 import com.laboki.eclipse.plugin.fastopen.opener.ui.Dialog;
 
