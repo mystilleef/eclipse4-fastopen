@@ -108,35 +108,42 @@ public final class EditorContext {
 		}
 	}
 
-	public static boolean isValid(final IResource file) {
-		if (EditorContext.isHiddenFile(file)) return false;
-		return EditorContext.isTextFile(file);
+	public static boolean isValidResourceFile(final IResource resource) {
+		if (EditorContext.isNotResourceFile(resource)) return false;
+		if (EditorContext.isHiddenFile((IFile) resource)) return false;
+		return EditorContext.isTextFile((IFile) resource);
 	}
 
-	private static boolean isTextFile(final IResource file) {
-		if (file.getType() != IResource.FILE) return false;
-		return EditorContext.isTextContent(file);
+	private static boolean isNotResourceFile(final IResource resource) {
+		return !EditorContext.isResourceFile(resource);
 	}
 
-	private static boolean isTextContent(final IResource file) {
-		try {
-			return ((IFile) file).getContentDescription().getContentType().isKindOf(EditorContext.CONTENT_TYPE_TEXT);
-		} catch (final Exception e) {}
-		return false;
+	private static boolean isResourceFile(final IResource resource) {
+		return resource.getType() == IResource.FILE;
 	}
 
-	static boolean isHiddenFile(final IResource file) {
+	public static boolean isHiddenFile(final IFile file) {
 		return file.getLocation().toFile().isHidden() || file.getParent().getLocation().toFile().isHidden();
 	}
 
-	@SuppressWarnings("unused")
-	private static boolean isWierdFile(final IFile file) {
-		if (file.isDerived() || file.isVirtual() || file.isPhantom() || file.isTeamPrivateMember()) return true;
-		return false;
+	private static boolean isTextFile(final IFile file) {
+		return EditorContext.isTextContent(file);
+	}
+
+	private static boolean isTextContent(final IFile file) {
+		try {
+			return file.getContentDescription().getContentType().isKindOf(EditorContext.CONTENT_TYPE_TEXT);
+		} catch (final Exception e) {
+			return file.isLinked();
+		}
 	}
 
 	public static String getURIPath(final IResource resource) {
 		return resource.getLocationURI().getPath();
+	}
+
+	public static void removeFakePaths(final List<String> files) {
+		files.removeAll(EditorContext.nonExistentFilePaths(files));
 	}
 
 	public static List<String> nonExistentFilePaths(final List<String> filePaths) {
@@ -144,10 +151,6 @@ public final class EditorContext {
 		for (final String path : filePaths)
 			if (!(new File(path).exists())) unfoundFiles.add(path);
 		return unfoundFiles;
-	}
-
-	public static void removeFakePaths(final List<String> files) {
-		files.removeAll(EditorContext.nonExistentFilePaths(files));
 	}
 
 	public static void emptyFile(final String filePath) {

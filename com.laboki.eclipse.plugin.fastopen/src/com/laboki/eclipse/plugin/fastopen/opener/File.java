@@ -16,8 +16,8 @@ public final class File {
 	@Getter private final String filePath;
 	private static final PrettyTime PRETTY_TIME = new PrettyTime();
 
-	public File(final String filePathString) {
-		this.file = EditorContext.getFile(filePathString);
+	public File(final IFile file) {
+		this.file = file;
 		this.name = this.file.getName();
 		this.folder = this.file.getParent().getFullPath().toPortableString();
 		this.contentType = this.getPrivateContentType();
@@ -28,7 +28,7 @@ public final class File {
 		try {
 			return this.file.getContentDescription().getContentType().getName();
 		} catch (final Exception e) {
-			return "UNKNOWN";
+			return "Linked File";
 		}
 	}
 
