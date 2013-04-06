@@ -122,12 +122,11 @@ public final class EditorContext {
 
 	public static boolean isValidResourceFile(final IResource resource) {
 		if (EditorContext.isNotResourceFile(resource)) return false;
-		if (EditorContext.isHiddenFile((IFile) resource)) return false;
-		if (EditorContext.isWierd((IFile) resource)) return false;
+		if (EditorContext.isHiddenFile(resource)) return false;
 		return EditorContext.isTextFile((IFile) resource);
 	}
 
-	private static boolean isNotResourceFile(final IResource resource) {
+	public static boolean isNotResourceFile(final IResource resource) {
 		return !EditorContext.isResourceFile(resource);
 	}
 
@@ -135,12 +134,12 @@ public final class EditorContext {
 		return resource.getType() == IResource.FILE;
 	}
 
-	public static boolean isHiddenFile(final IFile file) {
-		return file.getLocation().toFile().isHidden() || file.getParent().getLocation().toFile().isHidden();
+	public static boolean isHiddenFile(final IResource resource) {
+		return resource.getLocation().toFile().isHidden() || resource.isHidden();
 	}
 
-	public static boolean isWierd(final IFile file) {
-		return file.isHidden() || file.isDerived() || file.isPhantom() || file.isTeamPrivateMember() || file.isVirtual();
+	public static boolean isWierd(final IResource resource) {
+		return resource.isDerived() || resource.isPhantom() || resource.isTeamPrivateMember() || resource.isVirtual();
 	}
 
 	private static boolean isTextFile(final IFile file) {
