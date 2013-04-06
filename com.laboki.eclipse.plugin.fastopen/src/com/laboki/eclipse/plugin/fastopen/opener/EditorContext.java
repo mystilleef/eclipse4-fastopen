@@ -21,6 +21,7 @@ import java.util.List;
 
 import lombok.Synchronized;
 
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -34,6 +35,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 
 import com.laboki.eclipse.plugin.fastopen.Activator;
@@ -82,6 +84,10 @@ public final class EditorContext {
 
 	public static void openEditor(final IFile file) throws Exception {
 		EditorContext.getActivePage().openEditor(new FileEditorInput(file), EditorContext.getEditorDescriptor(file).getId());
+	}
+
+	public static void openLink(final IFile file) throws Exception {
+		IDE.openEditorOnFileStore(EditorContext.getActivePage(), EFS.getStore(file.getRawLocationURI()));
 	}
 
 	public static IEditorPart getEditor() {

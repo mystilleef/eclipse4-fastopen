@@ -69,6 +69,14 @@ public final class Dialog {
 		try {
 			EditorContext.openEditor(file);
 		} catch (final Exception e) {
+			Dialog.openLink(file);
+		}
+	}
+
+	private static void openLink(final IFile file) {
+		try {
+			EditorContext.openLink(file);
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
