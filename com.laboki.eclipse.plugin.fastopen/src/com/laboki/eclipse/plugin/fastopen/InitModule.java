@@ -26,9 +26,9 @@ final class InitModule extends AbstractModule {
 		this.bind(Dialog.class).asEagerSingleton();
 		this.bind(RecentResourcesFilter.class).asEagerSingleton();
 		this.bind(RecentResources.class).asEagerSingleton();
-		this.bind(RecentFiles.class).asEagerSingleton();
 		this.bind(AccessedFiles.class).asEagerSingleton();
 		this.bind(AccessedFilesSerializer.class).asEagerSingleton();
+		this.bind(RecentFiles.class).asEagerSingleton();
 		this.bind(FileResources.class).asEagerSingleton();
 		this.bind(WorkspaceResources.class).asEagerSingleton();
 		this.bind(Factory.class).asEagerSingleton();
