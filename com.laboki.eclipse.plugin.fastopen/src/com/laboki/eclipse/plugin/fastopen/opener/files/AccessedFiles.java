@@ -1,10 +1,13 @@
 package com.laboki.eclipse.plugin.fastopen.opener.files;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import lombok.Synchronized;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -63,7 +66,6 @@ public final class AccessedFiles {
 
 			@Override
 			public void execute() {
-				EditorContext.removeFakePaths(this.aFiles);
 				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
 			}
 		});
@@ -71,16 +73,23 @@ public final class AccessedFiles {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void modifiedFilesChanged(@SuppressWarnings("unused") final ModifiedFilesEvent event) {
+	public void modifiedFilesChanged(final ModifiedFilesEvent event) {
 		EditorContext.asyncExec(new DelayedTask("", 50) {
-
-			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
 
 			@Override
 			public void execute() {
-				EditorContext.removeFakePaths(this.aFiles);
-				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
+				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.removeDeletedFiles(event.getFiles())));
 				AccessedFiles.this.postEvent();
+			}
+
+			private Collection<String> removeDeletedFiles(final ImmutableList<String> files) {
+				return Collections2.filter(AccessedFiles.this.getAccessedFiles(), new Predicate<String>() {
+
+					@Override
+					public boolean apply(final String file) {
+						return files.contains(file);
+					}
+				});
 			}
 		});
 	}

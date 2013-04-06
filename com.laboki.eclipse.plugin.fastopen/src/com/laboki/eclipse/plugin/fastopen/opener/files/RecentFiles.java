@@ -57,7 +57,6 @@ public final class RecentFiles {
 			private void update(final ImmutableList<String> files) {
 				this.rfiles.removeAll(files);
 				this.rfiles.addAll(files);
-				EditorContext.removeFakePaths(this.rfiles);
 			}
 		});
 	}
