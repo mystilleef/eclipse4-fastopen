@@ -18,7 +18,7 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class RecentResourcesFilter {
 
-	private final List<File> files = Lists.newArrayList();
+	private final List<RFile> rFiles = Lists.newArrayList();
 
 	@Subscribe
 	@AllowConcurrentEvents
@@ -27,15 +27,15 @@ public final class RecentResourcesFilter {
 
 			@Override
 			public void execute() {
-				RecentResourcesFilter.this.updateFiles(event.getFiles());
+				RecentResourcesFilter.this.updateFiles(event.getRFiles());
 			}
 		});
 	}
 
-	@Synchronized("files")
-	private void updateFiles(final ImmutableList<File> files) {
-		this.files.clear();
-		this.files.addAll(files);
+	@Synchronized("rFiles")
+	private void updateFiles(final ImmutableList<RFile> rFiles) {
+		this.rFiles.clear();
+		this.rFiles.addAll(rFiles);
 	}
 
 	@Subscribe
@@ -61,23 +61,23 @@ public final class RecentResourcesFilter {
 		RecentResourcesFilter.postEvent(this.getFilteredList(regexString));
 	}
 
-	private static void postEvent(final List<File> files) {
-		EventBus.post(new FilterRecentFilesResultEvent(ImmutableList.copyOf(files)));
+	private static void postEvent(final List<RFile> rFiles) {
+		EventBus.post(new FilterRecentFilesResultEvent(ImmutableList.copyOf(rFiles)));
 	}
 
-	private List<File> getFilteredList(final String string) {
-		final List<File> filteredList = Lists.newArrayList();
-		for (final File file : this.getFiles())
-			if (RecentResourcesFilter.matches(file, string)) filteredList.add(file);
+	private List<RFile> getFilteredList(final String string) {
+		final List<RFile> filteredList = Lists.newArrayList();
+		for (final RFile rFile : this.getFiles())
+			if (RecentResourcesFilter.matches(rFile, string)) filteredList.add(rFile);
 		return filteredList;
 	}
 
-	@Synchronized("files")
-	private List<File> getFiles() {
-		return Lists.newArrayList(this.files);
+	@Synchronized("rFiles")
+	private List<RFile> getFiles() {
+		return Lists.newArrayList(this.rFiles);
 	}
 
-	private static boolean matches(final File file, final String string) {
-		return (file.getName().toLowerCase().matches(string.toLowerCase()));
+	private static boolean matches(final RFile rFile, final String string) {
+		return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
 	}
 }

@@ -24,38 +24,38 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 public final class RecentResources {
 
 	private ImmutableMap<String, IFile> fileResourcesMap;
-	private final Map<String, File> cachedResourceFiles = Maps.newHashMap();
-	private final List<File> fileResources = Lists.newArrayList();
+	private final Map<String, RFile> cachedResourceFiles = Maps.newHashMap();
+	private final List<RFile> fileResources = Lists.newArrayList();
 
 	@Synchronized("fileResources")
-	protected ArrayList<File> getFileResources() {
+	protected ArrayList<RFile> getFileResources() {
 		return Lists.newArrayList(this.fileResources);
 	}
 
 	@Synchronized("fileResources")
-	protected void updateFileResources(final List<File> files) {
+	protected void updateFileResources(final List<RFile> rFiles) {
 		this.fileResources.clear();
-		this.fileResources.addAll(files);
+		this.fileResources.addAll(rFiles);
 	}
 
 	@Synchronized("cachedResourceFiles")
-	protected List<File> makeResourceFiles(final ImmutableList<String> immutableList) {
-		final ArrayList<File> files = new ArrayList<>();
+	protected List<RFile> makeResourceFiles(final ImmutableList<String> immutableList) {
+		final ArrayList<RFile> rFiles = new ArrayList<>();
 		for (final String filePath : immutableList)
-			this.updateLocalFilesList(files, filePath);
-		return files;
+			this.updateLocalFilesList(rFiles, filePath);
+		return rFiles;
 	}
 
-	private void updateLocalFilesList(final ArrayList<File> files, final String filePath) {
-		if (this.cachedResourceFiles.containsKey(filePath)) files.add(this.cachedResourceFiles.get(filePath));
-		else this.addNewResourceFiles(files, filePath);
+	private void updateLocalFilesList(final ArrayList<RFile> rFiles, final String filePath) {
+		if (this.cachedResourceFiles.containsKey(filePath)) rFiles.add(this.cachedResourceFiles.get(filePath));
+		else this.addNewResourceFiles(rFiles, filePath);
 	}
 
-	private void addNewResourceFiles(final ArrayList<File> files, final String filePath) {
+	private void addNewResourceFiles(final ArrayList<RFile> rFiles, final String filePath) {
 		if (!this.fileResourcesMap.containsKey(filePath)) return;
-		final File file = new File(this.fileResourcesMap.get(filePath));
-		this.cachedResourceFiles.put(filePath, file);
-		files.add(file);
+		final RFile rFile = new RFile(this.fileResourcesMap.get(filePath));
+		this.cachedResourceFiles.put(filePath, rFile);
+		rFiles.add(rFile);
 	}
 
 	@Subscribe
@@ -69,7 +69,7 @@ public final class RecentResources {
 	public void updateResourceFiles(final RecentFilesEvent event) {
 		EditorContext.asyncExec(new Task("") {
 
-			private final List<File> files = Lists.newArrayList();
+			private final List<RFile> rFiles = Lists.newArrayList();
 
 			@Override
 			public void execute() {
@@ -77,8 +77,8 @@ public final class RecentResources {
 			}
 
 			private void update(final RecentFilesEvent event) {
-				this.files.addAll(RecentResources.this.makeResourceFiles(event.getFiles()));
-				RecentResources.this.updateFileResources(this.files);
+				this.rFiles.addAll(RecentResources.this.makeResourceFiles(event.getFiles()));
+				RecentResources.this.updateFileResources(this.rFiles);
 				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
 			}
 		});

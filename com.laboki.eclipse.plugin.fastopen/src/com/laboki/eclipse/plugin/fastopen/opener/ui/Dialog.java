@@ -38,7 +38,7 @@ import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
-import com.laboki.eclipse.plugin.fastopen.opener.resources.File;
+import com.laboki.eclipse.plugin.fastopen.opener.resources.RFile;
 
 public final class Dialog {
 
@@ -61,7 +61,7 @@ public final class Dialog {
 
 	private static void openFiles() {
 		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices())
-			Dialog.openFile(((File) Dialog.VIEWER.getElementAt(index)).getFile());
+			Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 		Dialog.SHELL.close();
 	}
 
@@ -183,7 +183,7 @@ public final class Dialog {
 
 			@Override
 			public void execute() {
-				Dialog.this.updateViewer(event.getFiles());
+				Dialog.this.updateViewer(event.getRFiles());
 			}
 		});
 	}
@@ -195,18 +195,18 @@ public final class Dialog {
 
 			@Override
 			public void execute() {
-				Dialog.this.updateViewer(event.getFiles());
+				Dialog.this.updateViewer(event.getRFiles());
 			}
 		});
 	}
 
 	@Synchronized
-	protected void updateViewer(final List<File> files) {
+	protected void updateViewer(final List<RFile> rFiles) {
 		Dialog.VIEWER.getControl().setRedraw(false);
 		EditorContext.flushEvents();
 		Dialog.VIEWER.getTable().clearAll();
-		Dialog.VIEWER.setInput(files.toArray(new File[files.size()]));
-		Dialog.VIEWER.setItemCount(files.size());
+		Dialog.VIEWER.setInput(rFiles.toArray(new RFile[rFiles.size()]));
+		Dialog.VIEWER.setItemCount(rFiles.size());
 		Dialog.refresh();
 		EditorContext.flushEvents();
 		Dialog.VIEWER.getControl().setRedraw(true);
@@ -233,7 +233,7 @@ public final class Dialog {
 
 	private final class ContentProvider implements ILazyContentProvider {
 
-		private File[] files;
+		private RFile[] rFiles;
 
 		public ContentProvider() {}
 
@@ -242,13 +242,13 @@ public final class Dialog {
 
 		@Override
 		public void inputChanged(final Viewer arg0, final Object oldInput, final Object newInput) {
-			this.files = (File[]) newInput;
+			this.rFiles = (RFile[]) newInput;
 		}
 
 		@Override
 		public void updateElement(final int index) {
 			try {
-				Dialog.VIEWER.replace(this.files[index], index);
+				Dialog.VIEWER.replace(this.rFiles[index], index);
 			} catch (final Exception e) {}
 		}
 	}
@@ -264,7 +264,7 @@ public final class Dialog {
 
 		@Override
 		public String getText(final Object file) {
-			val _file = (File) file;
+			val _file = (RFile) file;
 			return _file.getName() + " - " + _file.getFolder();
 		}
 

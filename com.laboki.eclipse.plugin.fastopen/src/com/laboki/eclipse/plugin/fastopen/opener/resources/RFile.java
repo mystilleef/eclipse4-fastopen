@@ -7,7 +7,7 @@ import lombok.Getter;
 import org.eclipse.core.resources.IFile;
 import org.ocpsoft.prettytime.PrettyTime;
 
-public final class File {
+public final class RFile {
 
 	@Getter private final IFile file;
 	@Getter private final String name;
@@ -16,7 +16,7 @@ public final class File {
 	@Getter private final String filePath;
 	private static final PrettyTime PRETTY_TIME = new PrettyTime();
 
-	public File(final IFile file) {
+	public RFile(final IFile file) {
 		this.file = file;
 		this.name = this.file.getName();
 		this.folder = this.file.getParent().getFullPath().toPortableString();
@@ -33,7 +33,7 @@ public final class File {
 	}
 
 	public String getModificationTime() {
-		return File.PRETTY_TIME.format(new Date(this.getLastModified()));
+		return RFile.PRETTY_TIME.format(new Date(this.getLastModified()));
 	}
 
 	private long getLastModified() {
@@ -49,8 +49,8 @@ public final class File {
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
-		if (!(obj instanceof File)) return false;
-		final File other = (File) obj;
+		if (!(obj instanceof RFile)) return false;
+		final RFile other = (RFile) obj;
 		if (this.filePath == null) {
 			if (other.filePath != null) return false;
 		} else if (!this.filePath.equals(other.filePath)) return false;
