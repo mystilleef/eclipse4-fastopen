@@ -44,7 +44,7 @@ public final class ModifiedFiles implements IResourceDeltaVisitor {
 	@Override
 	public boolean visit(final IResourceDelta delta) throws CoreException {
 		final IResource resource = delta.getResource();
-		if (EditorContext.isValid(resource)) this.updateModifiedFiles(delta, resource);
+		if (EditorContext.isValidResourceFile(resource)) this.updateModifiedFiles(delta, resource);
 		return true;
 	}
 

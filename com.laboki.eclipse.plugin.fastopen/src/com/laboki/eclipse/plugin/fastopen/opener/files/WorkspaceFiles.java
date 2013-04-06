@@ -14,6 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
@@ -22,7 +23,7 @@ public final class WorkspaceFiles implements IResourceVisitor, Comparator<IFile>
 
 	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 	private final IWorkspaceRoot root = this.workspace.getRoot();
-	private final List<IFile> files = new ArrayList<>();
+	private final List<IFile> files = Lists.newArrayList();
 
 	public WorkspaceFiles() {
 		this.updateFilesFromWorkspace();
@@ -54,7 +55,7 @@ public final class WorkspaceFiles implements IResourceVisitor, Comparator<IFile>
 	}
 
 	private void updateFiles(final IResource resource) {
-		if (resource.getType() == IResource.FILE) if (EditorContext.isValid(resource)) this.files.add((IFile) resource);
+		if (EditorContext.isValidResourceFile(resource)) this.files.add((IFile) resource);
 	}
 
 	@Override
