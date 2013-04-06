@@ -12,9 +12,9 @@ import com.laboki.eclipse.plugin.fastopen.opener.RecentResources;
 import com.laboki.eclipse.plugin.fastopen.opener.RecentResourcesFilter;
 import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFiles;
 import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFilesSerializer;
-import com.laboki.eclipse.plugin.fastopen.opener.files.ModifiedFiles;
 import com.laboki.eclipse.plugin.fastopen.opener.files.RecentFiles;
-import com.laboki.eclipse.plugin.fastopen.opener.files.WorkspaceFiles;
+import com.laboki.eclipse.plugin.fastopen.opener.resources.FileResources;
+import com.laboki.eclipse.plugin.fastopen.opener.resources.WorkspaceResources;
 import com.laboki.eclipse.plugin.fastopen.opener.ui.Dialog;
 
 final class InitModule extends AbstractModule {
@@ -29,8 +29,8 @@ final class InitModule extends AbstractModule {
 		this.bind(RecentFiles.class).asEagerSingleton();
 		this.bind(AccessedFiles.class).asEagerSingleton();
 		this.bind(AccessedFilesSerializer.class).asEagerSingleton();
-		this.bind(ModifiedFiles.class).asEagerSingleton();
-		this.bind(WorkspaceFiles.class).asEagerSingleton();
+		this.bind(FileResources.class).asEagerSingleton();
+		this.bind(WorkspaceResources.class).asEagerSingleton();
 		this.bind(Factory.class).asEagerSingleton();
 	}
 

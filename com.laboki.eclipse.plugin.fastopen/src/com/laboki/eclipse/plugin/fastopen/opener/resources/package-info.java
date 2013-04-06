@@ -1,0 +1,1 @@
+package com.laboki.eclipse.plugin.fastopen.opener.resources;
