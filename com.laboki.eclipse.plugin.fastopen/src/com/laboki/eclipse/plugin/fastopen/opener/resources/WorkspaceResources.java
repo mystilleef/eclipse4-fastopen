@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
@@ -25,19 +26,35 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 	private final List<IFile> resources = Lists.newArrayList();
 
 	public WorkspaceResources() {
-		this.updateFilesFromWorkspace();
-		this.sortFilesByModificationTime();
-		this.postEvent();
+		this.init();
+	}
+
+	private void init() {
+		EditorContext.asyncExec(new Task("") {
+
+			@Override
+			public void execute() {
+				WorkspaceResources.this.updateFilesFromWorkspace();
+				WorkspaceResources.this.sortFilesByModificationTime();
+				WorkspaceResources.this.postEvent();
+			}
+		});
 	}
 
 	private void updateFilesFromWorkspace() {
 		try {
-			this.root.accept(this);
+			WorkspaceResources.this.root.accept(WorkspaceResources.this);
 		} catch (final CoreException e) {}
 	}
 
 	private void sortFilesByModificationTime() {
-		Collections.sort(this.resources, this);
+		EditorContext.asyncExec(new Task("") {
+
+			@Override
+			public void execute() {
+				Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
+			}
+		});
 	}
 
 	@Override
