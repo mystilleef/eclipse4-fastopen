@@ -82,7 +82,7 @@ public final class FileResources implements IResourceDeltaVisitor {
 	@Override
 	public boolean visit(final IResourceDelta delta) throws CoreException {
 		final IResource resource = delta.getResource();
-		if (EditorContext.isValidResourceFile(resource)) this.updateModifiedFiles(delta, (IFile) resource);
+		if (EditorContext.isResourceFile(resource)) this.updateModifiedFiles(delta, (IFile) resource);
 		return true;
 	}
 
@@ -100,11 +100,14 @@ public final class FileResources implements IResourceDeltaVisitor {
 	}
 
 	private void addResource(final IFile file) {
+		if (EditorContext.isNotValidResourceFile(file)) return;
 		final String filepath = EditorContext.getURIPath(file);
 		this.fileResourcesMap.put(filepath, file);
 		this.modifiedFiles.remove(filepath);
 		this.modifiedFiles.add(0, filepath);
 		this.postEvents();
+		System.out.println(file.getName());
+		System.out.println("added");
 	}
 
 	private void removeResource(final IFile file) {
@@ -112,6 +115,8 @@ public final class FileResources implements IResourceDeltaVisitor {
 		this.fileResourcesMap.remove(filePath);
 		this.modifiedFiles.remove(filePath);
 		this.postEvents();
+		System.out.println(file.getName());
+		System.out.println("removed");
 	}
 
 	private void postEvents() {

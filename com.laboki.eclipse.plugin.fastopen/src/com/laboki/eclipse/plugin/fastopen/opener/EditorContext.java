@@ -116,6 +116,10 @@ public final class EditorContext {
 		}
 	}
 
+	public static boolean isNotValidResourceFile(final IResource resource) {
+		return !EditorContext.isValidResourceFile(resource);
+	}
+
 	public static boolean isValidResourceFile(final IResource resource) {
 		if (EditorContext.isNotResourceFile(resource)) return false;
 		if (EditorContext.isHiddenFile((IFile) resource)) return false;
@@ -127,7 +131,7 @@ public final class EditorContext {
 		return !EditorContext.isResourceFile(resource);
 	}
 
-	private static boolean isResourceFile(final IResource resource) {
+	public static boolean isResourceFile(final IResource resource) {
 		return resource.getType() == IResource.FILE;
 	}
 
