@@ -1,5 +1,6 @@
 package com.laboki.eclipse.plugin.fastopen.opener.ui;
 
+import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
@@ -273,7 +275,7 @@ public final class Dialog {
 		@Override
 		public String getText(final Object file) {
 			val _file = (RFile) file;
-			return _file.getName() + " - " + _file.getFolder();
+			return _file.getName() + " - " + CharMatcher.anyOf(File.separator).trimLeadingFrom(_file.getFolder());
 		}
 
 		@Override

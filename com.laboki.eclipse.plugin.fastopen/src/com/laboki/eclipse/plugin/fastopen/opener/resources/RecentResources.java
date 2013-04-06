@@ -40,7 +40,7 @@ public final class RecentResources {
 
 	@Synchronized("cachedResourceFiles")
 	protected List<RFile> makeResourceFiles(final ImmutableList<String> immutableList) {
-		final ArrayList<RFile> rFiles = new ArrayList<>();
+		final ArrayList<RFile> rFiles = Lists.newArrayList();
 		for (final String filePath : immutableList)
 			this.updateLocalFilesList(rFiles, filePath);
 		return rFiles;
@@ -52,7 +52,6 @@ public final class RecentResources {
 	}
 
 	private void addNewResourceFiles(final ArrayList<RFile> rFiles, final String filePath) {
-		if (!this.fileResourcesMap.containsKey(filePath)) return;
 		final RFile rFile = new RFile(this.fileResourcesMap.get(filePath));
 		this.cachedResourceFiles.put(filePath, rFile);
 		rFiles.add(rFile);
@@ -76,6 +75,7 @@ public final class RecentResources {
 				this.update(event);
 			}
 
+			@Synchronized
 			private void update(final RecentFilesEvent event) {
 				this.rFiles.addAll(RecentResources.this.makeResourceFiles(event.getFiles()));
 				RecentResources.this.updateFileResources(this.rFiles);

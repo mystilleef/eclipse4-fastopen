@@ -81,42 +81,34 @@ public final class FileResources implements IResourceDeltaVisitor {
 
 	@Override
 	public boolean visit(final IResourceDelta delta) throws CoreException {
-		final IResource resource = delta.getResource();
-		if (EditorContext.isResourceFile(resource)) this.updateModifiedFiles(delta, (IFile) resource);
-		return true;
-	}
-
-	private void updateModifiedFiles(final IResourceDelta delta, final IFile file) {
 		switch (delta.getKind()) {
 			case IResourceDelta.ADDED:
-				this.addResource(file);
+				this.addResource(delta.getResource());
 				break;
 			case IResourceDelta.REMOVED:
-				this.removeResource(file);
+				this.removeResource(delta.getResource());
 				break;
 			default:
 				break;
 		}
+		return true;
 	}
 
-	private void addResource(final IFile file) {
-		if (EditorContext.isNotValidResourceFile(file)) return;
+	private void addResource(final IResource file) {
+		if ((file == null) || EditorContext.isNotValidResourceFile(file)) return;
 		final String filepath = EditorContext.getURIPath(file);
-		this.fileResourcesMap.put(filepath, file);
+		this.fileResourcesMap.put(filepath, (IFile) file);
 		this.modifiedFiles.remove(filepath);
 		this.modifiedFiles.add(0, filepath);
 		this.postEvents();
-		System.out.println(file.getName());
-		System.out.println("added");
 	}
 
-	private void removeResource(final IFile file) {
+	private void removeResource(final IResource file) {
+		if (file == null) return;
 		final String filePath = EditorContext.getURIPath(file);
 		this.fileResourcesMap.remove(filePath);
 		this.modifiedFiles.remove(filePath);
 		this.postEvents();
-		System.out.println(file.getName());
-		System.out.println("removed");
 	}
 
 	private void postEvents() {

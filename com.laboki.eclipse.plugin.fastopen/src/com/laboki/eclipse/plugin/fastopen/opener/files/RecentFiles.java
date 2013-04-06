@@ -1,6 +1,5 @@
 package com.laboki.eclipse.plugin.fastopen.opener.files;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Synchronized;
@@ -15,48 +14,26 @@ import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class RecentFiles {
 
 	private final List<String> recentFiles = Lists.newArrayList();
 
-	@Synchronized("recentFiles")
-	protected ArrayList<String> getRecentFiles() {
-		return Lists.newArrayList(this.recentFiles);
-	}
-
-	@Synchronized("recentFiles")
-	protected void updateRecentFiles(final List<String> files) {
-		this.recentFiles.clear();
-		this.recentFiles.addAll(files);
-	}
-
-	protected RecentFilesEvent emitFileEvent() {
-		return new RecentFilesEvent(ImmutableList.copyOf(this.recentFiles));
-	}
-
 	@Subscribe
 	@AllowConcurrentEvents
 	public void modifiedFilesChanged(final ModifiedFilesEvent event) {
 		EditorContext.asyncExec(new Task("") {
 
-			private final List<String> rfiles = RecentFiles.this.getRecentFiles();
-
 			@Override
 			public void execute() {
-				this.mergeModifiedAndRecentFiles(event.getFiles());
+				RecentFiles.this.updateRecentFiles(event.getFiles());
+				this.postRecentFilesModificationEvent();
 			}
 
-			private void mergeModifiedAndRecentFiles(final ImmutableList<String> files) {
-				this.update(files);
-				RecentFiles.this.updateRecentFiles(this.rfiles);
-				EventBus.post(RecentFiles.this.emitFileEvent());
-			}
-
-			private void update(final ImmutableList<String> files) {
-				this.rfiles.removeAll(files);
-				this.rfiles.addAll(files);
+			private void postRecentFilesModificationEvent() {
+				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
 			}
 		});
 	}
@@ -64,9 +41,9 @@ public final class RecentFiles {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void accessedFilesChanged(final AccessedFilesEvent event) {
-		EditorContext.asyncExec(new DelayedTask("", 50) {
+		EditorContext.asyncExec(new DelayedTask("", 10) {
 
-			private final List<String> rfiles = RecentFiles.this.getRecentFiles();
+			private final List<String> rfiles = Lists.newArrayList(RecentFiles.this.getRecentFiles());
 
 			@Override
 			public void execute() {
@@ -75,14 +52,29 @@ public final class RecentFiles {
 
 			private void mergeAccessedAndRecentFiles(final ImmutableList<String> files) {
 				this.update(files);
-				RecentFiles.this.updateRecentFiles(this.rfiles);
-				EventBus.post(RecentFiles.this.emitFileEvent());
+				RecentFiles.this.updateRecentFiles(ImmutableList.copyOf(this.rfiles));
+				this.postRecentFilesEvent();
 			}
 
 			private void update(final ImmutableList<String> files) {
 				this.rfiles.removeAll(files);
 				this.rfiles.addAll(0, files);
 			}
+
+			private void postRecentFilesEvent() {
+				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
+			}
 		});
+	}
+
+	@Synchronized("recentFiles")
+	protected void updateRecentFiles(final ImmutableList<String> files) {
+		this.recentFiles.clear();
+		this.recentFiles.addAll(files);
+	}
+
+	@Synchronized("recentFiles")
+	private ImmutableList<String> getRecentFiles() {
+		return ImmutableList.copyOf(this.recentFiles);
 	}
 }

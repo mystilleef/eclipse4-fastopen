@@ -42,6 +42,7 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 
 	@Override
 	public boolean visit(final IResource resource) throws CoreException {
+		if (EditorContext.isHiddenFile(resource) || EditorContext.isWierd(resource)) return false;
 		this.updateFiles(resource);
 		return true;
 	}
