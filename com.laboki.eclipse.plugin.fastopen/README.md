@@ -8,7 +8,7 @@ press __Enter__ to reopen it.
 
 ### Development Status 
 
-__FastOpen__ is still under development not all features have been implemented.
+* __FastOpen__ is still under development not all features have been implemented.
 
 ### Features
 
