@@ -1,6 +1,5 @@
 package com.laboki.eclipse.plugin.fastopen.opener.ui;
 
-import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -8,11 +7,12 @@ import lombok.Synchronized;
 import lombok.val;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILazyContentProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -22,14 +22,17 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
@@ -171,6 +174,7 @@ public final class Dialog {
 		Dialog.VIEWER.setLabelProvider(this.new LabelProvider());
 		Dialog.VIEWER.setContentProvider(this.new ContentProvider());
 		Dialog.VIEWER.setUseHashlookup(true);
+		Dialog.VIEWER.getTable().setLinesVisible(true);
 	}
 
 	private static boolean isValidCharacter(final String character) {
@@ -268,34 +272,76 @@ public final class Dialog {
 		}
 	}
 
-	private final class LabelProvider implements ILabelProvider {
+	private final class LabelProvider extends StyledCellLabelProvider {
+
+		StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
+		StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+		StyledString.Styler folderStyler = this.styler(null, null);
+		StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+		StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+		StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE));
 
 		public LabelProvider() {}
 
 		@Override
-		public Image getImage(final Object arg0) {
-			return null;
+		public void update(final ViewerCell cell) {
+			val file = (RFile) cell.getElement();
+			final StyledString text = new StyledString();
+			text.append(file.getName() + "\n", this.filenameStyler);
+			text.append("in  ", this.inStyler);
+			text.append(file.getFolder() + "\n", this.folderStyler);
+			text.append("modified  ", this.modifiedStyler);
+			text.append(file.getModificationTime() + "  ", this.timeStyler);
+			text.append(file.getContentType().toLowerCase(), this.typeStyler);
+			cell.setText(text.toString());
+			cell.setStyleRanges(text.getStyleRanges());
+			super.update(cell);
 		}
 
-		@Override
-		public String getText(final Object file) {
-			val _file = (RFile) file;
-			return _file.getName() + " - " + CharMatcher.anyOf(File.separator).trimLeadingFrom(_file.getFolder());
+		private StyledString.Styler styler(final Font font, final Color color) {
+			return new StyledString.Styler() {
+
+				@Override
+				public void applyStyles(final TextStyle textStyle) {
+					textStyle.font = font;
+					textStyle.foreground = color;
+				}
+			};
+		}
+	}
+
+	private enum FONT {
+		FONT;
+
+		private static final FontData[] FONT_DATAS = Dialog.VIEWER.getTable().getFont().getFontData();
+		public static final Font LARGE_BOLD_FONT = FONT.makeLargeBoldFont();
+		public static final Font ITALIC_FONT = FONT.makeItalicizedFont();
+		public static final Font SMALL_ITALIC_FONT = FONT.makeSmallItalicizedFont();
+		public static final Font SMALL_BOLD_FONT = FONT.makeSmallBoldFont();
+
+		private static Font makeLargeBoldFont() {
+			return new Font(EditorContext.getDisplay(), FONT.getDefaultFontName(), FONT.getDefaultFontHeight() + 2, SWT.BOLD);
 		}
 
-		@Override
-		public void addListener(final ILabelProviderListener arg0) {}
-
-		@Override
-		public void dispose() {}
-
-		@Override
-		public boolean isLabelProperty(final Object arg0, final String arg1) {
-			return false;
+		private static Font makeItalicizedFont() {
+			return new Font(EditorContext.getDisplay(), FONT.getDefaultFontName(), FONT.getDefaultFontHeight(), SWT.ITALIC);
 		}
 
-		@Override
-		public void removeListener(final ILabelProviderListener arg0) {}
+		private static Font makeSmallItalicizedFont() {
+			return new Font(EditorContext.getDisplay(), FONT.getDefaultFontName(), FONT.getDefaultFontHeight() - 2, SWT.ITALIC);
+		}
+
+		private static Font makeSmallBoldFont() {
+			return new Font(EditorContext.getDisplay(), FONT.getDefaultFontName(), FONT.getDefaultFontHeight() - 2, SWT.BOLD);
+		}
+
+		public static int getDefaultFontHeight() {
+			return FONT.FONT_DATAS[0].getHeight();
+		}
+
+		public static String getDefaultFontName() {
+			return FONT.FONT_DATAS[0].getName();
+		}
 	}
 
 	private final class DialogShellListener implements ShellListener {
