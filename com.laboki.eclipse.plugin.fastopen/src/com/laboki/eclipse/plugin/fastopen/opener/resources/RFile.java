@@ -5,14 +5,20 @@ import java.util.Date;
 import lombok.Getter;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.swt.graphics.Image;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class RFile {
 
 	@Getter private final IFile file;
 	@Getter private final String name;
 	@Getter private final String folder;
-	@Getter private final String contentType;
+	@Getter private final String contentTypeString;
+	@Getter private final IContentType contentType;
+	@Getter private final Image contentTypeImage;
 	@Getter private final String filePath;
 	private static final PrettyTime PRETTY_TIME = new PrettyTime();
 
@@ -21,14 +27,20 @@ public final class RFile {
 		this.name = this.file.getName();
 		this.folder = this.file.getParent().getFullPath().toPortableString();
 		this.contentType = this.getPrivateContentType();
+		this.contentTypeString = this.getPrivateContentTypeString();
+		this.contentTypeImage = new Image(EditorContext.DISPLAY, EditorContext.getContentTypeImageData(file.getFullPath().toOSString(), this.contentType).scaledTo(24, 24));
 		this.filePath = this.file.getLocation().toOSString();
 	}
 
-	private String getPrivateContentType() {
+	private IContentType getPrivateContentType() {
+		return EditorContext.getContentType(this.file);
+	}
+
+	private String getPrivateContentTypeString() {
 		try {
-			return this.file.getContentDescription().getContentType().getName();
+			return this.contentType.getName();
 		} catch (final Exception e) {
-			return "Linked File";
+			return "text file";
 		}
 	}
 
@@ -42,7 +54,7 @@ public final class RFile {
 
 	@Override
 	public String toString() {
-		return String.format("===\nName=%s\nFolder=%s\nContentType=%s\nModificationTime=%s\n===", this.getName(), this.getFolder(), this.getPrivateContentType(), this.getModificationTime());
+		return String.format("===\nName=%s\nFolder=%s\nContentType=%s\nModificationTime=%s\n===", this.getName(), this.getFolder(), this.getPrivateContentTypeString(), this.getModificationTime());
 	}
 
 	@Override

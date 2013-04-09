@@ -31,6 +31,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
@@ -148,17 +150,34 @@ public final class EditorContext {
 
 	private static boolean isContentTypeText(final IFile file) {
 		try {
-			return file.getContentDescription().getContentType().isKindOf(EditorContext.CONTENT_TYPE_TEXT);
+			return EditorContext.getContentType(file).isKindOf(EditorContext.CONTENT_TYPE_TEXT);
 		} catch (final Exception e) {
-			return EditorContext.isMediaTypeText(file);
+			return false;
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static boolean isMediaTypeText(final IFile file) {
 		try {
 			return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file)))).is(MediaType.ANY_TEXT_TYPE);
 		} catch (final Exception e) {}
 		return false;
+	}
+
+	public static IContentType getContentType(final IFile file) {
+		try {
+			return file.getContentDescription().getContentType();
+		} catch (final Exception e) {
+			return EditorContext.getContentTypeFromMediaType(file);
+		}
+	}
+
+	private static IContentType getContentTypeFromMediaType(final IFile file) {
+		try {
+			return Platform.getContentTypeManager().getContentType(MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file)))).toString());
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 	private static boolean hasValidCharSet(final IFile file) {
@@ -234,5 +253,13 @@ public final class EditorContext {
 
 	public static IFile getFile(final String filePathString) {
 		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(Path.fromOSString(new File(filePathString).getAbsolutePath()));
+	}
+
+	public static ImageDescriptor getImageDescriptor(final String filename, final IContentType contentType) {
+		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(filename, contentType);
+	}
+
+	public static ImageData getContentTypeImageData(final String filename, final IContentType contentType) {
+		return EditorContext.getImageDescriptor(filename, contentType).getImageData();
 	}
 }

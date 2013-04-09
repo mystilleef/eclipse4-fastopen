@@ -275,11 +275,11 @@ public final class Dialog {
 	private final class LabelProvider extends StyledCellLabelProvider {
 
 		StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
-		StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+		StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_DARK_GRAY));
 		StyledString.Styler folderStyler = this.styler(null, null);
-		StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-		StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
-		StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE));
+		StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_DARK_GRAY));
+		StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
+		StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
 
 		public LabelProvider() {}
 
@@ -292,8 +292,9 @@ public final class Dialog {
 			text.append(file.getFolder() + "\n", this.folderStyler);
 			text.append("modified  ", this.modifiedStyler);
 			text.append(file.getModificationTime() + "  ", this.timeStyler);
-			text.append(file.getContentType().toLowerCase(), this.typeStyler);
+			text.append(file.getContentTypeString().toLowerCase(), this.typeStyler);
 			cell.setText(text.toString());
+			cell.setImage(file.getContentTypeImage());
 			cell.setStyleRanges(text.getStyleRanges());
 			super.update(cell);
 		}
@@ -307,6 +308,10 @@ public final class Dialog {
 					textStyle.foreground = color;
 				}
 			};
+		}
+
+		private Color color(final int color) {
+			return Display.getCurrent().getSystemColor(color);
 		}
 	}
 
