@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: FastOpen
 Bundle-SymbolicName: com.laboki.eclipse.plugin.fastopen;singleton:=true
-Bundle-Version: 20130406.1
+Bundle-Version: 20130409
 Bundle-Vendor: laboki
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime;bundle-version="3.8.0",
@@ -10,7 +10,32 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide;bundle-version="3.8.2",
  org.eclipse.core.filesystem;bundle-version="1.3.200"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: com.laboki.eclipse.plugin.fastopen;
+Export-Package: com.google.common.annotations,
+ com.google.common.base,
+ com.google.common.base.internal;x-internal:=true,
+ com.google.common.cache,
+ com.google.common.collect,
+ com.google.common.eventbus,
+ com.google.common.hash,
+ com.google.common.io,
+ com.google.common.math,
+ com.google.common.net,
+ com.google.common.primitives,
+ com.google.common.reflect,
+ com.google.common.util.concurrent,
+ com.google.inject,
+ com.google.inject.binder,
+ com.google.inject.internal;x-internal:=true,
+ com.google.inject.internal.asm;x-internal:=true,
+ com.google.inject.internal.cglib.core;x-internal:=true,
+ com.google.inject.internal.cglib.proxy;x-internal:=true,
+ com.google.inject.internal.cglib.reflect;x-internal:=true,
+ com.google.inject.internal.util;x-internal:=true,
+ com.google.inject.matcher,
+ com.google.inject.name,
+ com.google.inject.spi,
+ com.google.inject.util,
+ com.laboki.eclipse.plugin.fastopen;
   uses:="org.eclipse.core.runtime,
    org.eclipse.jface.resource,
    org.eclipse.core.runtime.jobs,
@@ -18,13 +43,17 @@ Export-Package: com.laboki.eclipse.plugin.fastopen;
    org.osgi.framework,
    org.eclipse.core.commands,
    com.google.inject",
+ com.laboki.eclipse.plugin.fastopen.events,
  com.laboki.eclipse.plugin.fastopen.opener;uses:="org.eclipse.ui,org.eclipse.core.resources,org.eclipse.swt.widgets",
+ com.laboki.eclipse.plugin.fastopen.opener.files,
  com.laboki.eclipse.plugin.fastopen.opener.listeners;uses:="org.eclipse.core.resources",
+ com.laboki.eclipse.plugin.fastopen.opener.resources,
  com.laboki.eclipse.plugin.fastopen.opener.ui;uses:="com.laboki.eclipse.plugin.fastopen.events",
  com.sun.jna;uses:="new com.sun.jna",
  com.sun.jna.darwin,
  com.sun.jna.ptr;uses:="com.sun.jna",
  com.sun.jna.win32;uses:="com.sun.jna",
+ javax.inject,
  lombok,
  lombok.bytecode;uses:="lombok.core,lombok.libs.org.objectweb.asm",
  lombok.core;uses:="javax.lang.model,new lombok.core,javax.annotation.processing",
@@ -125,7 +154,14 @@ Export-Package: com.laboki.eclipse.plugin.fastopen;
  lombok.patcher;uses:="lombok.libs.org.objectweb.asm",
  lombok.patcher.equinox;uses:="lombok.patcher",
  lombok.patcher.inject;uses:="com.sun.jna.ptr,com.sun.jna",
- lombok.patcher.scripts;uses:="lombok.patcher,lombok.libs.org.objectweb.asm"
+ lombok.patcher.scripts;uses:="lombok.patcher,lombok.libs.org.objectweb.asm",
+ org.aopalliance.aop,
+ org.aopalliance.intercept,
+ org.ocpsoft.prettytime,
+ org.ocpsoft.prettytime.format,
+ org.ocpsoft.prettytime.i18n,
+ org.ocpsoft.prettytime.impl,
+ org.ocpsoft.prettytime.units
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.laboki.eclipse.plugin.fastopen.Activator
 Bundle-ClassPath: .,
