@@ -1,4 +1,4 @@
-# FastOpen: Open Files Very Quickly in Eclipse 4
+# Quickly Open Files in Eclipse 4
 
 __FastOpen__ is the fastest way to open, or navigate to, files in Eclipse 4.
 
