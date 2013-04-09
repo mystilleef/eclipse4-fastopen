@@ -37,11 +37,4 @@
 		<nature>org.eclipse.pde.api.tools.apiAnalysisNature</nature>
 		<nature>edu.umd.cs.findbugs.plugin.eclipse.findbugsNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>README.md</name>
-			<type>1</type>
-			<location>/home/lateef/Eclipse/EclipseGitRepository/eclipse4-fastopen/README.md</location>
-		</link>
-	</linkedResources>
 </projectDescription>
