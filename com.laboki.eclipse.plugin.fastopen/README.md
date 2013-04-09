@@ -6,7 +6,9 @@ Just press __ctrl+r__ to show the __FastOpen__ window and press __Enter__ to ope
 based on most recent access, you can use it to focus already open files very quickly. Or if you accidently close a file, just press __ctrl+r__ then 
 press __Enter__ to reopen it.
 
-### STATUS: STILL IN DEVELOPMENT
+### Development Status 
+
+__FastOpen__ is still under development not all features have been implemented.
 
 ### Features
 
