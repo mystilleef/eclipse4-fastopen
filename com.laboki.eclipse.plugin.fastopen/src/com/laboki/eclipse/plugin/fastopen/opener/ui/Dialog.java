@@ -482,38 +482,4 @@ public final class Dialog {
 	public static void reset() {
 		Dialog.TEXT.setText("");
 	}
-
-	@SuppressWarnings("unused")
-	private static void delete() {
-		final int start = Dialog.TEXT.getCaretPosition();
-		Dialog.TEXT.setSelection(start, start + 1);
-		Dialog.TEXT.cut();
-	}
-
-	@SuppressWarnings("unused")
-	private static void moveCaretForward() {
-		val position = Dialog.TEXT.getCaretPosition() + 1;
-		Dialog.TEXT.clearSelection();
-		Dialog.TEXT.setSelection(position, position);
-	}
-
-	@SuppressWarnings("unused")
-	private static void moveCaretBackward() {
-		val position = Dialog.TEXT.getCaretPosition() - 1;
-		Dialog.TEXT.clearSelection();
-		Dialog.TEXT.setSelection(position, position);
-	}
-
-	@SuppressWarnings("unused")
-	private static void moveCaretToStart() {
-		Dialog.TEXT.clearSelection();
-		Dialog.TEXT.setSelection(0, 0);
-	}
-
-	@SuppressWarnings("unused")
-	private static void moveCaretToEnd() {
-		val position = Dialog.TEXT.getCharCount();
-		Dialog.TEXT.clearSelection();
-		Dialog.TEXT.setSelection(position, position);
-	}
 }
