@@ -9,8 +9,11 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public abstract class Task extends Job implements Runnable {
 
+	private final String name;
+
 	public Task(final String name) {
 		super(name);
+		this.name = name;
 		this.setPriority(Job.INTERACTIVE);
 	}
 
@@ -29,6 +32,11 @@ public abstract class Task extends Job implements Runnable {
 			}
 		});
 		return Status.OK_STATUS;
+	}
+
+	@Override
+	public boolean belongsTo(final Object family) {
+		return this.name.equals(family);
 	}
 
 	protected void execute() {}

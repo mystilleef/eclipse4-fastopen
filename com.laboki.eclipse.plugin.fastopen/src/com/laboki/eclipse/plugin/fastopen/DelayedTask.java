@@ -10,9 +10,11 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 public abstract class DelayedTask extends Job implements Runnable {
 
 	private final int timeInMilliSeconds;
+	private final String name;
 
 	public DelayedTask(final String name, final int timeInMilliSeconds) {
 		super(name);
+		this.name = name;
 		this.timeInMilliSeconds = timeInMilliSeconds;
 	}
 
@@ -31,6 +33,11 @@ public abstract class DelayedTask extends Job implements Runnable {
 			}
 		});
 		return Status.OK_STATUS;
+	}
+
+	@Override
+	public boolean belongsTo(final Object family) {
+		return this.name.equals(family);
 	}
 
 	protected void execute() {}
