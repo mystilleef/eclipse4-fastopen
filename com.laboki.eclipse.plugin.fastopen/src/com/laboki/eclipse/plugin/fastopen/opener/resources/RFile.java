@@ -71,9 +71,6 @@ public final class RFile {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((this.filePath == null) ? 0 : this.filePath.hashCode());
-		return result;
+		return (31 * 1) + ((this.filePath == null) ? 0 : this.filePath.hashCode());
 	}
 }
