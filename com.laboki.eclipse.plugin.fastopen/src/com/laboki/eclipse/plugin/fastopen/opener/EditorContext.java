@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Synchronized;
+import lombok.val;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -37,12 +38,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 
+import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
 
@@ -98,8 +102,52 @@ public final class EditorContext {
 		return EditorContext.getActivePage().getActiveEditor();
 	}
 
+	public static IEditorReference[] getActiveEditorReferences() {
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+	}
+
+	public static IEditorPart[] getActiveEditorParts() {
+		val parts = Lists.newArrayList();
+		for (final IEditorReference editorReference : EditorContext.getActiveEditorReferences()) {
+			val editorPart = EditorContext.getEditorPart(editorReference);
+			if (EditorContext.isValidPart(editorPart)) parts.add(editorPart);
+		}
+		return parts.toArray(new IEditorPart[parts.size()]);
+	}
+
+	private static IEditorPart getEditorPart(final IEditorReference editorReference) {
+		return (IEditorPart) editorReference.getPart(false);
+	}
+
+	public static boolean isInvalidPart(final IWorkbenchPart part) {
+		return !EditorContext.isValidPart(part);
+	}
+
+	public static boolean isValidPart(final IWorkbenchPart part) {
+		if (part instanceof IEditorPart) return true;
+		return false;
+	}
+
+	public static IFile[] getActiveFiles() {
+		val files = Lists.newArrayList();
+		for (final IEditorPart editorPart : EditorContext.getActiveEditorParts())
+			files.add(EditorContext.getFile(editorPart));
+		return files.toArray(new IFile[files.size()]);
+	}
+
+	public static String[] getActiveFilePathStrings() {
+		val strings = Lists.newArrayList();
+		for (final IFile file : EditorContext.getActiveFiles())
+			strings.add(EditorContext.getURIPath(file));
+		return strings.toArray(new String[strings.size()]);
+	}
+
 	private static IFile getFile() {
 		return ((FileEditorInput) EditorContext.getEditor().getEditorInput()).getFile();
+	}
+
+	public static IFile getFile(final IEditorPart editorPart) {
+		return ((FileEditorInput) editorPart.getEditorInput()).getFile();
 	}
 
 	public static String getPath() {
@@ -145,10 +193,22 @@ public final class EditorContext {
 	}
 
 	private static boolean isTextFile(final IFile file) {
-		return EditorContext.isContentTypeText(file) || EditorContext.hasValidCharSet(file) || file.isLinked();
+		return EditorContext.isMediaContentTypeText(file) || EditorContext.isContentTypeText(file) || EditorContext.hasValidCharSet(file) || file.isLinked();
 	}
 
-	private static boolean isContentTypeText(final IFile file) {
+	private static boolean isMediaContentTypeText(final IFile file) {
+		try {
+			return EditorContext.getMediaContentType(file).is(MediaType.ANY_TEXT_TYPE);
+		} catch (final Exception e) {
+			return false;
+		}
+	}
+
+	private static MediaType getMediaContentType(final IFile file) throws IOException {
+		return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file))));
+	}
+
+	public static boolean isContentTypeText(final IFile file) {
 		try {
 			return EditorContext.getContentType(file).isKindOf(EditorContext.CONTENT_TYPE_TEXT);
 		} catch (final Exception e) {
@@ -156,26 +216,25 @@ public final class EditorContext {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private static boolean isMediaTypeText(final IFile file) {
-		try {
-			return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file)))).is(MediaType.ANY_TEXT_TYPE);
-		} catch (final Exception e) {}
-		return false;
-	}
-
 	public static IContentType getContentType(final IFile file) {
 		try {
-			return file.getContentDescription().getContentType();
+			return EditorContext.tryToGetContentType(file);
 		} catch (final Exception e) {
 			return EditorContext.getContentTypeFromMediaType(file);
 		}
 	}
 
+	private static IContentType tryToGetContentType(final IFile file) throws CoreException {
+		final IContentType contentType = file.getContentDescription().getContentType();
+		if (contentType == null) return EditorContext.getContentTypeFromMediaType(file);
+		return contentType;
+	}
+
 	private static IContentType getContentTypeFromMediaType(final IFile file) {
 		try {
-			return Platform.getContentTypeManager().getContentType(MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file)))).toString());
+			return Platform.getContentTypeManager().getContentType(EditorContext.getMediaContentType(file).toString().trim());
 		} catch (final Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

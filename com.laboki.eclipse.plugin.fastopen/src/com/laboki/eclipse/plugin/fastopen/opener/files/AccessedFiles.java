@@ -23,7 +23,7 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 public final class AccessedFiles {
 
 	private static final int ACCESSED_FILES_REINDEX_WATERMARK = 3;
-	private final List<String> accessedFiles = Lists.newArrayList();
+	private final List<String> accessedFiles = Lists.newArrayList(EditorContext.getActiveFilePathStrings());
 
 	@Subscribe
 	@AllowConcurrentEvents
@@ -61,11 +61,9 @@ public final class AccessedFiles {
 	public void deserializedAccessedFiles(final DeserializedAccessedFilesEvent event) {
 		EditorContext.asyncExec(new Task("") {
 
-			private final List<String> aFiles = Lists.newArrayList(event.getFiles());
-
 			@Override
 			public void execute() {
-				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
+				AccessedFiles.this.updateAccessedFiles(event.getFiles());
 			}
 		});
 	}
@@ -95,8 +93,8 @@ public final class AccessedFiles {
 
 	@Synchronized("accessedFiles")
 	private void updateAccessedFiles(final List<String> files) {
-		this.accessedFiles.clear();
-		this.accessedFiles.addAll(files);
+		this.accessedFiles.removeAll(files);
+		this.accessedFiles.addAll(0, files);
 	}
 
 	private void postEvent() {

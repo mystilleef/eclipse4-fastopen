@@ -2,7 +2,6 @@ package com.laboki.eclipse.plugin.fastopen.opener;
 
 import lombok.ToString;
 
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPart;
@@ -27,18 +26,8 @@ public final class Factory implements Runnable {
 	}
 
 	public static void startRecentFilesMonitor(final IWorkbenchPart part) {
-		if (Factory.isInvalidPart(part)) return;
+		if (EditorContext.isInvalidPart(part)) return;
 		EventBus.post(new PartActivationEvent());
-	}
-
-	private static boolean isInvalidPart(final IWorkbenchPart part) {
-		return !Factory.isValidPart(part);
-	}
-
-	private static boolean isValidPart(final IWorkbenchPart part) {
-		if (part == null) return false;
-		if (part instanceof IEditorPart) return true;
-		return false;
 	}
 
 	private final class PartListener implements IPartListener {
