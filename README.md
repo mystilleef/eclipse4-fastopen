@@ -2,9 +2,9 @@
 
 __FastOpen__ is the fastest way to open, or navigate to, files in Eclipse 4.
 
-Just press __ctrl+r__ to show the __FastOpen__ window and press __Enter__ to open, or navigate to, selected files. Since __FastOpen__ ranks files 
-based on most recent access, you can use it to focus already open files very quickly. Or if you accidently close a file, just press __ctrl+r__ then 
-press __Enter__ to reopen it.
+Just press __ctrl+r__ to show the __FastOpen__ window and press __Enter__ to open, or navigate to, selected files.
+Since __FastOpen__ ranks files based on most recent access, you can use it to focus already open files very quickly. Or
+if you accidently close a file, just press __ctrl+r__ then press __Enter__ to reopen it.
 
 ### Development Status 
 
