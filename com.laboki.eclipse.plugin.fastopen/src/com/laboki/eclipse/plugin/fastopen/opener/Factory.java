@@ -43,12 +43,16 @@ public final class Factory implements Runnable {
 		public void partClosed(final IWorkbenchPart part) {}
 
 		@Override
-		public void partBroughtToTop(final IWorkbenchPart part) {}
+		public void partBroughtToTop(final IWorkbenchPart part) {
+			Factory.startRecentFilesMonitor(part);
+		}
 
 		@Override
 		public void partDeactivated(final IWorkbenchPart part) {}
 
 		@Override
-		public void partOpened(final IWorkbenchPart part) {}
+		public void partOpened(final IWorkbenchPart part) {
+			Factory.startRecentFilesMonitor(part);
+		}
 	}
 }
