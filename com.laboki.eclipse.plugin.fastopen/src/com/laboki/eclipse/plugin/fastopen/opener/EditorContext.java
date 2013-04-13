@@ -150,15 +150,27 @@ public final class EditorContext {
 	}
 
 	private static IFile getFile() {
-		return ((FileEditorInput) EditorContext.getEditor().getEditorInput()).getFile();
+		try {
+			return ((FileEditorInput) EditorContext.getEditor().getEditorInput()).getFile();
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 	public static IFile getFile(final IEditorPart editorPart) {
-		return ((FileEditorInput) editorPart.getEditorInput()).getFile();
+		try {
+			return ((FileEditorInput) editorPart.getEditorInput()).getFile();
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 	public static String getPath() {
-		return EditorContext.getFile().getLocationURI().getPath();
+		try {
+			return EditorContext.getFile().getLocationURI().getPath();
+		} catch (final Exception e) {
+			return "";
+		}
 	}
 
 	private static final class FlushEventsRunnable implements Runnable {

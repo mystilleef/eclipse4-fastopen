@@ -34,8 +34,10 @@ public final class AccessedFiles {
 
 			@Override
 			public void execute() {
+				final String path = EditorContext.getPath();
+				if (path.length() == 0) return;
 				this.moveCurrentFileToTopOfList();
-				this.update(this.getAccessedFilesInsertionIndex(), EditorContext.getPath());
+				this.update(this.getAccessedFilesInsertionIndex(), path);
 				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
 				AccessedFiles.this.postEvent();
 			}
