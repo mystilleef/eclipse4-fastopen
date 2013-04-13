@@ -52,9 +52,9 @@ public final class Dialog {
 	private static final int HEIGHT = 480;
 	private static final int WIDTH = Dialog.HEIGHT * 2;
 	private static final int SPACING_SIZE_IN_PIXELS = 10;
-	private static final Shell SHELL = new Shell(EditorContext.getEditor().getSite().getShell(), SWT.RESIZE | SWT.APPLICATION_MODAL);
+	private static final Shell SHELL = new Shell(EditorContext.getShell(), SWT.RESIZE | SWT.APPLICATION_MODAL);
 	private static final Text TEXT = new Text(Dialog.SHELL, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH | SWT.NO_FOCUS);
-	private static final TableViewer VIEWER = new TableViewer(Dialog.SHELL, SWT.VIRTUAL);
+	private static final TableViewer VIEWER = new TableViewer(Dialog.SHELL, SWT.VIRTUAL | SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 
 	public Dialog() {
 		Dialog.arrangeWidgets();
@@ -65,7 +65,7 @@ public final class Dialog {
 	}
 
 	private static void openFiles() {
-		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices().clone())
+		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices())
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
@@ -92,7 +92,7 @@ public final class Dialog {
 	}
 
 	private static void closeFiles() {
-		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices().clone())
+		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices())
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
