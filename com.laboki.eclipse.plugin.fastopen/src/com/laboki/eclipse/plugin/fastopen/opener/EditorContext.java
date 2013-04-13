@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -48,6 +49,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
+import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFiles;
 
 public final class EditorContext {
 
@@ -335,5 +337,26 @@ public final class EditorContext {
 
 	public static Image getImage(final String filename, final IContentType contentType) {
 		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(filename, contentType).createImage();
+	}
+
+	public static String[] getOpenEditorFilePaths() {
+		final List<String> filepaths = Lists.newArrayList();
+		for (final IEditorReference file : getActiveEditorReferences())
+			EditorContext.populateOpenEditorFilePaths(filepaths, file);
+		return filepaths.toArray(new String[filepaths.size()]);
+	}
+
+	public static String getFilePathFromEditorReference(final IEditorReference file) {
+		try {
+			return getURIPath(((IFileEditorInput) file.getEditorInput().getAdapter(IFileEditorInput.class)).getFile());
+		} catch (final Exception e) {
+			return "";
+		}
+	}
+
+	public static void populateOpenEditorFilePaths(final List<String> filepaths, final IEditorReference file) {
+		val path = EditorContext.getFilePathFromEditorReference(file);
+		if (path.length() == 0) return;
+		filepaths.add(path);
 	}
 }

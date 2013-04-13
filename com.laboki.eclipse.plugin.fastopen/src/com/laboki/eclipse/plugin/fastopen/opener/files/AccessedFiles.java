@@ -23,7 +23,7 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 public final class AccessedFiles {
 
 	private static final int ACCESSED_FILES_REINDEX_WATERMARK = 3;
-	private final List<String> accessedFiles = Lists.newArrayList(EditorContext.getActiveFilePathStrings());
+	private final List<String> accessedFiles = Lists.newArrayList(EditorContext.getOpenEditorFilePaths());
 
 	@Subscribe
 	@AllowConcurrentEvents
@@ -66,6 +66,7 @@ public final class AccessedFiles {
 			@Override
 			public void execute() {
 				AccessedFiles.this.updateAccessedFiles(event.getFiles());
+				AccessedFiles.this.updateAccessedFiles(Lists.newArrayList(EditorContext.getOpenEditorFilePaths()));
 			}
 		});
 	}
