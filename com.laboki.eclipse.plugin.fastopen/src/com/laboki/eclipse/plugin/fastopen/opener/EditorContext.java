@@ -32,8 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
@@ -91,7 +90,15 @@ public final class EditorContext {
 	}
 
 	public static void openEditor(final IFile file) throws Exception {
-		EditorContext.getActivePage().openEditor(new FileEditorInput(file), EditorContext.getEditorDescriptor(file).getId());
+		EditorContext.getActivePage().openEditor(new FileEditorInput(file), EditorContext.getEditorID(file));
+	}
+
+	public static void closeEditor(final IFile file) {
+		EditorContext.getActivePage().closeEditors(EditorContext.getActivePage().findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT), true);
+	}
+
+	public static String getEditorID(final IFile file) {
+		return EditorContext.getEditorDescriptor(file).getId();
 	}
 
 	public static void openLink(final IFile file) throws Exception {
@@ -314,11 +321,7 @@ public final class EditorContext {
 		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(Path.fromOSString(new File(filePathString).getAbsolutePath()));
 	}
 
-	public static ImageDescriptor getImageDescriptor(final String filename, final IContentType contentType) {
-		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(filename, contentType);
-	}
-
-	public static ImageData getContentTypeImageData(final String filename, final IContentType contentType) {
-		return EditorContext.getImageDescriptor(filename, contentType).getImageData();
+	public static Image getImage(final String filename, final IContentType contentType) {
+		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(filename, contentType).createImage();
 	}
 }
