@@ -65,7 +65,7 @@ public final class Dialog {
 	}
 
 	private static void openFiles() {
-		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices())
+		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices().clone())
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
@@ -89,6 +89,17 @@ public final class Dialog {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void closeFiles() {
+		for (final int index : Dialog.VIEWER.getTable().getSelectionIndices().clone())
+			EditorContext.asyncExec(new Task("") {
+
+				@Override
+				public void execute() {
+					EditorContext.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
+				}
+			});
 	}
 
 	private static void backspace() {
@@ -275,9 +286,9 @@ public final class Dialog {
 	private final class LabelProvider extends StyledCellLabelProvider {
 
 		StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
-		StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_DARK_GRAY));
-		StyledString.Styler folderStyler = this.styler(null, null);
-		StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_DARK_GRAY));
+		StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		StyledString.Styler folderStyler = this.styler(null, this.color(SWT.COLOR_DARK_GRAY));
+		StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
 		StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
 		StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
 
@@ -292,7 +303,7 @@ public final class Dialog {
 			text.append(file.getFolder() + "\n", this.folderStyler);
 			text.append("modified  ", this.modifiedStyler);
 			text.append(file.getModificationTime() + "  ", this.timeStyler);
-			text.append(file.getContentTypeString().toLowerCase(), this.typeStyler);
+			text.append(file.getContentTypeString(), this.typeStyler);
 			cell.setText(text.toString());
 			cell.setImage(file.getContentTypeImage());
 			cell.setStyleRanges(text.getStyleRanges());
@@ -454,6 +465,16 @@ public final class Dialog {
 					public void execute() {
 						Dialog.SHELL.close();
 						Dialog.openFiles();
+					}
+				});
+			} else if ((event.keyCode == SWT.DEL)) {
+				event.doit = false;
+				EditorContext.asyncExec(new Task("") {
+
+					@Override
+					public void execute() {
+						Dialog.SHELL.close();
+						Dialog.closeFiles();
 					}
 				});
 			}
