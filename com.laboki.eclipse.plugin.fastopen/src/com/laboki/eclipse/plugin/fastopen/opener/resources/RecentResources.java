@@ -76,7 +76,7 @@ public final class RecentResources {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void updateResourceFiles(final RecentFilesEvent event) {
-		EditorContext.asyncExec(new DelayedTask("", 100) {
+		EditorContext.asyncExec(new DelayedTask("", 10) {
 
 			private final List<RFile> rFiles = Lists.newArrayList();
 
