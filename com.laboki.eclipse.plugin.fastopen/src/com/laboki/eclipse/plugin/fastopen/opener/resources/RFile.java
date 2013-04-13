@@ -1,5 +1,6 @@
 package com.laboki.eclipse.plugin.fastopen.opener.resources;
 
+import java.io.File;
 import java.util.Date;
 
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.swt.graphics.Image;
 import org.ocpsoft.prettytime.PrettyTime;
 
+import com.google.common.base.CharMatcher;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class RFile {
@@ -25,10 +27,10 @@ public final class RFile {
 	public RFile(final IFile file) {
 		this.file = file;
 		this.name = this.file.getName();
-		this.folder = this.file.getParent().getFullPath().toPortableString();
+		this.folder = CharMatcher.anyOf(File.separator).trimFrom(this.file.getParent().getFullPath().toPortableString());
 		this.contentType = this.getPrivateContentType();
-		this.contentTypeString = this.getPrivateContentTypeString();
-		this.contentTypeImage = new Image(EditorContext.DISPLAY, EditorContext.getContentTypeImageData(file.getFullPath().toOSString(), this.contentType).scaledTo(24, 24));
+		this.contentTypeString = this.getPrivateContentTypeString().toLowerCase();
+		this.contentTypeImage = EditorContext.getImage(file.getFullPath().toOSString(), this.contentType);
 		this.filePath = this.file.getLocation().toOSString();
 	}
 
