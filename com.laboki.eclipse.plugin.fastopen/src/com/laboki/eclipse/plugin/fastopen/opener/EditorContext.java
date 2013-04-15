@@ -214,10 +214,10 @@ public final class EditorContext {
 	}
 
 	private static boolean isTextFile(final IFile file) {
-		return EditorContext.isMediaContentTypeText(file) || EditorContext.isContentTypeText(file) || EditorContext.hasValidCharSet(file) || file.isLinked();
+		return EditorContext.isMediaTypeText(file) || EditorContext.isContentTypeText(file) || EditorContext.hasValidCharSet(file) || file.isLinked();
 	}
 
-	private static boolean isMediaContentTypeText(final IFile file) {
+	private static boolean isMediaTypeText(final IFile file) {
 		try {
 			return EditorContext.getMediaContentType(file).is(MediaType.ANY_TEXT_TYPE);
 		} catch (final Exception e) {
