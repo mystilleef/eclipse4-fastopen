@@ -6,6 +6,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -305,17 +306,41 @@ public final class EditorContext {
 	}
 
 	public static Object deserialize(final String filePath) {
+		return EditorContext.readObjectInput(EditorContext.tryToGetNewObjectInputStream(filePath));
+	}
+
+	private static Object readObjectInput(final ObjectInput input) {
 		try {
-			final InputStream file = new FileInputStream(filePath);
-			final InputStream buffer = new BufferedInputStream(file);
-			final ObjectInput input = new ObjectInputStream(buffer);
-			try {
-				return input.readObject();
-			} finally {
-				input.close();
-			}
-		} catch (final Exception ex) {}
+			return input.readObject();
+		} catch (final Exception e) {} finally {
+			EditorContext.closeObjectInput(input);
+		}
 		return null;
+	}
+
+	private static void closeObjectInput(final ObjectInput input) {
+		try {
+			input.close();
+		} catch (final Exception e) {}
+	}
+
+	private static ObjectInput tryToGetNewObjectInputStream(final String filePath) {
+		try {
+			return EditorContext.newObjectInputStream(filePath);
+		} catch (final Exception e) {}
+		return null;
+	}
+
+	private static ObjectInput newObjectInputStream(final String filePath) throws FileNotFoundException, IOException {
+		return new ObjectInputStream(EditorContext.newBufferInputStream(filePath));
+	}
+
+	private static InputStream newBufferInputStream(final String filePath) throws FileNotFoundException {
+		return new BufferedInputStream(EditorContext.newFileInputStream(filePath));
+	}
+
+	private static InputStream newFileInputStream(final String filePath) throws FileNotFoundException {
+		return new FileInputStream(filePath);
 	}
 
 	public static String getSerializableFilePath(final String fileName) {
