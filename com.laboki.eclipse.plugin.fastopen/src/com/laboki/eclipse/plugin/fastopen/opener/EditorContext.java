@@ -219,13 +219,13 @@ public final class EditorContext {
 
 	private static boolean isMediaTypeText(final IFile file) {
 		try {
-			return EditorContext.getMediaContentType(file).is(MediaType.ANY_TEXT_TYPE);
+			return EditorContext.getMediaType(file).is(MediaType.ANY_TEXT_TYPE);
 		} catch (final Exception e) {
 			return false;
 		}
 	}
 
-	private static MediaType getMediaContentType(final IFile file) throws IOException {
+	private static MediaType getMediaType(final IFile file) throws IOException {
 		return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file))));
 	}
 
@@ -253,7 +253,7 @@ public final class EditorContext {
 
 	private static IContentType getContentTypeFromMediaType(final IFile file) {
 		try {
-			return Platform.getContentTypeManager().getContentType(EditorContext.getMediaContentType(file).toString().trim());
+			return Platform.getContentTypeManager().getContentType(EditorContext.getMediaType(file).toString().trim());
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
