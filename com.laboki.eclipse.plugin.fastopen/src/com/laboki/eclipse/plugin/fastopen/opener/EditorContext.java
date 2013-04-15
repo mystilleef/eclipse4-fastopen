@@ -15,7 +15,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -294,15 +293,35 @@ public final class EditorContext {
 
 	public static void serialize(final String filePath, final Object serializable) {
 		try {
-			final OutputStream file = new FileOutputStream(filePath);
-			final OutputStream buffer = new BufferedOutputStream(file);
-			final ObjectOutput output = new ObjectOutputStream(buffer);
-			try {
-				output.writeObject(serializable);
-			} finally {
-				output.close();
-			}
-		} catch (final Exception ex) {}
+			EditorContext.writeSerializableToFile(serializable, EditorContext.getObjectOutput(filePath));
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void writeSerializableToFile(final Object serializable, final ObjectOutput output) {
+		EditorContext.writeOutput(serializable, output);
+		EditorContext.closeOutput(output);
+	}
+
+	private static void writeOutput(final Object serializable, final ObjectOutput output) {
+		try {
+			output.writeObject(serializable);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void closeOutput(final ObjectOutput output) {
+		try {
+			output.close();
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static ObjectOutput getObjectOutput(final String filePath) throws Exception {
+		return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filePath)));
 	}
 
 	public static Object deserialize(final String filePath) {
