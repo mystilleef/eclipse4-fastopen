@@ -49,7 +49,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
-import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFiles;
 
 public final class EditorContext {
 
@@ -210,7 +209,7 @@ public final class EditorContext {
 	}
 
 	public static boolean isWierd(final IResource resource) {
-		return resource.isDerived() || resource.isPhantom() || resource.isTeamPrivateMember() || resource.isVirtual();
+		return resource.isVirtual() || resource.isPhantom() || resource.isTeamPrivateMember();
 	}
 
 	private static boolean isTextFile(final IFile file) {
@@ -341,14 +340,14 @@ public final class EditorContext {
 
 	public static String[] getOpenEditorFilePaths() {
 		final List<String> filepaths = Lists.newArrayList();
-		for (final IEditorReference file : getActiveEditorReferences())
+		for (final IEditorReference file : EditorContext.getActiveEditorReferences())
 			EditorContext.populateOpenEditorFilePaths(filepaths, file);
 		return filepaths.toArray(new String[filepaths.size()]);
 	}
 
 	public static String getFilePathFromEditorReference(final IEditorReference file) {
 		try {
-			return getURIPath(((IFileEditorInput) file.getEditorInput().getAdapter(IFileEditorInput.class)).getFile());
+			return EditorContext.getURIPath(((IFileEditorInput) file.getEditorInput().getAdapter(IFileEditorInput.class)).getFile());
 		} catch (final Exception e) {
 			return "";
 		}
