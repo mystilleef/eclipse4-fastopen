@@ -67,6 +67,20 @@ public final class AccessedFiles {
 			public void execute() {
 				AccessedFiles.this.updateAccessedFiles(event.getFiles());
 				AccessedFiles.this.updateAccessedFiles(Lists.newArrayList(EditorContext.getOpenEditorFilePaths()));
+				this.arrangeFiles();
+			}
+
+			private void arrangeFiles() {
+				final List<String> files = AccessedFiles.this.getAccessedFiles();
+				if (files.size() < 2) return;
+				this.insertCurrentPath(files);
+				AccessedFiles.this.updateAccessedFiles(Lists.newArrayList(files));
+			}
+
+			private void insertCurrentPath(final List<String> files) {
+				final String path = EditorContext.getPath();
+				files.remove(path);
+				files.add(1, path);
 			}
 		});
 	}
