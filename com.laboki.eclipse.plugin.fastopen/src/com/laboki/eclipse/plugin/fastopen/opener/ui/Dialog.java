@@ -1,10 +1,12 @@
 package com.laboki.eclipse.plugin.fastopen.opener.ui;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import lombok.Synchronized;
 import lombok.val;
+import lombok.extern.java.Log;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ILazyContentProvider;
@@ -45,6 +47,7 @@ import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.RFile;
 
+@Log
 public final class Dialog {
 
 	private static final int PATTERN_FLAGS = Pattern.CASE_INSENSITIVE | Pattern.CANON_EQ | Pattern.UNICODE_CASE;
@@ -87,7 +90,7 @@ public final class Dialog {
 		try {
 			EditorContext.openLink(file);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			Dialog.log.log(Level.SEVERE, "Failed to open linked file", e);
 		}
 	}
 
@@ -279,7 +282,9 @@ public final class Dialog {
 		public void updateElement(final int index) {
 			try {
 				Dialog.VIEWER.replace(this.rFiles[index], index);
-			} catch (final Exception e) {}
+			} catch (final Exception e) {
+				Dialog.log.log(Level.FINE, "Failed to update index for lazy content provider.", e);
+			}
 		}
 	}
 
