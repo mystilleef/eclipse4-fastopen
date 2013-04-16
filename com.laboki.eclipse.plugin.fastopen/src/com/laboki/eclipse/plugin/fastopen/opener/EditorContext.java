@@ -20,9 +20,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import lombok.Synchronized;
 import lombok.val;
+import lombok.extern.java.Log;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -50,6 +52,7 @@ import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
 
+@Log
 public final class EditorContext {
 
 	public static final Display DISPLAY = EditorContext.getDisplay();
@@ -340,7 +343,9 @@ public final class EditorContext {
 	private static void closeObjectInput(final ObjectInput input) {
 		try {
 			input.close();
-		} catch (final Exception e) {}
+		} catch (final Exception e) {
+			EditorContext.log.log(Level.FINE, "Failed to close object input for serializable", e);
+		}
 	}
 
 	private static ObjectInput tryToGetNewObjectInputStream(final String filePath) {
