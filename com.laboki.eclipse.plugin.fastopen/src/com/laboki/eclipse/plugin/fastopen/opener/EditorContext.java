@@ -61,6 +61,18 @@ public final class EditorContext {
 	private static final FlushEventsRunnable FLUSH_EVENTS_RUNNABLE = new EditorContext.FlushEventsRunnable();
 	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
 
+	private static final class FlushEventsRunnable implements Runnable {
+
+		public FlushEventsRunnable() {}
+
+		@Override
+		public void run() {
+			while (EditorContext.DISPLAY.readAndDispatch())
+				EditorContext.DISPLAY.update();
+			EditorContext.DISPLAY.update();
+		}
+	}
+
 	private EditorContext() {}
 
 	@Synchronized
@@ -130,10 +142,6 @@ public final class EditorContext {
 		return parts.toArray(new IEditorPart[parts.size()]);
 	}
 
-	private static IEditorPart getEditorPart(final IEditorReference editorReference) {
-		return (IEditorPart) editorReference.getPart(false);
-	}
-
 	public static boolean isInvalidPart(final IWorkbenchPart part) {
 		return !EditorContext.isValidPart(part);
 	}
@@ -157,14 +165,6 @@ public final class EditorContext {
 		return strings.toArray(new String[strings.size()]);
 	}
 
-	private static IFile getFile() {
-		try {
-			return ((FileEditorInput) EditorContext.getEditor().getEditorInput()).getFile();
-		} catch (final Exception e) {
-			return null;
-		}
-	}
-
 	public static IFile getFile(final IEditorPart editorPart) {
 		try {
 			return ((FileEditorInput) editorPart.getEditorInput()).getFile();
@@ -178,18 +178,6 @@ public final class EditorContext {
 			return EditorContext.getFile().getLocationURI().getPath();
 		} catch (final Exception e) {
 			return "";
-		}
-	}
-
-	private static final class FlushEventsRunnable implements Runnable {
-
-		public FlushEventsRunnable() {}
-
-		@Override
-		public void run() {
-			while (EditorContext.DISPLAY.readAndDispatch())
-				EditorContext.DISPLAY.update();
-			EditorContext.DISPLAY.update();
 		}
 	}
 
@@ -219,22 +207,6 @@ public final class EditorContext {
 		return resource.isVirtual() || resource.isPhantom() || resource.isTeamPrivateMember();
 	}
 
-	private static boolean isTextFile(final IFile file) {
-		return EditorContext.isMediaTypeText(file) || EditorContext.isContentTypeText(file) || EditorContext.hasValidCharSet(file) || file.isLinked();
-	}
-
-	private static boolean isMediaTypeText(final IFile file) {
-		try {
-			return EditorContext.getMediaType(file).is(MediaType.ANY_TEXT_TYPE);
-		} catch (final Exception e) {
-			return false;
-		}
-	}
-
-	private static MediaType getMediaType(final IFile file) throws IOException {
-		return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file))));
-	}
-
 	public static boolean isContentTypeText(final IFile file) {
 		try {
 			return EditorContext.getContentType(file).isKindOf(EditorContext.CONTENT_TYPE_TEXT);
@@ -249,28 +221,6 @@ public final class EditorContext {
 		} catch (final Exception e) {
 			return EditorContext.getContentTypeFromMediaType(file);
 		}
-	}
-
-	private static IContentType tryToGetContentType(final IFile file) throws CoreException {
-		final IContentType contentType = file.getContentDescription().getContentType();
-		if (contentType == null) return EditorContext.getContentTypeFromMediaType(file);
-		return contentType;
-	}
-
-	private static IContentType getContentTypeFromMediaType(final IFile file) {
-		try {
-			return Platform.getContentTypeManager().getContentType(EditorContext.getMediaType(file).toString().trim());
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private static boolean hasValidCharSet(final IFile file) {
-		try {
-			if (file.getCharset(false) != null) return true;
-		} catch (final CoreException e) {}
-		return false;
 	}
 
 	public static String getURIPath(final IResource resource) {
@@ -306,69 +256,8 @@ public final class EditorContext {
 		}
 	}
 
-	private static void writeSerializableToFile(final Object serializable, final ObjectOutput output) {
-		EditorContext.writeOutput(serializable, output);
-		EditorContext.closeOutput(output);
-	}
-
-	private static void writeOutput(final Object serializable, final ObjectOutput output) {
-		try {
-			output.writeObject(serializable);
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void closeOutput(final ObjectOutput output) {
-		try {
-			output.close();
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static ObjectOutput getObjectOutput(final String filePath) throws Exception {
-		return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filePath)));
-	}
-
 	public static Object deserialize(final String filePath) {
 		return EditorContext.readObjectInput(EditorContext.tryToGetNewObjectInputStream(filePath));
-	}
-
-	private static Object readObjectInput(final ObjectInput input) {
-		try {
-			return input.readObject();
-		} catch (final Exception e) {} finally {
-			EditorContext.closeObjectInput(input);
-		}
-		return null;
-	}
-
-	private static void closeObjectInput(final ObjectInput input) {
-		try {
-			input.close();
-		} catch (final Exception e) {
-			EditorContext.log.log(Level.FINE, "Failed to close object input for serializable", e);
-		}
-	}
-
-	private static ObjectInput tryToGetNewObjectInputStream(final String filePath) {
-		try {
-			return EditorContext.newObjectInputStream(filePath);
-		} catch (final Exception e) {}
-		return null;
-	}
-
-	private static ObjectInput newObjectInputStream(final String filePath) throws FileNotFoundException, IOException {
-		return new ObjectInputStream(EditorContext.newBufferInputStream(filePath));
-	}
-
-	private static InputStream newBufferInputStream(final String filePath) throws FileNotFoundException {
-		return new BufferedInputStream(EditorContext.newFileInputStream(filePath));
-	}
-
-	private static InputStream newFileInputStream(final String filePath) throws FileNotFoundException {
-		return new FileInputStream(filePath);
 	}
 
 	public static String getSerializableFilePath(final String fileName) {
@@ -410,5 +299,116 @@ public final class EditorContext {
 		val path = EditorContext.getFilePathFromEditorReference(file);
 		if (path.length() == 0) return;
 		filepaths.add(path);
+	}
+
+	private static IEditorPart getEditorPart(final IEditorReference editorReference) {
+		return (IEditorPart) editorReference.getPart(false);
+	}
+
+	private static IFile getFile() {
+		try {
+			return ((FileEditorInput) EditorContext.getEditor().getEditorInput()).getFile();
+		} catch (final Exception e) {
+			return null;
+		}
+	}
+
+	private static boolean isTextFile(final IFile file) {
+		return EditorContext.isMediaTypeText(file) || EditorContext.isContentTypeText(file) || EditorContext.hasValidCharSet(file) || file.isLinked();
+	}
+
+	private static boolean isMediaTypeText(final IFile file) {
+		try {
+			return EditorContext.getMediaType(file).is(MediaType.ANY_TEXT_TYPE);
+		} catch (final Exception e) {
+			return false;
+		}
+	}
+
+	private static MediaType getMediaType(final IFile file) throws IOException {
+		return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file))));
+	}
+
+	private static IContentType tryToGetContentType(final IFile file) throws CoreException {
+		final IContentType contentType = file.getContentDescription().getContentType();
+		if (contentType == null) return EditorContext.getContentTypeFromMediaType(file);
+		return contentType;
+	}
+
+	private static IContentType getContentTypeFromMediaType(final IFile file) {
+		try {
+			return Platform.getContentTypeManager().getContentType(EditorContext.getMediaType(file).toString().trim());
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private static boolean hasValidCharSet(final IFile file) {
+		try {
+			if (file.getCharset(false) != null) return true;
+		} catch (final CoreException e) {}
+		return false;
+	}
+
+	private static void writeSerializableToFile(final Object serializable, final ObjectOutput output) {
+		EditorContext.writeOutput(serializable, output);
+		EditorContext.closeOutput(output);
+	}
+
+	private static void writeOutput(final Object serializable, final ObjectOutput output) {
+		try {
+			output.writeObject(serializable);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void closeOutput(final ObjectOutput output) {
+		try {
+			output.close();
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static ObjectOutput getObjectOutput(final String filePath) throws Exception {
+		return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filePath)));
+	}
+
+	private static Object readObjectInput(final ObjectInput input) {
+		try {
+			return input.readObject();
+		} catch (final Exception e) {} finally {
+			EditorContext.closeObjectInput(input);
+		}
+		return null;
+	}
+
+	private static void closeObjectInput(final ObjectInput input) {
+		try {
+			input.close();
+		} catch (final Exception e) {
+			EditorContext.log.log(Level.FINE, "Failed to close object input for serializable", e);
+		}
+	}
+
+	private static ObjectInput tryToGetNewObjectInputStream(final String filePath) {
+		try {
+			return EditorContext.newObjectInputStream(filePath);
+		} catch (final Exception e) {}
+		return null;
+	}
+
+	private static ObjectInput newObjectInputStream(final String filePath) throws FileNotFoundException, IOException {
+		return new ObjectInputStream(EditorContext.newBufferInputStream(filePath));
+	}
+
+	private static InputStream newBufferInputStream(final String filePath) throws FileNotFoundException {
+		return new BufferedInputStream(EditorContext.newFileInputStream(filePath));
+	}
+
+	private static InputStream newFileInputStream(final String filePath) throws FileNotFoundException {
+		return new FileInputStream(filePath);
 	}
 }
