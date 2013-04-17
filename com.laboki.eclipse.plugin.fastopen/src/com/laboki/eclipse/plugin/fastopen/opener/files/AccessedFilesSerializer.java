@@ -26,13 +26,6 @@ public final class AccessedFilesSerializer {
 		EventBus.post(new DeserializedAccessedFilesEvent(ImmutableList.copyOf(AccessedFilesSerializer.deserialize())));
 	}
 
-	@SuppressWarnings("unchecked")
-	private static List<String> deserialize() {
-		final Object files = EditorContext.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
-		if (files == null) return Lists.newArrayList();
-		return (List<String>) files;
-	}
-
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void accessedFilesChanged(final AccessedFilesEvent event) {
@@ -48,5 +41,12 @@ public final class AccessedFilesSerializer {
 	private static void serialize(final Collection<String> files) {
 		if (files.size() == 0) return;
 		EditorContext.serialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH, files);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<String> deserialize() {
+		final Object files = EditorContext.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
+		if (files == null) return Lists.newArrayList();
+		return (List<String>) files;
 	}
 }

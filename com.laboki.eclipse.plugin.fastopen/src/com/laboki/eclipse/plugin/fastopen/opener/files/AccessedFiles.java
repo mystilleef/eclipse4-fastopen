@@ -22,41 +22,8 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class AccessedFiles {
 
-	private static final int ACCESSED_FILES_REINDEX_WATERMARK = 3;
 	private final List<String> accessedFiles = Lists.newArrayList(EditorContext.getOpenEditorFilePaths());
-
-	@Subscribe
-	@AllowConcurrentEvents
-	public void partActivationChanged(@SuppressWarnings("unused") final PartActivationEvent event) {
-		EditorContext.asyncExec(new Task("") {
-
-			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
-
-			@Override
-			public void execute() {
-				final String path = EditorContext.getPath();
-				if (path.length() == 0) return;
-				this.moveCurrentFileToTopOfList();
-				this.update(this.getAccessedFilesInsertionIndex(), path);
-				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
-				AccessedFiles.this.postEvent();
-			}
-
-			protected void moveCurrentFileToTopOfList() {
-				if (this.aFiles.size() < AccessedFiles.ACCESSED_FILES_REINDEX_WATERMARK) return;
-				this.update(0, this.aFiles.get(1));
-			}
-
-			protected void update(final int index, final String path) {
-				this.aFiles.remove(path);
-				this.aFiles.add(index, path);
-			}
-
-			protected int getAccessedFilesInsertionIndex() {
-				return this.aFiles.size() == 0 ? 0 : 1;
-			}
-		});
-	}
+	private static final int ACCESSED_FILES_REINDEX_WATERMARK = 3;
 
 	@Subscribe
 	@AllowConcurrentEvents
@@ -66,7 +33,6 @@ public final class AccessedFiles {
 			@Override
 			public void execute() {
 				AccessedFiles.this.updateAccessedFiles(event.getFiles());
-				// AccessedFiles.this.updateAccessedFiles(Lists.newArrayList(EditorContext.getOpenEditorFilePaths()));
 				this.arrangeFiles();
 			}
 
@@ -104,6 +70,39 @@ public final class AccessedFiles {
 						return files.contains(file);
 					}
 				});
+			}
+		});
+	}
+
+	@Subscribe
+	@AllowConcurrentEvents
+	public void partActivationChanged(@SuppressWarnings("unused") final PartActivationEvent event) {
+		EditorContext.asyncExec(new Task("") {
+
+			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
+
+			@Override
+			public void execute() {
+				final String path = EditorContext.getPath();
+				if (path.length() == 0) return;
+				this.moveCurrentFileToTopOfList();
+				this.update(this.getAccessedFilesInsertionIndex(), path);
+				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
+				AccessedFiles.this.postEvent();
+			}
+
+			protected int getAccessedFilesInsertionIndex() {
+				return this.aFiles.size() == 0 ? 0 : 1;
+			}
+
+			protected void moveCurrentFileToTopOfList() {
+				if (this.aFiles.size() < AccessedFiles.ACCESSED_FILES_REINDEX_WATERMARK) return;
+				this.update(0, this.aFiles.get(1));
+			}
+
+			protected void update(final int index, final String path) {
+				this.aFiles.remove(path);
+				this.aFiles.add(index, path);
 			}
 		});
 	}

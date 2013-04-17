@@ -18,12 +18,23 @@ public abstract class Task extends Job implements Runnable {
 	}
 
 	@Override
+	public boolean belongsTo(final Object family) {
+		return this.name.equals(family);
+	}
+
+	@Override
 	public void run() {
 		this.schedule();
 	}
 
 	@Override
-	protected IStatus run(final IProgressMonitor arg0) {
+	protected IStatus run(final IProgressMonitor monitor) {
+		if (monitor.isCanceled()) return Status.CANCEL_STATUS;
+		this.asyncExec();
+		return Status.OK_STATUS;
+	}
+
+	private void asyncExec() {
 		EditorContext.asyncExec(new Runnable() {
 
 			@Override
@@ -31,12 +42,6 @@ public abstract class Task extends Job implements Runnable {
 				Task.this.execute();
 			}
 		});
-		return Status.OK_STATUS;
-	}
-
-	@Override
-	public boolean belongsTo(final Object family) {
-		return this.name.equals(family);
 	}
 
 	protected void execute() {}

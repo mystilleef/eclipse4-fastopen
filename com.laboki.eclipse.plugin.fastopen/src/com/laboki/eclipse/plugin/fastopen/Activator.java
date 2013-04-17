@@ -25,11 +25,11 @@ public final class Activator extends AbstractUIPlugin {
 		Activator.instance = null;
 	}
 
-	public static Activator getInstance() {
-		return Activator.instance;
-	}
-
 	public static ImageDescriptor getImageDescriptor(final String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(EditorContext.PLUGIN_NAME, path);
+	}
+
+	public static Activator getInstance() {
+		return Activator.instance;
 	}
 }
