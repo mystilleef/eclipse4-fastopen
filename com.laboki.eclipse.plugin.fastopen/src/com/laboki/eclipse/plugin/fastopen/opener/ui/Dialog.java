@@ -34,6 +34,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -117,7 +119,7 @@ public final class Dialog {
 	protected void updateViewer(final List<RFile> rFiles) {
 		Dialog.VIEWER.getControl().setRedraw(false);
 		EditorContext.flushEvents();
-		TABLE.clearAll();
+		Dialog.TABLE.clearAll();
 		Dialog.VIEWER.setInput(rFiles.toArray(new RFile[rFiles.size()]));
 		Dialog.VIEWER.setItemCount(rFiles.size());
 		Dialog.refresh();
@@ -128,23 +130,48 @@ public final class Dialog {
 
 	private void addListeners() {
 		Dialog.SHELL.addShellListener(new DialogShellListener());
-		TABLE.addFocusListener(new ViewerFocusListener());
+		Dialog.TABLE.addFocusListener(new ViewerFocusListener());
 		Dialog.TEXT.addFocusListener(new TextFocusListener());
 		Dialog.SHELL.addFocusListener(new TextFocusListener());
-		TABLE.addKeyListener(new ShellKeyListener());
+		Dialog.TABLE.addKeyListener(new ViewerKeyListener());
 		Dialog.TEXT.addModifyListener(new TextModifyListener());
 		Dialog.VIEWER.addDoubleClickListener(new ViewerDoubleClickListener());
+		Dialog.listenForTextSelection();
+	}
+
+	private static void listenForTextSelection() {
+		Dialog.SHELL.getDisplay().addFilter(SWT.KeyDown, new Listener() {
+
+			@Override
+			public void handleEvent(final Event event) {
+				if (this.isCtrlL(event)) EditorContext.asyncExec(new Task("") {
+
+					@Override
+					public void execute() {
+						selectText();
+					}
+				});
+			}
+
+			private boolean isCtrlL(final Event event) {
+				return (Character.toUpperCase((char) event.keyCode) == 'L') && ((event.stateMask & SWT.CTRL) == SWT.CTRL);
+			}
+
+			private void selectText() {
+				Dialog.TEXT.selectAll();
+			}
+		});
 	}
 
 	private void setupViewer() {
 		Dialog.VIEWER.setLabelProvider(this.new LabelProvider());
 		Dialog.VIEWER.setContentProvider(this.new ContentProvider());
 		Dialog.VIEWER.setUseHashlookup(true);
-		TABLE.setLinesVisible(true);
+		Dialog.TABLE.setLinesVisible(true);
 	}
 
 	private static void _focusViewer() {
-		TABLE.forceFocus();
+		Dialog.TABLE.forceFocus();
 	}
 
 	private static void arrangeWidgets() {
@@ -157,14 +184,14 @@ public final class Dialog {
 	private static void backspace() {
 		final int end = Dialog.TEXT.getCaretPosition();
 		if (end < 1) return;
-		final int start = end - 1;
+		final int start = end - (Dialog.TEXT.getSelectionText().length() > 0 ? Dialog.TEXT.getSelectionText().length() : 1);
 		Dialog.TEXT.setSelection(start, end);
 		Dialog.TEXT.cut();
 		Dialog.TEXT.setSelection(start, start);
 	}
 
 	private static void closeFiles() {
-		for (final int index : TABLE.getSelectionIndices())
+		for (final int index : Dialog.TABLE.getSelectionIndices())
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
@@ -190,7 +217,7 @@ public final class Dialog {
 
 	private static void focusViewer() {
 		Dialog._focusViewer();
-		TABLE.setSelection(TABLE.getTopIndex());
+		Dialog.TABLE.setSelection(Dialog.TABLE.getTopIndex());
 	}
 
 	private static boolean isValidCharacter(final String character) {
@@ -206,7 +233,7 @@ public final class Dialog {
 	}
 
 	private static void openFiles() {
-		for (final int index : TABLE.getSelectionIndices())
+		for (final int index : Dialog.TABLE.getSelectionIndices())
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
@@ -226,7 +253,7 @@ public final class Dialog {
 
 	private static void refocusViewer() {
 		Dialog._focusViewer();
-		TABLE.setSelection(TABLE.getSelectionIndex());
+		Dialog.TABLE.setSelection(Dialog.TABLE.getSelectionIndex());
 	}
 
 	private static void refresh() {
@@ -276,7 +303,7 @@ public final class Dialog {
 	private enum FONT {
 		FONT;
 
-		private static final FontData[] FONT_DATAS = TABLE.getFont().getFontData();
+		private static final FontData[] FONT_DATAS = Dialog.TABLE.getFont().getFontData();
 		private static final String DEFAULT_FONT_NAME = FONT.FONT_DATAS[0].getName();
 		private static final int DEFAULT_FONT_HEIGHT = FONT.FONT_DATAS[0].getHeight();
 		public static final Font ITALIC_FONT = FONT.makeItalicizedFont();
@@ -408,9 +435,9 @@ public final class Dialog {
 		}
 	}
 
-	private final class ShellKeyListener implements KeyListener {
+	private final class ViewerKeyListener implements KeyListener {
 
-		public ShellKeyListener() {}
+		public ViewerKeyListener() {}
 
 		@Override
 		public void keyPressed(final KeyEvent event) {
@@ -508,13 +535,13 @@ public final class Dialog {
 	}
 
 	private final class ViewerDoubleClickListener implements IDoubleClickListener {
-	
+
 		public ViewerDoubleClickListener() {}
-	
+
 		@Override
 		public void doubleClick(final DoubleClickEvent arg0) {
 			EditorContext.asyncExec(new Task("") {
-	
+
 				@Override
 				public void execute() {
 					Dialog.SHELL.close();
