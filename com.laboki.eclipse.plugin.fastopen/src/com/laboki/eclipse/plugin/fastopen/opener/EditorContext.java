@@ -98,7 +98,11 @@ public final class EditorContext {
 	}
 
 	public static void closeEditor(final IFile file) {
-		EditorContext.getActivePage().closeEditors(EditorContext.getActivePage().findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT), true);
+		try {
+			EditorContext.getActivePage().closeEditors(EditorContext.getActivePage().findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT), true);
+		} catch (final Exception e) {
+			EditorContext.log.log(Level.FINEST, "failed to close editor for some odd reason");
+		}
 	}
 
 	public static String getEditorID(final IFile file) {
