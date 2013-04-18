@@ -184,6 +184,10 @@ public final class Dialog {
 	private static void backspace() {
 		final int end = Dialog.TEXT.getCaretPosition();
 		if (end < 1) return;
+		Dialog.delete(end);
+	}
+
+	private static void delete(final int end) {
 		final int start = end - (Dialog.TEXT.getSelectionText().length() > 0 ? Dialog.TEXT.getSelectionText().length() : 1);
 		Dialog.TEXT.setSelection(start, end);
 		Dialog.TEXT.cut();
