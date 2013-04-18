@@ -33,6 +33,7 @@ public final class AccessedFiles {
 			@Override
 			public void execute() {
 				AccessedFiles.this.updateAccessedFiles(event.getFiles());
+				AccessedFiles.this.updateAccessedFiles(AccessedFiles.this.getAccessedFiles());
 				this.arrangeFiles();
 			}
 
