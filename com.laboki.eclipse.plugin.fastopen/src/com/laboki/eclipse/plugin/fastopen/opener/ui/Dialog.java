@@ -399,12 +399,12 @@ public final class Dialog {
 	private final class LabelProvider extends StyledCellLabelProvider {
 
 		private final String separator = System.getProperty("line.separator");
-		StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
-		StyledString.Styler folderStyler = this.styler(null, this.color(SWT.COLOR_DARK_GRAY));
-		StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
-		StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
-		StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
-		StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
+		private final StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
+		private final StyledString.Styler folderStyler = this.styler(null, this.color(SWT.COLOR_DARK_GRAY));
+		private final StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
+		private final StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
 
 		public LabelProvider() {}
 
