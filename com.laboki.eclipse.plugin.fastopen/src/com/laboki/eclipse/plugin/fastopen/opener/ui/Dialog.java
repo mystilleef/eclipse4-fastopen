@@ -398,6 +398,7 @@ public final class Dialog {
 
 	private final class LabelProvider extends StyledCellLabelProvider {
 
+		private final String separator = System.getProperty("line.separator");
 		StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
 		StyledString.Styler folderStyler = this.styler(null, this.color(SWT.COLOR_DARK_GRAY));
 		StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
@@ -411,9 +412,9 @@ public final class Dialog {
 		public void update(final ViewerCell cell) {
 			val file = (RFile) cell.getElement();
 			final StyledString text = new StyledString();
-			text.append(file.getName() + "\n", this.filenameStyler);
+			text.append(file.getName() + this.separator, this.filenameStyler);
 			text.append("in  ", this.inStyler);
-			text.append(file.getFolder() + "\n", this.folderStyler);
+			text.append(file.getFolder() + this.separator, this.folderStyler);
 			text.append("modified  ", this.modifiedStyler);
 			text.append(file.getModificationTime() + "  ", this.timeStyler);
 			text.append(file.getContentTypeString(), this.typeStyler);
