@@ -410,7 +410,17 @@ public final class Dialog {
 
 		@Override
 		public void update(final ViewerCell cell) {
-			val file = (RFile) cell.getElement();
+			this.updateCellProperties(cell, (RFile) cell.getElement(), this.createStyledText((RFile) cell.getElement()));
+			super.update(cell);
+		}
+
+		private void updateCellProperties(final ViewerCell cell, final RFile file, final StyledString text) {
+			cell.setText(text.toString());
+			cell.setImage(file.getContentTypeImage());
+			cell.setStyleRanges(text.getStyleRanges());
+		}
+
+		private StyledString createStyledText(final RFile file) {
 			final StyledString text = new StyledString();
 			text.append(file.getName() + this.separator, this.filenameStyler);
 			text.append("in  ", this.inStyler);
@@ -418,10 +428,7 @@ public final class Dialog {
 			text.append("modified  ", this.modifiedStyler);
 			text.append(file.getModificationTime() + "  ", this.timeStyler);
 			text.append(file.getContentTypeString(), this.typeStyler);
-			cell.setText(text.toString());
-			cell.setImage(file.getContentTypeImage());
-			cell.setStyleRanges(text.getStyleRanges());
-			super.update(cell);
+			return text;
 		}
 
 		private Color color(final int color) {
