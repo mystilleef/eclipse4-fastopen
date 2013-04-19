@@ -70,7 +70,7 @@ public final class EditorContext {
 		try {
 			EditorContext.getActivePage().closeEditors(EditorContext.getActivePage().findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT), true);
 		} catch (final Exception e) {
-			EditorContext.log.log(Level.FINEST, "failed to close editor for some odd reason");
+			EditorContext.log.log(Level.INFO, "failed to close editor for some odd reason", e);
 		}
 	}
 
@@ -140,7 +140,11 @@ public final class EditorContext {
 	}
 
 	public static IEditorDescriptor getEditorDescriptor(final IFile file) {
-		return PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(file.getName());
+		try {
+			return IDE.getEditorDescriptor(file);
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 	public static String getEditorID(final IFile file) {
