@@ -7,7 +7,6 @@ import com.google.inject.name.Names;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.laboki.eclipse.plugin.fastopen.opener.Factory;
 import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFiles;
 import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFilesSerializer;
 import com.laboki.eclipse.plugin.fastopen.opener.files.RecentFiles;
@@ -31,7 +30,6 @@ final class InitModule extends AbstractModule {
 		this.bind(RecentFiles.class).asEagerSingleton();
 		this.bind(FileResources.class).asEagerSingleton();
 		this.bind(WorkspaceResources.class).asEagerSingleton();
-		this.bind(Factory.class).asEagerSingleton();
 	}
 
 	private void registerEventBusListeners() {

@@ -27,7 +27,7 @@ public final class RFile {
 	public RFile(final IFile file) {
 		this.file = file;
 		this.name = this.file.getName();
-		this.folder = CharMatcher.anyOf(File.separator).trimFrom(this.file.getParent().getFullPath().toPortableString());
+		this.folder = CharMatcher.anyOf(File.separator).trimFrom(this.file.getParent().getFullPath().toOSString());
 		this.contentType = this.getPrivateContentType();
 		this.contentTypeString = this.getPrivateContentTypeString().toLowerCase();
 		this.contentTypeImage = EditorContext.getImage(file.getFullPath().toOSString(), this.contentType);

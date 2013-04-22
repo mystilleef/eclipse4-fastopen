@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+	<extension 
+		point="org.eclipse.ui.startup">
+			<startup 
+				class="com.laboki.eclipse.plugin.fastopen.Startup"/>
+	</extension>
 	<extension
 		point="org.eclipse.ui.commands">
 			<category
@@ -11,7 +16,7 @@
 			<command
 				categoryId="com.laboki.eclipse.plugin.fastopen.commands.category"
 				id="com.laboki.eclipse.plugin.fastopen.command.fastopen"
-				defaultHandler="com.laboki.eclipse.plugin.fastopen.Startup"
+				defaultHandler="com.laboki.eclipse.plugin.fastopen.Handler"
 				description="Shows a dialog to open, or navigate to, files quickly."
 				name="Fast Open">
 			</command>

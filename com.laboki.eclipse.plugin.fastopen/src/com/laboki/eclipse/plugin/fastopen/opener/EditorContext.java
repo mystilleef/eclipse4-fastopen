@@ -414,4 +414,8 @@ public final class EditorContext {
 			EditorContext.DISPLAY.update();
 		}
 	}
+
+	public static boolean isWindows() {
+		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
+	}
 }

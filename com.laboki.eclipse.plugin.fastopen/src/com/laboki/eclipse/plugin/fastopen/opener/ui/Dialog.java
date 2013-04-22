@@ -15,9 +15,11 @@ import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
@@ -62,7 +64,7 @@ public final class Dialog {
 	private static final Pattern TEXT_PATTERN = Pattern.compile("\\p{Punct}*|\\w*| *", Dialog.PATTERN_FLAGS);
 	private static final Shell SHELL = new Shell(EditorContext.getShell(), SWT.RESIZE | SWT.APPLICATION_MODAL);
 	private static final Text TEXT = new Text(Dialog.SHELL, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH | SWT.NO_FOCUS);
-	private static final TableViewer VIEWER = new TableViewer(Dialog.SHELL, SWT.VIRTUAL | SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+	private static final TableViewer VIEWER = new TableViewer(Dialog.SHELL, SWT.VIRTUAL | SWT.BORDER | SWT.MULTI);
 	private static final Table TABLE = Dialog.VIEWER.getTable();
 
 	public Dialog() {
@@ -118,12 +120,9 @@ public final class Dialog {
 	@Synchronized
 	protected void updateViewer(final List<RFile> rFiles) {
 		Dialog.VIEWER.getControl().setRedraw(false);
-		EditorContext.flushEvents();
-		Dialog.TABLE.clearAll();
 		Dialog.VIEWER.setInput(rFiles.toArray(new RFile[rFiles.size()]));
 		Dialog.VIEWER.setItemCount(rFiles.size());
 		Dialog.refresh();
-		EditorContext.flushEvents();
 		Dialog.VIEWER.getControl().setRedraw(true);
 		Dialog.focusViewer();
 	}
@@ -164,13 +163,29 @@ public final class Dialog {
 	}
 
 	private void setupViewer() {
-		Dialog.VIEWER.setLabelProvider(this.new LabelProvider());
+		this.setupTable();
 		Dialog.VIEWER.setContentProvider(this.new ContentProvider());
 		Dialog.VIEWER.setUseHashlookup(true);
+	}
+
+	private void setupTable() {
 		Dialog.TABLE.setLinesVisible(true);
+		Dialog.TABLE.setHeaderVisible(false);
+		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width, Dialog.TABLE.getClientArea().height);
+		this.createTableColumn();
+	}
+
+	private void createTableColumn() {
+		final TableViewerColumn col = new TableViewerColumn(Dialog.VIEWER, SWT.RIGHT | SWT.LEFT | SWT.CENTER);
+		col.getColumn().setWidth(Dialog.TABLE.getClientArea().width);
+		System.out.println(Dialog.TABLE.getClientArea().width);
+		col.getColumn().setResizable(true);
+		col.setLabelProvider(new LabelProvider());
+		col.getColumn().pack();
 	}
 
 	private static void _focusViewer() {
+		Dialog.TABLE.setFocus();
 		Dialog.TABLE.forceFocus();
 	}
 
@@ -179,6 +194,7 @@ public final class Dialog {
 		Dialog.setTextLayout();
 		Dialog.setViewerLayout();
 		Dialog.SHELL.pack();
+		Dialog.TABLE.pack();
 	}
 
 	private static void backspace() {
@@ -206,12 +222,7 @@ public final class Dialog {
 	}
 
 	private static GridData createFillGridData() {
-		final GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.verticalAlignment = GridData.FILL;
-		gridData.grabExcessVerticalSpace = true;
-		return gridData;
+		return new GridData(GridData.FILL, GridData.FILL, true, true, 1, 1);
 	}
 
 	private static void filterViewer() {
@@ -261,7 +272,9 @@ public final class Dialog {
 	}
 
 	private static void refresh() {
+		EditorContext.flushEvents();
 		Dialog.VIEWER.refresh(true, true);
+		EditorContext.flushEvents();
 	}
 
 	private static void setDialogLayout() {
@@ -288,7 +301,7 @@ public final class Dialog {
 	}
 
 	private static void setViewerLayout() {
-		Dialog.VIEWER.getControl().setLayoutData(Dialog.createFillGridData());
+		Dialog.VIEWER.getTable().setLayoutData(Dialog.createFillGridData());
 	}
 
 	private static void spaceDialogLayout(final GridLayout layout) {
@@ -314,21 +327,26 @@ public final class Dialog {
 		public static final Font LARGE_BOLD_FONT = FONT.makeLargeBoldFont();
 		public static final Font SMALL_BOLD_FONT = FONT.makeSmallBoldFont();
 		public static final Font SMALL_ITALIC_FONT = FONT.makeSmallItalicizedFont();
+		public static final Font NORMAL_FONT = FONT.makeNormalFont();
 
 		private static Font makeItalicizedFont() {
-			return new Font(EditorContext.getDisplay(), FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT, SWT.ITALIC);
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT, SWT.ITALIC);
 		}
 
 		private static Font makeLargeBoldFont() {
-			return new Font(EditorContext.getDisplay(), FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT + 2, SWT.BOLD);
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT + 2, SWT.BOLD);
 		}
 
 		private static Font makeSmallBoldFont() {
-			return new Font(EditorContext.getDisplay(), FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT - 2, SWT.BOLD);
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT - 2, SWT.BOLD);
 		}
 
 		private static Font makeSmallItalicizedFont() {
-			return new Font(EditorContext.getDisplay(), FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT - 2, SWT.ITALIC);
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT - 2, SWT.ITALIC);
+		}
+
+		private static Font makeNormalFont() {
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT, SWT.NORMAL);
 		}
 	}
 
@@ -398,15 +416,32 @@ public final class Dialog {
 
 	private final class LabelProvider extends StyledCellLabelProvider {
 
-		private final String separator = System.getProperty("line.separator");
+		private final String separator = this.getSeparator();
 		private final StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
-		private final StyledString.Styler folderStyler = this.styler(null, this.color(SWT.COLOR_DARK_GRAY));
+		private final StyledString.Styler folderStyler = this.styler(FONT.NORMAL_FONT, this.color(SWT.COLOR_DARK_GRAY));
 		private final StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
 		private final StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
 		private final StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
 		private final StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
 
-		public LabelProvider() {}
+		public LabelProvider() {
+			this.setOwnerDrawEnabled(true);
+		}
+
+		@Override
+		protected StyleRange prepareStyleRange(final StyleRange styleRange, final boolean applyColors) {
+			return super.prepareStyleRange(styleRange, applyColors);
+		}
+
+		@Override
+		protected void paint(final Event event, final Object element) {
+			super.paint(event, element);
+		}
+
+		@Override
+		protected void measure(final Event event, final Object element) {
+			super.measure(event, element);
+		}
 
 		@Override
 		public void update(final ViewerCell cell) {
@@ -444,6 +479,11 @@ public final class Dialog {
 					textStyle.foreground = color;
 				}
 			};
+		}
+
+		private String getSeparator() {
+			if (EditorContext.isWindows()) return "  ";
+			return System.getProperty("line.separator");
 		}
 	}
 

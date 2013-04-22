@@ -7,22 +7,27 @@ import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPart;
 
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.events.PartActivationEvent;
 
 @ToString
-public final class Factory implements Runnable {
+public enum Factory implements Instance {
+	INSTANCE;
 
 	private static final IPartService PART_SERVICE = EditorContext.getPartService();
 	private final PartListener partListener = new PartListener();
 
-	public Factory() {
+	@Override
+	public Instance begin() {
+		Factory.startRecentFilesMonitor(Factory.PART_SERVICE.getActivePart());
 		Factory.PART_SERVICE.addPartListener(this.partListener);
+		return this;
 	}
 
 	@Override
-	public void run() {
-		EditorContext.instance();
-		Factory.startRecentFilesMonitor(Factory.PART_SERVICE.getActivePart());
+	public Instance end() {
+		Factory.PART_SERVICE.removePartListener(this.partListener);
+		return this;
 	}
 
 	public static void startRecentFilesMonitor(final IWorkbenchPart part) {
