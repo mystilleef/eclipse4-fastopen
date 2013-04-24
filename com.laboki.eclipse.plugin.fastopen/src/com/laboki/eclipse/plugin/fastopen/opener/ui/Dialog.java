@@ -119,6 +119,12 @@ public final class Dialog {
 
 	@Synchronized
 	protected void updateViewer(final List<RFile> rFiles) {
+		try {
+			Dialog._updateViewer(rFiles);
+		} catch (final Exception e) {}
+	}
+
+	private static void _updateViewer(final List<RFile> rFiles) {
 		Dialog.VIEWER.getControl().setRedraw(false);
 		Dialog.VIEWER.setInput(rFiles.toArray(new RFile[rFiles.size()]));
 		Dialog.VIEWER.setItemCount(rFiles.size());
@@ -178,10 +184,9 @@ public final class Dialog {
 	private void createTableColumn() {
 		final TableViewerColumn col = new TableViewerColumn(Dialog.VIEWER, SWT.RIGHT | SWT.LEFT | SWT.CENTER);
 		col.getColumn().setWidth(Dialog.TABLE.getClientArea().width);
-		System.out.println(Dialog.TABLE.getClientArea().width);
 		col.getColumn().setResizable(true);
 		col.setLabelProvider(new LabelProvider());
-		col.getColumn().pack();
+		if (!EditorContext.isWindows()) col.getColumn().pack();
 	}
 
 	private static void _focusViewer() {
