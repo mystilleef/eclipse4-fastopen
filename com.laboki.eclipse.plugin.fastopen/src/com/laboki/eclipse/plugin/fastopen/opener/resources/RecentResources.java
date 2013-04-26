@@ -13,8 +13,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.DelayedTask;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
@@ -76,7 +76,7 @@ public final class RecentResources {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void updateResourceFiles(final RecentFilesEvent event) {
-		EditorContext.asyncExec(new DelayedTask("", 10) {
+		EditorContext.asyncExec(new Task() {
 
 			private final List<RFile> rFiles = Lists.newArrayList();
 

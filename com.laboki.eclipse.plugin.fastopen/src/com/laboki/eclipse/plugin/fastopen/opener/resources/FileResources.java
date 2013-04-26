@@ -16,8 +16,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.DelayedTask;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
@@ -37,7 +37,7 @@ public final class FileResources implements IResourceDeltaVisitor {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void worskpaceResources(final WorkspaceResourcesEvent event) {
-		EditorContext.asyncExec(new DelayedTask("", 250) {
+		EditorContext.asyncExec(new Task("", 250) {
 
 			ImmutableList<IFile> resources = event.getResources();
 
@@ -45,6 +45,10 @@ public final class FileResources implements IResourceDeltaVisitor {
 			public void execute() {
 				this.buildFileResourcesMap();
 				this.updateModifiedFiles();
+			}
+
+			@Override
+			protected void postExecute() {
 				FileResources.this.postEvents();
 			}
 

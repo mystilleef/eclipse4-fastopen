@@ -55,6 +55,7 @@ import com.laboki.eclipse.plugin.fastopen.Activator;
 public final class EditorContext {
 
 	private static EditorContext instance;
+	public static final int SHORT_DELAY_TIME = 250;
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
 	public static final String PLUGIN_NAME = "com.laboki.eclipse.plugin.fastopen";
 	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
