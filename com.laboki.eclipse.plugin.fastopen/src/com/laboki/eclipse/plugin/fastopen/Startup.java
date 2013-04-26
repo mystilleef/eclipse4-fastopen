@@ -20,6 +20,6 @@ public final class Startup implements IStartup, Runnable {
 	@Override
 	public void run() {
 		Guice.createInjector(new InitModule());
-		EditorContext.asyncExec(Opener.INSTANCE);
+		// EditorContext.asyncExec(Opener.INSTANCE);
 	}
 }

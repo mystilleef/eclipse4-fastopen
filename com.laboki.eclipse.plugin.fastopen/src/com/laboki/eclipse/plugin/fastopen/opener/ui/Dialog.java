@@ -46,6 +46,7 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
@@ -55,7 +56,7 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.RFile;
 
 @Log
-public final class Dialog {
+public final class Dialog implements Instance {
 
 	private static final int HEIGHT = 480;
 	private static final int WIDTH = Dialog.HEIGHT * 2;
@@ -606,5 +607,18 @@ public final class Dialog {
 				}
 			});
 		}
+	}
+
+	@Override
+	public Instance begin() {
+		EventBus.register(this);
+		return this;
+	}
+
+	@Override
+	public Instance end() {
+		EventBus.unregister(this);
+		Dialog.SHELL.dispose();
+		return this;
 	}
 }
