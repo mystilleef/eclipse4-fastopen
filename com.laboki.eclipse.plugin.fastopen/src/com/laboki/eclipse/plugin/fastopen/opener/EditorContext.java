@@ -55,7 +55,7 @@ import com.laboki.eclipse.plugin.fastopen.Activator;
 public final class EditorContext {
 
 	private static EditorContext instance;
-	public static final Display DISPLAY = EditorContext.getDisplay();
+	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
 	public static final String PLUGIN_NAME = "com.laboki.eclipse.plugin.fastopen";
 	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
 	private static final FlushEventsRunnable FLUSH_EVENTS_RUNNABLE = new EditorContext.FlushEventsRunnable();
@@ -63,7 +63,13 @@ public final class EditorContext {
 	private EditorContext() {}
 
 	public static void asyncExec(final Runnable runnable) {
+		if ((EditorContext.DISPLAY == null) || EditorContext.DISPLAY.isDisposed()) return;
 		EditorContext.DISPLAY.asyncExec(runnable);
+	}
+
+	public static void syncExec(final Runnable runnable) {
+		if ((EditorContext.DISPLAY == null) || EditorContext.DISPLAY.isDisposed()) return;
+		EditorContext.DISPLAY.syncExec(runnable);
 	}
 
 	public static void closeEditor(final IFile file) {
@@ -132,7 +138,7 @@ public final class EditorContext {
 	}
 
 	public static Display getDisplay() {
-		return PlatformUI.getWorkbench().getDisplay();
+		return EditorContext.DISPLAY;
 	}
 
 	public static IEditorPart getEditor() {

@@ -7,18 +7,19 @@ import org.eclipse.core.commands.ExecutionException;
 import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
-public final class Handler extends AbstractHandler implements Runnable {
+public final class Handler extends AbstractHandler {
 
 	public Handler() {}
 
 	@Override
 	public Object execute(final ExecutionEvent arg0) throws ExecutionException {
-		EditorContext.asyncExec(this);
-		return null;
-	}
+		EditorContext.asyncExec(new Task() {
 
-	@Override
-	public void run() {
-		EventBus.post(new ShowFastOpenDialogEvent());
+			@Override
+			public void execute() {
+				EventBus.post(new ShowFastOpenDialogEvent());
+			}
+		});
+		return null;
 	}
 }
