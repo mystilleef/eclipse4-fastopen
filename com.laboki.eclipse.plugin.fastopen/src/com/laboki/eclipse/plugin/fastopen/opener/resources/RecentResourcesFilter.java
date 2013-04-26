@@ -10,13 +10,14 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
-public final class RecentResourcesFilter {
+public final class RecentResourcesFilter implements Instance {
 
 	private final List<RFile> rFiles = Lists.newArrayList();
 
@@ -79,5 +80,18 @@ public final class RecentResourcesFilter {
 
 	private static boolean matches(final RFile rFile, final String string) {
 		return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
+	}
+
+	@Override
+	public Instance begin() {
+		EventBus.register(this);
+		return this;
+	}
+
+	@Override
+	public Instance end() {
+		EventBus.unregister(this);
+		this.rFiles.clear();
+		return this;
 	}
 }

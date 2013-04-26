@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.laboki.eclipse.plugin.fastopen.Instance;
+import com.laboki.eclipse.plugin.fastopen.opener.resources.RecentResourcesFilter;
 import com.laboki.eclipse.plugin.fastopen.opener.ui.Dialog;
 
 public final class Services implements Instance {
@@ -21,6 +22,7 @@ public final class Services implements Instance {
 
 	private void startServices() {
 		this.startService(new Dialog());
+		this.startService(new RecentResourcesFilter());
 		this.startService(Factory.INSTANCE);
 	}
 

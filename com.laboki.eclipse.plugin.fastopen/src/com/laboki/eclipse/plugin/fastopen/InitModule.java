@@ -11,7 +11,6 @@ import com.laboki.eclipse.plugin.fastopen.opener.files.AccessedFilesSerializer;
 import com.laboki.eclipse.plugin.fastopen.opener.files.RecentFiles;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.FileResources;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.RecentResources;
-import com.laboki.eclipse.plugin.fastopen.opener.resources.RecentResourcesFilter;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.WorkspaceResources;
 
 final class InitModule extends AbstractModule {
@@ -19,7 +18,6 @@ final class InitModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		this.registerEventBusListeners();
-		this.bind(RecentResourcesFilter.class).asEagerSingleton();
 		this.bind(RecentResources.class).asEagerSingleton();
 		this.bind(AccessedFiles.class).asEagerSingleton();
 		this.bind(AccessedFilesSerializer.class).asEagerSingleton();
