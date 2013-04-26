@@ -78,10 +78,10 @@ public final class Dialog {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void fileResourcesChanged(final FileResourcesEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
-			public void execute() {
+			public void asyncExec() {
 				Dialog.this.updateViewer(event.getRFiles());
 			}
 		});
@@ -90,10 +90,10 @@ public final class Dialog {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void fileResourcesChanged(final FilterRecentFilesResultEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
-			public void execute() {
+			public void asyncExec() {
 				Dialog.this.updateViewer(event.getRFiles());
 			}
 		});
@@ -103,7 +103,7 @@ public final class Dialog {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void showDialog(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void asyncExec() {
@@ -149,10 +149,10 @@ public final class Dialog {
 
 			@Override
 			public void handleEvent(final Event event) {
-				if (this.isCtrlL(event)) EditorContext.asyncExec(new Task("") {
+				if (this.isCtrlL(event)) EditorContext.asyncExec(new Task() {
 
 					@Override
-					public void execute() {
+					public void asyncExec() {
 						selectText();
 					}
 				});
@@ -217,10 +217,10 @@ public final class Dialog {
 
 	private static void closeFiles() {
 		for (final int index : Dialog.TABLE.getSelectionIndices())
-			EditorContext.asyncExec(new Task("") {
+			EditorContext.asyncExec(new Task() {
 
 				@Override
-				public void execute() {
+				public void asyncExec() {
 					EditorContext.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 				}
 			});
@@ -254,10 +254,10 @@ public final class Dialog {
 
 	private static void openFiles() {
 		for (final int index : Dialog.TABLE.getSelectionIndices())
-			EditorContext.asyncExec(new Task("") {
+			EditorContext.asyncExec(new Task() {
 
 				@Override
-				public void execute() {
+				public void asyncExec() {
 					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 				}
 			});
@@ -500,38 +500,38 @@ public final class Dialog {
 		public void keyPressed(final KeyEvent event) {
 			if (Dialog.isValidCharacter(String.valueOf(event.character))) {
 				event.doit = false;
-				EditorContext.asyncExec(new Task("") {
+				EditorContext.asyncExec(new Task() {
 
 					@Override
-					public void execute() {
+					public void asyncExec() {
 						Dialog.updateText(event.character);
 					}
 				});
 			} else if (event.keyCode == SWT.BS) {
 				event.doit = false;
-				EditorContext.asyncExec(new Task("") {
+				EditorContext.asyncExec(new Task() {
 
 					@Override
-					public void execute() {
+					public void asyncExec() {
 						Dialog.backspace();
 					}
 				});
 			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
 				event.doit = false;
-				EditorContext.asyncExec(new Task("") {
+				EditorContext.asyncExec(new Task() {
 
 					@Override
-					public void execute() {
+					public void asyncExec() {
 						Dialog.SHELL.close();
 						Dialog.openFiles();
 					}
 				});
 			} else if ((event.keyCode == SWT.DEL)) {
 				event.doit = false;
-				EditorContext.asyncExec(new Task("") {
+				EditorContext.asyncExec(new Task() {
 
 					@Override
-					public void execute() {
+					public void asyncExec() {
 						Dialog.SHELL.close();
 						Dialog.closeFiles();
 					}
@@ -562,7 +562,7 @@ public final class Dialog {
 
 		@Override
 		public void modifyText(final ModifyEvent arg0) {
-			EditorContext.asyncExec(new Task("") {
+			EditorContext.asyncExec(new Task() {
 
 				@Override
 				public void asyncExec() {
@@ -581,7 +581,7 @@ public final class Dialog {
 
 		@Override
 		public void focusLost(final FocusEvent arg0) {
-			EditorContext.asyncExec(new Task("") {
+			EditorContext.asyncExec(new Task() {
 
 				@Override
 				public void asyncExec() {
@@ -597,10 +597,10 @@ public final class Dialog {
 
 		@Override
 		public void doubleClick(final DoubleClickEvent arg0) {
-			EditorContext.asyncExec(new Task("") {
+			EditorContext.asyncExec(new Task() {
 
 				@Override
-				public void execute() {
+				public void asyncExec() {
 					Dialog.SHELL.close();
 					Dialog.openFiles();
 				}

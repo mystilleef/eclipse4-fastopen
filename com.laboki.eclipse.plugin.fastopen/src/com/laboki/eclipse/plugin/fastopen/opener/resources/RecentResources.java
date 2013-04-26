@@ -89,6 +89,10 @@ public final class RecentResources {
 			private void update(final RecentFilesEvent event) {
 				this.rFiles.addAll(RecentResources.this.makeResourceFiles(event.getFiles()));
 				RecentResources.this.updateFileResources(this.rFiles);
+			}
+
+			@Override
+			protected void postExecute() {
 				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
 			}
 		});

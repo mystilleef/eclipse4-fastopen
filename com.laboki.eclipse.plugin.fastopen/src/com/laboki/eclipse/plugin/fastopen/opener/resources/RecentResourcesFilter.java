@@ -23,7 +23,7 @@ public final class RecentResourcesFilter {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void fileResourcesChanged(final FileResourcesEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void execute() {
@@ -41,7 +41,7 @@ public final class RecentResourcesFilter {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void fileResourcesChanged(final FilterRecentFilesEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void execute() {

@@ -30,12 +30,16 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 	}
 
 	private void init() {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void execute() {
 				WorkspaceResources.this.updateFilesFromWorkspace();
 				WorkspaceResources.this.sortFilesByModificationTime();
+			}
+
+			@Override
+			protected void postExecute() {
 				WorkspaceResources.this.postEvent();
 			}
 		});
@@ -44,17 +48,11 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 	private void updateFilesFromWorkspace() {
 		try {
 			WorkspaceResources.this.root.accept(WorkspaceResources.this);
-		} catch (final CoreException e) {}
+		} catch (final Exception e) {}
 	}
 
 	private void sortFilesByModificationTime() {
-		EditorContext.asyncExec(new Task("") {
-
-			@Override
-			public void execute() {
-				Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
-			}
-		});
+		Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
 	}
 
 	@Override
