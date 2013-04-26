@@ -106,7 +106,7 @@ public final class Dialog {
 		EditorContext.asyncExec(new Task("") {
 
 			@Override
-			public void execute() {
+			public void asyncExec() {
 				Dialog.SHELL.open();
 				Dialog.focusViewer();
 			}
@@ -388,7 +388,7 @@ public final class Dialog {
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
-				public void execute() {
+				public void asyncExec() {
 					Dialog.focusViewer();
 				}
 			});
@@ -406,7 +406,7 @@ public final class Dialog {
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
-				public void execute() {
+				public void asyncExec() {
 					Dialog.refresh();
 				}
 			});
@@ -565,7 +565,7 @@ public final class Dialog {
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
-				public void execute() {
+				public void asyncExec() {
 					Dialog.filterViewer();
 				}
 			});
@@ -584,7 +584,7 @@ public final class Dialog {
 			EditorContext.asyncExec(new Task("") {
 
 				@Override
-				public void execute() {
+				public void asyncExec() {
 					Dialog.refocusViewer();
 				}
 			});
