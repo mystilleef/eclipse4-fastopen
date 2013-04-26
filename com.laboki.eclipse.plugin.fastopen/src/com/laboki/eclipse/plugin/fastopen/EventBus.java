@@ -22,7 +22,7 @@ public final class EventBus {
 	}
 
 	public static void post(final Object object) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void execute() {
