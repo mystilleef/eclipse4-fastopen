@@ -8,12 +8,13 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
-public final class AccessedFilesSerializer {
+public final class AccessedFilesSerializer implements Instance {
 
 	public static final String SERIALIZABLE_FILE_PATH = EditorContext.getSerializableFilePath("accessed.files.ser");
 
@@ -48,5 +49,17 @@ public final class AccessedFilesSerializer {
 		final Object files = EditorContext.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
 		if (files == null) return Lists.newArrayList();
 		return (List<String>) files;
+	}
+
+	@Override
+	public Instance begin() {
+		EventBus.register(this);
+		return this;
+	}
+
+	@Override
+	public Instance end() {
+		EventBus.unregister(this);
+		return this;
 	}
 }

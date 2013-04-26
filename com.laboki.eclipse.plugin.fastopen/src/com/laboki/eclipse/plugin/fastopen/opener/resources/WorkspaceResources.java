@@ -15,11 +15,12 @@ import org.eclipse.core.runtime.CoreException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
-public final class WorkspaceResources implements IResourceVisitor, Comparator<IFile> {
+public final class WorkspaceResources implements IResourceVisitor, Comparator<IFile>, Instance {
 
 	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 	private final IWorkspaceRoot root = this.workspace.getRoot();
@@ -75,5 +76,18 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 
 	private void postEvent() {
 		EventBus.post(new WorkspaceResourcesEvent(ImmutableList.copyOf(this.resources)));
+	}
+
+	@Override
+	public Instance begin() {
+		EventBus.register(this);
+		return this;
+	}
+
+	@Override
+	public Instance end() {
+		EventBus.unregister(this);
+		this.resources.clear();
+		return this;
 	}
 }

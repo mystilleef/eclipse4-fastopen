@@ -14,13 +14,14 @@ import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
-public final class RecentResources {
+public final class RecentResources implements Instance {
 
 	private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 	private final Map<String, RFile> cachedResourceFiles = Maps.newHashMap();
@@ -96,5 +97,20 @@ public final class RecentResources {
 				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
 			}
 		});
+	}
+
+	@Override
+	public Instance begin() {
+		EventBus.register(this);
+		return this;
+	}
+
+	@Override
+	public Instance end() {
+		EventBus.unregister(this);
+		this.fileResources.clear();
+		this.cachedResourceFiles.clear();
+		this.fileResourcesMap.clear();
+		return this;
 	}
 }

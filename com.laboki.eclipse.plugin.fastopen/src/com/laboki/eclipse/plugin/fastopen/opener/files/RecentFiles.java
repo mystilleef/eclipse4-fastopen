@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
+import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
@@ -16,7 +17,7 @@ import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
-public final class RecentFiles {
+public final class RecentFiles implements Instance {
 
 	private final List<String> recentFiles = Lists.newArrayList();
 
@@ -75,5 +76,18 @@ public final class RecentFiles {
 	@Synchronized("recentFiles")
 	private ImmutableList<String> getRecentFiles() {
 		return ImmutableList.copyOf(this.recentFiles);
+	}
+
+	@Override
+	public Instance begin() {
+		EventBus.register(this);
+		return this;
+	}
+
+	@Override
+	public Instance end() {
+		EventBus.unregister(this);
+		this.recentFiles.clear();
+		return this;
 	}
 }
