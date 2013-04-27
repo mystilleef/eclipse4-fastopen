@@ -326,7 +326,6 @@ public final class EditorContext {
 		try {
 			return Platform.getContentTypeManager().getContentType(EditorContext.getMediaType(file).toString().trim());
 		} catch (final Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
@@ -335,7 +334,7 @@ public final class EditorContext {
 		return (IEditorPart) editorReference.getPart(false);
 	}
 
-	private static MediaType getMediaType(final IFile file) throws IOException {
+	private static MediaType getMediaType(final IFile file) throws Exception {
 		return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file))));
 	}
 
