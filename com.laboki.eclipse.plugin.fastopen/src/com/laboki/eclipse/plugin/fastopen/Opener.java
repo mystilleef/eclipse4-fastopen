@@ -3,15 +3,10 @@ package com.laboki.eclipse.plugin.fastopen;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.Services;
 
-public enum Opener implements Runnable, Instance {
+public enum Opener implements Instance {
 	INSTANCE;
 
 	private final static Services SERVICES = new Services();
-
-	@Override
-	public void run() {
-		this.begin();
-	}
 
 	@Override
 	public Instance begin() {
