@@ -1,10 +1,7 @@
 package com.laboki.eclipse.plugin.fastopen;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class Activator extends AbstractUIPlugin {
 
@@ -27,11 +24,11 @@ public final class Activator extends AbstractUIPlugin {
 		Activator.instance = null;
 	}
 
-	public static ImageDescriptor getImageDescriptor(final String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(EditorContext.PLUGIN_NAME, path);
+	public static Activator getInstance() {
+		return Activator.instance;
 	}
 
-	public static Activator getInstance() {
+	public static Activator getDefault() {
 		return Activator.instance;
 	}
 }
