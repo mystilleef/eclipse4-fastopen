@@ -3,7 +3,7 @@ package com.laboki.eclipse.plugin.fastopen;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.Services;
 
-public enum Opener implements Instance {
+public enum Plugin implements Instance {
 	INSTANCE;
 
 	private final static Services SERVICES = new Services();
@@ -14,7 +14,7 @@ public enum Opener implements Instance {
 
 			@Override
 			public void asyncExec() {
-				Opener.SERVICES.begin();
+				Plugin.SERVICES.begin();
 			}
 		});
 		return this;
@@ -26,7 +26,7 @@ public enum Opener implements Instance {
 
 			@Override
 			public void asyncExec() {
-				Opener.SERVICES.end();
+				Plugin.SERVICES.end();
 			}
 		});
 		return this;
