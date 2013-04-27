@@ -59,7 +59,6 @@ public final class EditorContext {
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
 	public static final String PLUGIN_NAME = "com.laboki.eclipse.plugin.fastopen";
 	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
-	private static final FlushEventsRunnable FLUSH_EVENTS_RUNNABLE = new EditorContext.FlushEventsRunnable();
 
 	private EditorContext() {}
 
@@ -96,7 +95,7 @@ public final class EditorContext {
 	}
 
 	public static void flushEvents() {
-		EditorContext.asyncExec(EditorContext.FLUSH_EVENTS_RUNNABLE);
+		while (EditorContext.DISPLAY.readAndDispatch());
 	}
 
 	public static IEditorPart[] getActiveEditorParts() {
@@ -408,18 +407,6 @@ public final class EditorContext {
 	private static void writeSerializableToFile(final Object serializable, final ObjectOutput output) {
 		EditorContext.writeOutput(serializable, output);
 		EditorContext.closeOutput(output);
-	}
-
-	private static final class FlushEventsRunnable implements Runnable {
-
-		public FlushEventsRunnable() {}
-
-		@Override
-		public void run() {
-			while (EditorContext.DISPLAY.readAndDispatch())
-				EditorContext.DISPLAY.update();
-			EditorContext.DISPLAY.update();
-		}
 	}
 
 	public static boolean isWindows() {
