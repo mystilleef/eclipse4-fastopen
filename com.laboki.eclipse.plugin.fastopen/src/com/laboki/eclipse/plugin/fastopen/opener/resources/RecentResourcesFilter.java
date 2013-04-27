@@ -23,7 +23,7 @@ public final class RecentResourcesFilter implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void fileResourcesChanged(final FileResourcesEvent event) {
+	public void updateRFiles(final FileResourcesEvent event) {
 		EditorContext.asyncExec(new Task() {
 
 			@Override
@@ -41,7 +41,7 @@ public final class RecentResourcesFilter implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void fileResourcesChanged(final FilterRecentFilesEvent event) {
+	public void filterRecentFiles(final FilterRecentFilesEvent event) {
 		EditorContext.asyncExec(new Task() {
 
 			@Override
