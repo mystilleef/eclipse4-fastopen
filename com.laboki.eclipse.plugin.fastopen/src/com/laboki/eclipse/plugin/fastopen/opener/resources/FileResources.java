@@ -38,7 +38,7 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void worskpaceResources(final WorkspaceResourcesEvent event) {
-		EditorContext.asyncExec(new Task("", 250) {
+		EditorContext.asyncExec(new Task("fastopen file resource updater task", 250) {
 
 			ImmutableList<IFile> resources = event.getResources();
 
