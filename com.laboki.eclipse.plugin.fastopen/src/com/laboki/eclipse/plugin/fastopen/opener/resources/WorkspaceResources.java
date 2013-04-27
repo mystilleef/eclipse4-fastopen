@@ -26,34 +26,46 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 	private final IWorkspaceRoot root = this.workspace.getRoot();
 	private final List<IFile> resources = Lists.newArrayList();
 
-	public WorkspaceResources() {
-		this.init();
+	@Override
+	public Instance begin() {
+		this.indexResources();
+		return this;
 	}
 
-	private void init() {
+	private void indexResources() {
 		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void execute() {
-				WorkspaceResources.this.updateFilesFromWorkspace();
-				WorkspaceResources.this.sortFilesByModificationTime();
+				this.updateFilesFromWorkspace();
+				this.sortFilesByModificationTime();
+			}
+
+			private void updateFilesFromWorkspace() {
+				try {
+					WorkspaceResources.this.root.accept(WorkspaceResources.this);
+				} catch (final Exception e) {}
+			}
+
+			private void sortFilesByModificationTime() {
+				Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
 			}
 
 			@Override
 			protected void postExecute() {
-				WorkspaceResources.this.postEvent();
+				this.postEvent();
+			}
+
+			private void postEvent() {
+				EventBus.post(new WorkspaceResourcesEvent(ImmutableList.copyOf(WorkspaceResources.this.resources)));
 			}
 		});
 	}
 
-	private void updateFilesFromWorkspace() {
-		try {
-			WorkspaceResources.this.root.accept(WorkspaceResources.this);
-		} catch (final Exception e) {}
-	}
-
-	private void sortFilesByModificationTime() {
-		Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
+	@Override
+	public Instance end() {
+		this.resources.clear();
+		return this;
 	}
 
 	@Override
@@ -72,22 +84,5 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 		final long lastModified = o1.getLocation().toFile().lastModified();
 		final long lastModified2 = o2.getLocation().toFile().lastModified();
 		return lastModified < lastModified2 ? 1 : (lastModified > lastModified2 ? -1 : 0);
-	}
-
-	private void postEvent() {
-		EventBus.post(new WorkspaceResourcesEvent(ImmutableList.copyOf(this.resources)));
-	}
-
-	@Override
-	public Instance begin() {
-		EventBus.register(this);
-		return this;
-	}
-
-	@Override
-	public Instance end() {
-		EventBus.unregister(this);
-		this.resources.clear();
-		return this;
 	}
 }

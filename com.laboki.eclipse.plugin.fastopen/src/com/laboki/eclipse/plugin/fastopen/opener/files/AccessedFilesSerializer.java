@@ -20,7 +20,6 @@ public final class AccessedFilesSerializer implements Instance {
 
 	public AccessedFilesSerializer() {
 		EditorContext.emptyFile(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
-		AccessedFilesSerializer.postEvent();
 	}
 
 	private static void postEvent() {
@@ -54,6 +53,7 @@ public final class AccessedFilesSerializer implements Instance {
 	@Override
 	public Instance begin() {
 		EventBus.register(this);
+		AccessedFilesSerializer.postEvent();
 		return this;
 	}
 

@@ -31,10 +31,6 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 	private final List<String> modifiedFiles = Lists.newArrayList();
 	private final OpenerResourceChangeListener listener = new OpenerResourceChangeListener(this);
 
-	public FileResources() {
-		this.listener.start();
-	}
-
 	@Subscribe
 	@AllowConcurrentEvents
 	public void worskpaceResources(final WorkspaceResourcesEvent event) {
@@ -124,6 +120,7 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 	@Override
 	public Instance begin() {
 		EventBus.register(this);
+		this.listener.start();
 		return this;
 	}
 

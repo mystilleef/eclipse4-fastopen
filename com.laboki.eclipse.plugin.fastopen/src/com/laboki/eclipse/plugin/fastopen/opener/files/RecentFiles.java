@@ -23,8 +23,8 @@ public final class RecentFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void modifiedFilesChanged(final ModifiedFilesEvent event) {
-		EditorContext.asyncExec(new Task("") {
+	public void postUpdatedRecentFiles(final ModifiedFilesEvent event) {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void execute() {
@@ -40,7 +40,7 @@ public final class RecentFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void accessedFilesChanged(final AccessedFilesEvent event) {
+	public void postUpdatedRecentFiles(final AccessedFilesEvent event) {
 		EditorContext.asyncExec(new Task() {
 
 			private final List<String> rfiles = Lists.newArrayList(RecentFiles.this.getRecentFiles());

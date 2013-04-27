@@ -29,7 +29,7 @@ public final class AccessedFiles implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void deserializedAccessedFiles(final DeserializedAccessedFilesEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void execute() {
@@ -56,12 +56,11 @@ public final class AccessedFiles implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void modifiedFilesChanged(final RecentFilesModificationEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			@Override
 			public void execute() {
 				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(Lists.newArrayList(this.removeDeletedFiles(event.getFiles()))));
-				AccessedFiles.this.postEvent();
 			}
 
 			private Collection<String> removeDeletedFiles(final ImmutableList<String> files) {
@@ -73,13 +72,18 @@ public final class AccessedFiles implements Instance {
 					}
 				});
 			}
+
+			@Override
+			protected void postExecute() {
+				AccessedFiles.this.postEvent();
+			}
 		});
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void partActivationChanged(@SuppressWarnings("unused") final PartActivationEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		EditorContext.asyncExec(new Task() {
 
 			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
 
@@ -90,7 +94,6 @@ public final class AccessedFiles implements Instance {
 				this.moveCurrentFileToTopOfList();
 				this.update(this.getAccessedFilesInsertionIndex(), path);
 				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
-				AccessedFiles.this.postEvent();
 			}
 
 			protected int getAccessedFilesInsertionIndex() {
@@ -105,6 +108,11 @@ public final class AccessedFiles implements Instance {
 			protected void update(final int index, final String path) {
 				this.aFiles.remove(path);
 				this.aFiles.add(index, path);
+			}
+
+			@Override
+			protected void postExecute() {
+				AccessedFiles.this.postEvent();
 			}
 		});
 	}
