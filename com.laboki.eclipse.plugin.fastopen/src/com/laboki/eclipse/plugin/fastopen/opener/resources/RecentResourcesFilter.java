@@ -46,40 +46,40 @@ public final class RecentResourcesFilter implements Instance {
 
 			@Override
 			public void execute() {
-				RecentResourcesFilter.this.filter(event.getString());
+				this.filter(event.getString());
+			}
+
+			private void filter(final String string) {
+				val trimmedString = string.trim();
+				if (trimmedString.length() == 0) this.postEvent(RecentResourcesFilter.this.getFiles());
+				else this.filterFiles(trimmedString);
+			}
+
+			private void filterFiles(final String string) {
+				val regexString = ".*" + string + ".*";
+				this.postEvent(this.getFilteredList(regexString));
+			}
+
+			private void postEvent(final List<RFile> rFiles) {
+				EventBus.post(new FilterRecentFilesResultEvent(ImmutableList.copyOf(rFiles)));
+			}
+
+			private List<RFile> getFilteredList(final String string) {
+				final List<RFile> filteredList = Lists.newArrayList();
+				for (final RFile rFile : RecentResourcesFilter.this.getFiles())
+					if (this.matches(rFile, string)) filteredList.add(rFile);
+				return filteredList;
+			}
+
+			private boolean matches(final RFile rFile, final String string) {
+				return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
 			}
 		});
-	}
-
-	private void filter(final String string) {
-		val trimmedString = string.trim();
-		if (trimmedString.length() == 0) RecentResourcesFilter.postEvent(this.getFiles());
-		else this.filterFiles(trimmedString);
-	}
-
-	private void filterFiles(final String string) {
-		val regexString = ".*" + string + ".*";
-		RecentResourcesFilter.postEvent(this.getFilteredList(regexString));
-	}
-
-	private static void postEvent(final List<RFile> rFiles) {
-		EventBus.post(new FilterRecentFilesResultEvent(ImmutableList.copyOf(rFiles)));
-	}
-
-	private List<RFile> getFilteredList(final String string) {
-		final List<RFile> filteredList = Lists.newArrayList();
-		for (final RFile rFile : this.getFiles())
-			if (RecentResourcesFilter.matches(rFile, string)) filteredList.add(rFile);
-		return filteredList;
 	}
 
 	@Synchronized("rFiles")
 	private List<RFile> getFiles() {
 		return Lists.newArrayList(this.rFiles);
-	}
-
-	private static boolean matches(final RFile rFile, final String string) {
-		return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
 	}
 
 	@Override
