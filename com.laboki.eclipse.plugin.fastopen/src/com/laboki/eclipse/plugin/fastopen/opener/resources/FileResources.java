@@ -48,11 +48,6 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 				this.updateModifiedFiles();
 			}
 
-			@Override
-			protected void postExecute() {
-				FileResources.this.postEvents();
-			}
-
 			private void buildFileResourcesMap() {
 				FileResources.this.fileResourcesMap.putAll(this.buildMapFromResources());
 			}
@@ -80,6 +75,11 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 						return EditorContext.getURIPath(file);
 					}
 				});
+			}
+
+			@Override
+			protected void postExecute() {
+				FileResources.this.postEvents();
 			}
 		});
 	}
