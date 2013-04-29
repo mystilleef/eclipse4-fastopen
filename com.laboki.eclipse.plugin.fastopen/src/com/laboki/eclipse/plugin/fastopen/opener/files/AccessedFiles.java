@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import lombok.Synchronized;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
@@ -117,7 +115,6 @@ public final class AccessedFiles implements Instance {
 		}.begin();
 	}
 
-	@Synchronized("accessedFiles")
 	private void updateAccessedFiles(final List<String> files) {
 		this.accessedFiles.removeAll(files);
 		this.accessedFiles.addAll(0, files);
@@ -127,7 +124,6 @@ public final class AccessedFiles implements Instance {
 		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this.getAccessedFiles())));
 	}
 
-	@Synchronized("accessedFiles")
 	private ArrayList<String> getAccessedFiles() {
 		return Lists.newArrayList(this.accessedFiles);
 	}

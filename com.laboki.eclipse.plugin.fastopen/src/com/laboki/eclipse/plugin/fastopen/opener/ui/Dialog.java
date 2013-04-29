@@ -1,12 +1,7 @@
 package com.laboki.eclipse.plugin.fastopen.opener.ui;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
-
-import lombok.Synchronized;
-import lombok.val;
-import lombok.extern.java.Log;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -55,7 +50,6 @@ import com.laboki.eclipse.plugin.fastopen.opener.events.FilterRecentFilesResultE
 import com.laboki.eclipse.plugin.fastopen.opener.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.RFile;
 
-@Log
 public final class Dialog implements Instance {
 
 	private static final int HEIGHT = 480;
@@ -78,24 +72,24 @@ public final class Dialog implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void fileResourcesChanged(final FileResourcesEvent event) {
+	public static void fileResourcesChanged(final FileResourcesEvent event) {
 		new Task() {
 
 			@Override
 			public void asyncExec() {
-				Dialog.this.updateViewer(event.getRFiles());
+				Dialog.updateViewer(event.getrFiles());
 			}
 		}.begin();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void fileResourcesChanged(final FilterRecentFilesResultEvent event) {
+	public static void fileResourcesChanged(final FilterRecentFilesResultEvent event) {
 		new Task() {
 
 			@Override
 			public void asyncExec() {
-				Dialog.this.updateViewer(event.getRFiles());
+				Dialog.updateViewer(event.getrFiles());
 			}
 		}.begin();
 	}
@@ -118,8 +112,7 @@ public final class Dialog implements Instance {
 		Dialog.TEXT.setText("");
 	}
 
-	@Synchronized
-	protected void updateViewer(final List<RFile> rFiles) {
+	protected static void updateViewer(final List<RFile> rFiles) {
 		try {
 			Dialog._updateViewer(rFiles);
 		} catch (final Exception e) {}
@@ -232,7 +225,7 @@ public final class Dialog implements Instance {
 	}
 
 	private static void filterViewer() {
-		val searchString = Dialog.TEXT.getText().trim();
+		final String searchString = Dialog.TEXT.getText().trim();
 		EventBus.post(new FilterRecentFilesEvent(searchString));
 	}
 
@@ -268,7 +261,7 @@ public final class Dialog implements Instance {
 		try {
 			EditorContext.openLink(file);
 		} catch (final Exception e) {
-			Dialog.log.log(Level.SEVERE, "Failed to open linked file", e);
+			// Dialog.log.log(Level.SEVERE, "Failed to open linked file", e);
 		}
 	}
 
@@ -375,7 +368,7 @@ public final class Dialog implements Instance {
 			try {
 				Dialog.VIEWER.replace(this.rFiles[index], index);
 			} catch (final Exception e) {
-				Dialog.log.log(Level.FINE, "Failed to update index for lazy content provider.", e);
+				// Dialog.log.log(Level.FINE, "Failed to update index for lazy content provider.", e);
 			}
 		}
 	}

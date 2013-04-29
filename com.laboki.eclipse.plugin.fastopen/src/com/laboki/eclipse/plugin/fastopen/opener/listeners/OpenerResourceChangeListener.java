@@ -1,7 +1,5 @@
 package com.laboki.eclipse.plugin.fastopen.opener.listeners;
 
-import lombok.ToString;
-
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
@@ -11,7 +9,6 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.laboki.eclipse.plugin.fastopen.Task;
 
-@ToString
 public final class OpenerResourceChangeListener extends AbstractOpenerListener implements IResourceChangeListener {
 
 	private final IResourceDeltaVisitor handler;

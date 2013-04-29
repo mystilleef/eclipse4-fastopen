@@ -3,8 +3,6 @@ package com.laboki.eclipse.plugin.fastopen.opener.resources;
 import java.io.File;
 import java.util.Date;
 
-import lombok.Getter;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.swt.graphics.Image;
@@ -15,13 +13,13 @@ import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class RFile {
 
-	@Getter private final IFile file;
-	@Getter private final String name;
-	@Getter private final String folder;
-	@Getter private final String contentTypeString;
-	@Getter private final IContentType contentType;
-	@Getter private final Image contentTypeImage;
-	@Getter private final String filePath;
+	private final IFile file;
+	private final String name;
+	private final String folder;
+	private final String contentTypeString;
+	private final IContentType contentType;
+	private final Image contentTypeImage;
+	private final String filePath;
 	private static final PrettyTime PRETTY_TIME = new PrettyTime();
 
 	public RFile(final IFile file) {
@@ -57,6 +55,38 @@ public final class RFile {
 	@Override
 	public String toString() {
 		return String.format("===\nName=%s\nFolder=%s\nContentType=%s\nModificationTime=%s\n===", this.getName(), this.getFolder(), this.getPrivateContentTypeString(), this.getModificationTime());
+	}
+
+	public IContentType getContentType() {
+		return this.contentType;
+	}
+
+	public Image getContentTypeImage() {
+		return this.contentTypeImage;
+	}
+
+	public String getContentTypeString() {
+		return this.contentTypeString;
+	}
+
+	public IFile getFile() {
+		return this.file;
+	}
+
+	public String getFilePath() {
+		return this.filePath;
+	}
+
+	public String getFolder() {
+		return this.folder;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public static PrettyTime getPrettyTime() {
+		return RFile.PRETTY_TIME;
 	}
 
 	@Override

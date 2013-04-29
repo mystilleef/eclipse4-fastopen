@@ -1,14 +1,16 @@
 package com.laboki.eclipse.plugin.fastopen.opener.events;
 
-import lombok.Getter;
-
 import com.google.common.collect.ImmutableList;
 
 public class FilesEvent {
 
-	@Getter private final ImmutableList<String> files;
+	private final ImmutableList<String> files;
 
 	public FilesEvent(final ImmutableList<String> files) {
 		this.files = files;
+	}
+
+	public ImmutableList<String> getFiles() {
+		return this.files;
 	}
 }

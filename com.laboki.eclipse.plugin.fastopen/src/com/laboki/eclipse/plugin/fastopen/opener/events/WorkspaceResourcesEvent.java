@@ -1,16 +1,18 @@
 package com.laboki.eclipse.plugin.fastopen.opener.events;
 
-import lombok.Getter;
-
 import org.eclipse.core.resources.IFile;
 
 import com.google.common.collect.ImmutableList;
 
 public final class WorkspaceResourcesEvent {
 
-	@Getter private final ImmutableList<IFile> resources;
+	private final ImmutableList<IFile> resources;
 
 	public WorkspaceResourcesEvent(final ImmutableList<IFile> resources) {
 		this.resources = resources;
+	}
+
+	public ImmutableList<IFile> getResources() {
+		return this.resources;
 	}
 }

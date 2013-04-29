@@ -1,7 +1,5 @@
 package com.laboki.eclipse.plugin.fastopen.opener;
 
-import lombok.ToString;
-
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPart;
@@ -10,7 +8,6 @@ import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.opener.events.PartActivationEvent;
 
-@ToString
 public enum Factory implements Instance {
 	INSTANCE;
 

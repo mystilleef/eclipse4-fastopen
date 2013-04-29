@@ -44,7 +44,9 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 			private void updateFilesFromWorkspace() {
 				try {
 					WorkspaceResources.this.root.accept(WorkspaceResources.this);
-				} catch (final Exception e) {}
+				} catch (final Exception e) {
+					// Do nothing.
+				}
 			}
 
 			private void sortFilesByModificationTime() {

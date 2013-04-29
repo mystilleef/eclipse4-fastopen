@@ -2,8 +2,6 @@ package com.laboki.eclipse.plugin.fastopen.opener.files;
 
 import java.util.List;
 
-import lombok.Synchronized;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -66,13 +64,11 @@ public final class RecentFiles implements Instance {
 		}.begin();
 	}
 
-	@Synchronized("recentFiles")
 	protected void updateRecentFiles(final ImmutableList<String> files) {
 		this.recentFiles.clear();
 		this.recentFiles.addAll(files);
 	}
 
-	@Synchronized("recentFiles")
 	private ImmutableList<String> getRecentFiles() {
 		return ImmutableList.copyOf(this.recentFiles);
 	}

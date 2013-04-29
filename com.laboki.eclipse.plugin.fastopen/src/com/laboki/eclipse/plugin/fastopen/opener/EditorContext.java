@@ -19,11 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-
-import lombok.Synchronized;
-import lombok.val;
-import lombok.extern.java.Log;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -51,7 +46,6 @@ import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
 
-@Log
 public final class EditorContext {
 
 	private static EditorContext instance;
@@ -76,7 +70,7 @@ public final class EditorContext {
 		try {
 			EditorContext.getActivePage().closeEditors(EditorContext.getActivePage().findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT), true);
 		} catch (final Exception e) {
-			EditorContext.log.log(Level.INFO, "failed to close editor for some odd reason", e);
+			// EditorContext.log.log(Level.INFO, "failed to close editor for some odd reason", e);
 		}
 	}
 
@@ -103,9 +97,9 @@ public final class EditorContext {
 	}
 
 	public static IEditorPart[] getActiveEditorParts() {
-		val parts = Lists.newArrayList();
+		final List<IEditorPart> parts = Lists.newArrayList();
 		for (final IEditorReference editorReference : EditorContext.getActiveEditorReferences()) {
-			val editorPart = EditorContext.getEditorPart(editorReference);
+			final IEditorPart editorPart = EditorContext.getEditorPart(editorReference);
 			if (EditorContext.isValidPart(editorPart)) parts.add(editorPart);
 		}
 		return parts.toArray(new IEditorPart[parts.size()]);
@@ -116,14 +110,14 @@ public final class EditorContext {
 	}
 
 	public static String[] getActiveFilePathStrings() {
-		val strings = Lists.newArrayList();
+		final List<String> strings = Lists.newArrayList();
 		for (final IFile file : EditorContext.getActiveFiles())
 			strings.add(EditorContext.getURIPath(file));
 		return strings.toArray(new String[strings.size()]);
 	}
 
 	public static IFile[] getActiveFiles() {
-		val files = Lists.newArrayList();
+		final List<IFile> files = Lists.newArrayList();
 		for (final IEditorPart editorPart : EditorContext.getActiveEditorParts())
 			files.add(EditorContext.getFile(editorPart));
 		return files.toArray(new IFile[files.size()]);
@@ -228,7 +222,6 @@ public final class EditorContext {
 		return resource.getLocationURI().getPath();
 	}
 
-	@Synchronized
 	public static EditorContext instance() {
 		if (EditorContext.instance == null) EditorContext.instance = new EditorContext();
 		return EditorContext.instance;
@@ -293,7 +286,7 @@ public final class EditorContext {
 	}
 
 	public static void populateOpenEditorFilePaths(final List<String> filepaths, final IEditorReference file) {
-		val path = EditorContext.getFilePathFromEditorReference(file);
+		final String path = EditorContext.getFilePathFromEditorReference(file);
 		if (path.length() == 0) return;
 		filepaths.add(path);
 	}
@@ -314,7 +307,7 @@ public final class EditorContext {
 		try {
 			input.close();
 		} catch (final Exception e) {
-			EditorContext.log.log(Level.FINE, "Failed to close object input for serializable", e);
+			// EditorContext.log.log(Level.FINE, "Failed to close object input for serializable", e);
 		}
 	}
 

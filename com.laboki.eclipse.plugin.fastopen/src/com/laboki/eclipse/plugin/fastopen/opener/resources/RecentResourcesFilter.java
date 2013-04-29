@@ -2,9 +2,6 @@ package com.laboki.eclipse.plugin.fastopen.opener.resources;
 
 import java.util.List;
 
-import lombok.Synchronized;
-import lombok.val;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -27,12 +24,11 @@ public final class RecentResourcesFilter implements Instance {
 
 			@Override
 			public void execute() {
-				RecentResourcesFilter.this.updateFiles(event.getRFiles());
+				RecentResourcesFilter.this.updateFiles(event.getrFiles());
 			}
 		}.begin();
 	}
 
-	@Synchronized("rFiles")
 	private void updateFiles(final ImmutableList<RFile> rFiles) {
 		this.rFiles.clear();
 		this.rFiles.addAll(rFiles);
@@ -49,13 +45,13 @@ public final class RecentResourcesFilter implements Instance {
 			}
 
 			private void filter(final String string) {
-				val trimmedString = string.trim();
+				final String trimmedString = string.trim();
 				if (trimmedString.length() == 0) this.postEvent(RecentResourcesFilter.this.getFiles());
 				else this.filterFiles(trimmedString);
 			}
 
 			private void filterFiles(final String string) {
-				val regexString = ".*" + string + ".*";
+				final String regexString = ".*" + string + ".*";
 				this.postEvent(this.getFilteredList(regexString));
 			}
 
@@ -76,7 +72,6 @@ public final class RecentResourcesFilter implements Instance {
 		}.begin();
 	}
 
-	@Synchronized("rFiles")
 	private List<RFile> getFiles() {
 		return Lists.newArrayList(this.rFiles);
 	}

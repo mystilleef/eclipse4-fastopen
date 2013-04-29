@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Synchronized;
-
 import org.eclipse.core.resources.IFile;
 
 import com.google.common.collect.ImmutableList;
@@ -26,18 +24,15 @@ public final class RecentResources implements Instance {
 	private final Map<String, RFile> cachedResourceFiles = Maps.newHashMap();
 	private final List<RFile> fileResources = Lists.newArrayList();
 
-	@Synchronized("fileResources")
 	protected ArrayList<RFile> getFileResources() {
 		return Lists.newArrayList(this.fileResources);
 	}
 
-	@Synchronized("fileResources")
 	protected void updateFileResources(final List<RFile> rFiles) {
 		this.fileResources.clear();
 		this.fileResources.addAll(rFiles);
 	}
 
-	@Synchronized("cachedResourceFiles")
 	protected List<RFile> makeResourceFiles(final ImmutableList<String> immutableList) {
 		final ArrayList<RFile> rFiles = Lists.newArrayList();
 		for (final String filePath : immutableList)
@@ -85,7 +80,6 @@ public final class RecentResources implements Instance {
 				this.update(event);
 			}
 
-			@Synchronized
 			private void update(final RecentFilesEvent event) {
 				this.rFiles.addAll(RecentResources.this.makeResourceFiles(event.getFiles()));
 				RecentResources.this.updateFileResources(this.rFiles);
