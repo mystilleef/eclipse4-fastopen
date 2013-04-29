@@ -95,11 +95,11 @@ public final class EditorContext {
 	}
 
 	public static void flushEvents() {
-		try {
-			while (EditorContext.DISPLAY.readAndDispatch());
-		} catch (final Exception e) {
-			EditorContext.log.log(Level.INFO, "failed to flush events");
-		}
+		// try {
+		while (EditorContext.DISPLAY.readAndDispatch());
+		// } catch (final Exception e) {
+		// EditorContext.log.log(Level.INFO, "failed to flush events");
+		// }
 	}
 
 	public static IEditorPart[] getActiveEditorParts() {
