@@ -29,13 +29,13 @@ public final class AccessedFilesSerializer implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void accessedFilesChanged(final AccessedFilesEvent event) {
-		EditorContext.asyncExec(new Task("") {
+		new Task() {
 
 			@Override
 			public void execute() {
 				AccessedFilesSerializer.serialize(event.getFiles());
 			}
-		});
+		}.begin();
 	}
 
 	private static void serialize(final Collection<String> files) {

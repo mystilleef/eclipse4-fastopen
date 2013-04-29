@@ -29,7 +29,7 @@ public final class AccessedFiles implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void deserializedAccessedFiles(final DeserializedAccessedFilesEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void execute() {
@@ -50,13 +50,13 @@ public final class AccessedFiles implements Instance {
 				files.remove(path);
 				files.add(1, path);
 			}
-		});
+		}.begin();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void modifiedFilesChanged(final RecentFilesModificationEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void execute() {
@@ -77,13 +77,13 @@ public final class AccessedFiles implements Instance {
 			public void postExecute() {
 				AccessedFiles.this.postEvent();
 			}
-		});
+		}.begin();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void partActivationChanged(@SuppressWarnings("unused") final PartActivationEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
 
@@ -114,7 +114,7 @@ public final class AccessedFiles implements Instance {
 			public void postExecute() {
 				AccessedFiles.this.postEvent();
 			}
-		});
+		}.begin();
 	}
 
 	@Synchronized("accessedFiles")

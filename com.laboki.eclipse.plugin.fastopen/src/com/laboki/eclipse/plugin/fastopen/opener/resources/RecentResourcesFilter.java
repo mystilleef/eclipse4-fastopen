@@ -12,7 +12,6 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.FilterRecentFilesResultEvent;
@@ -24,13 +23,13 @@ public final class RecentResourcesFilter implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void updateRFiles(final FileResourcesEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void execute() {
 				RecentResourcesFilter.this.updateFiles(event.getRFiles());
 			}
-		});
+		}.begin();
 	}
 
 	@Synchronized("rFiles")
@@ -42,7 +41,7 @@ public final class RecentResourcesFilter implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void filterRecentFiles(final FilterRecentFilesEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void execute() {
@@ -74,7 +73,7 @@ public final class RecentResourcesFilter implements Instance {
 			private boolean matches(final RFile rFile, final String string) {
 				return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
 			}
-		});
+		}.begin();
 	}
 
 	@Synchronized("rFiles")

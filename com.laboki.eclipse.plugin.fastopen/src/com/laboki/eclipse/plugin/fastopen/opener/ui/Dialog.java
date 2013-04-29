@@ -79,39 +79,39 @@ public final class Dialog implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void fileResourcesChanged(final FileResourcesEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void asyncExec() {
 				Dialog.this.updateViewer(event.getRFiles());
 			}
-		});
+		}.begin();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void fileResourcesChanged(final FilterRecentFilesResultEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void asyncExec() {
 				Dialog.this.updateViewer(event.getRFiles());
 			}
-		});
+		}.begin();
 	}
 
 	@SuppressWarnings("static-method")
 	@Subscribe
 	@AllowConcurrentEvents
 	public void showDialog(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void asyncExec() {
 				Dialog.SHELL.open();
 				Dialog.focusViewer();
 			}
-		});
+		}.begin();
 	}
 
 	public static void reset() {
@@ -218,13 +218,13 @@ public final class Dialog implements Instance {
 
 	private static void closeFiles() {
 		for (final int index : Dialog.TABLE.getSelectionIndices())
-			EditorContext.asyncExec(new Task() {
+			new Task() {
 
 				@Override
 				public void asyncExec() {
 					EditorContext.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 				}
-			});
+			}.begin();
 	}
 
 	private static GridData createFillGridData() {
@@ -255,13 +255,13 @@ public final class Dialog implements Instance {
 
 	private static void openFiles() {
 		for (final int index : Dialog.TABLE.getSelectionIndices())
-			EditorContext.asyncExec(new Task() {
+			new Task() {
 
 				@Override
 				public void asyncExec() {
 					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 				}
-			});
+			}.begin();
 	}
 
 	private static void openLink(final IFile file) {
@@ -386,13 +386,13 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void shellActivated(final ShellEvent arg0) {
-			EditorContext.asyncExec(new Task("") {
+			new Task() {
 
 				@Override
 				public void asyncExec() {
 					Dialog.focusViewer();
 				}
-			});
+			}.begin();
 		}
 
 		@Override
@@ -404,13 +404,13 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void shellDeactivated(final ShellEvent arg0) {
-			EditorContext.asyncExec(new Task("") {
+			new Task() {
 
 				@Override
 				public void asyncExec() {
 					Dialog.refresh();
 				}
-			});
+			}.begin();
 		}
 
 		@Override
@@ -563,13 +563,13 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void modifyText(final ModifyEvent arg0) {
-			EditorContext.asyncExec(new Task() {
+			new Task() {
 
 				@Override
 				public void asyncExec() {
 					Dialog.filterViewer();
 				}
-			});
+			}.begin();
 		}
 	}
 
@@ -582,13 +582,13 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void focusLost(final FocusEvent arg0) {
-			EditorContext.asyncExec(new Task() {
+			new Task() {
 
 				@Override
 				public void asyncExec() {
 					Dialog.refocusViewer();
 				}
-			});
+			}.begin();
 		}
 	}
 
@@ -598,14 +598,14 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void doubleClick(final DoubleClickEvent arg0) {
-			EditorContext.asyncExec(new Task() {
+			new Task() {
 
 				@Override
 				public void asyncExec() {
 					Dialog.SHELL.close();
 					Dialog.openFiles();
 				}
-			});
+			}.begin();
 		}
 	}
 

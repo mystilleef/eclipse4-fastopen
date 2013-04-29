@@ -16,7 +16,6 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesEvent;
@@ -77,7 +76,7 @@ public final class RecentResources implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void updateResourceFiles(final RecentFilesEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			private final List<RFile> rFiles = Lists.newArrayList();
 
@@ -96,7 +95,7 @@ public final class RecentResources implements Instance {
 			public void postExecute() {
 				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
 			}
-		});
+		}.begin();
 	}
 
 	@Override

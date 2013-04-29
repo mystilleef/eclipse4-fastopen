@@ -11,7 +11,6 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesEvent;
@@ -24,7 +23,7 @@ public final class RecentFiles implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void postModifiedUpdatedRecentFiles(final ModifiedFilesEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void execute() {
@@ -35,13 +34,13 @@ public final class RecentFiles implements Instance {
 			private void postRecentFilesModificationEvent() {
 				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
 			}
-		});
+		}.begin();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void postAccessedUpdatedRecentFiles(final AccessedFilesEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			private final List<String> rfiles = Lists.newArrayList(RecentFiles.this.getRecentFiles());
 
@@ -64,7 +63,7 @@ public final class RecentFiles implements Instance {
 			private void postRecentFilesEvent() {
 				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
 			}
-		});
+		}.begin();
 	}
 
 	@Synchronized("recentFiles")

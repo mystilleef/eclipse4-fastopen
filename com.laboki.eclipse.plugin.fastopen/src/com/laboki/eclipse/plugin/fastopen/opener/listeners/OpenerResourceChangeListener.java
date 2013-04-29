@@ -10,7 +10,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 @ToString
 public final class OpenerResourceChangeListener extends AbstractOpenerListener implements IResourceChangeListener {
@@ -34,7 +33,7 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener i
 
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void execute() {
@@ -51,6 +50,6 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener i
 					event.getDelta().accept(OpenerResourceChangeListener.this.handler);
 				} catch (final CoreException e) {}
 			}
-		});
+		}.begin();
 	}
 }

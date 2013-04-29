@@ -33,7 +33,7 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 	}
 
 	private void indexResources() {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void execute() {
@@ -59,7 +59,7 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 			private void postEvent() {
 				EventBus.post(new WorkspaceResourcesEvent(ImmutableList.copyOf(WorkspaceResources.this.resources)));
 			}
-		});
+		}.begin();
 	}
 
 	@Override
