@@ -15,11 +15,11 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.PartActivationEvent;
-import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
+import com.laboki.eclipse.plugin.fastopen.opener.events.AccessedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.DeserializedAccessedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.PartActivationEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesModificationEvent;
 
 public final class AccessedFiles implements Instance {
 
@@ -74,7 +74,7 @@ public final class AccessedFiles implements Instance {
 			}
 
 			@Override
-			protected void postExecute() {
+			public void postExecute() {
 				AccessedFiles.this.postEvent();
 			}
 		});
@@ -111,7 +111,7 @@ public final class AccessedFiles implements Instance {
 			}
 
 			@Override
-			protected void postExecute() {
+			public void postExecute() {
 				AccessedFiles.this.postEvent();
 			}
 		});

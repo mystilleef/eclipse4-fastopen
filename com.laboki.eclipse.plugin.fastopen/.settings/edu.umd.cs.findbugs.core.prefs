@@ -1,6 +1,6 @@
 #FindBugs User Preferences
-#Sun Apr 21 02:03:28 EDT 2013
-cloud_id=edu.umd.cs.findbugs.cloud.doNothingCloud
+#Mon Apr 29 16:41:44 EDT 2013
+cloud_id=edu.umd.cs.findbugs.cloud.appengine.findbugs-cloud
 detectorAppendingToAnObjectOutputStream=AppendingToAnObjectOutputStream|true
 detectorAtomicityProblem=AtomicityProblem|true
 detectorBadAppletConstructor=BadAppletConstructor|true

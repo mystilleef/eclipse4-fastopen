@@ -8,7 +8,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.events.PartActivationEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.PartActivationEvent;
 
 @ToString
 public enum Factory implements Instance {

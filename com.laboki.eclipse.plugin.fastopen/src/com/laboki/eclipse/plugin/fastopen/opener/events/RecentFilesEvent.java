@@ -1,4 +1,4 @@
-package com.laboki.eclipse.plugin.fastopen.events;
+package com.laboki.eclipse.plugin.fastopen.opener.events;
 
 import com.google.common.collect.ImmutableList;
 

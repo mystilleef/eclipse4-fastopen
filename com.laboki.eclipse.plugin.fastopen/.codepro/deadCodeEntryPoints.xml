@@ -8,21 +8,19 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~instance"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{RecentFilesEvent.java[RecentFilesEvent~RecentFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerDoubleClickListener~ViewerDoubleClickListener"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~visit~QIResource;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{AbstractOpenerListener.java[AbstractOpenerListener~AbstractOpenerListener"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~updateRFiles~QFileResourcesEvent;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{WorkspaceFilesEvent.java[WorkspaceFilesEvent~WorkspaceFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{AbstractOpenerListener.java[AbstractOpenerListener~AbstractOpenerListener"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[TextModifyListener~TextModifyListener"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~newBufferInputStream~QString;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[FONT~getDefaultFontName"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{WorkspaceResourcesEvent.java[WorkspaceResourcesEvent~WorkspaceResourcesEvent~QImmutableList\&lt;QIFile;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{WorkspaceResourcesEvent.java[WorkspaceResourcesEvent~getResources"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~focusViewer"/>
 		<explicit-entry-point
@@ -40,39 +38,39 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ContentProvider~ContentProvider"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilterRecentFilesResultEvent.java[FilterRecentFilesResultEvent~getRFiles"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerDoubleClickListener~doubleClick~QDoubleClickEvent;"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{OpenerResourceChangeListener.java[OpenerResourceChangeListener~add"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getFolder"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources~updateFileResources~QList\&lt;QRFile;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilesEvent.java[FilesEvent~FilesEvent~QImmutableList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~accessedFilesChanged~QAccessedFilesEvent;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources~updateFileResources~QList\&lt;QRFile;&gt;;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getPrivateContentType"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~end"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[TextFocusListener~focusLost~QFocusEvent;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~matches~QRFile;~QString;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getOpenEditorFilePaths"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{RecentFilesModificationEvent.java[RecentFilesModificationEvent~getFiles"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[TextFocusListener~TextFocusListener"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isValidPart~QIWorkbenchPart;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{DeserializedAccessedFilesEvent.java[DeserializedAccessedFilesEvent~DeserializedAccessedFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getMediaType~QIFile;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~sortFilesByModificationTime"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getContentTypeImage"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~execute"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isInvalidPart~QIWorkbenchPart;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getFile~QString;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isInvalidPart~QIWorkbenchPart;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~openFiles"/>
 		<explicit-entry-point
@@ -90,23 +88,15 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[TextModifyListener~modifyText~QModifyEvent;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ShellKeyListener~keyPressed~QKeyEvent;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FileResourcesMapEvent.java[FileResourcesMapEvent~FileResourcesMapEvent~QImmutableMap\&lt;QString;QIFile;&gt;;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles~getAccessedFiles"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{ModifiedFilesEvent.java[ModifiedFilesEvent~ModifiedFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilterRecentFilesResultEvent.java[FilterRecentFilesResultEvent~getRFiles"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory~toString"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FileResourcesEvent.java[FileResourcesEvent~FileResourcesEvent~QImmutableList\&lt;QRFile;&gt;;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~createFillGridData"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{AccessedFilesEvent.java[AccessedFilesEvent~AccessedFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilterRecentFilesResultEvent.java[FilterRecentFilesResultEvent~FilterRecentFilesResultEvent~QImmutableList\&lt;QRFile;&gt;;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider~prepareStyleRange~QStyleRange;~Z"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~addListeners"/>
 		<explicit-entry-point
@@ -114,23 +104,25 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getImage~QString;~QIContentType;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{ShowFastOpenDialogEvent.java[ShowFastOpenDialogEvent~toString"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~nonExistentFilePaths~QList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getSerializableFilePath~QString;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~nonExistentFilePaths~QList\&lt;QString;&gt;;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~setDialogLayout"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~Task~QString;~I"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getActivePage"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~openLink~QIFile;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{FileResources.java[FileResources~end"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getPrivateContentTypeString"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{FileResources.java[FileResources~visit~QIResourceDelta;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{WorkspaceResourcesEvent.java[WorkspaceResourcesEvent~getResources"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{ModifiedFilesEvent.java[ModifiedFilesEvent~ModifiedFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerFocusListener~focusGained~QFocusEvent;"/>
 		<explicit-entry-point
@@ -140,31 +132,39 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~hasValidCharSet~QIFile;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFilesSerializer.java[AccessedFilesSerializer~AccessedFilesSerializer"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilterRecentFilesEvent.java[FilterRecentFilesEvent~FilterRecentFilesEvent~QString;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getFilePath"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~end"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFilesSerializer.java[AccessedFilesSerializer~AccessedFilesSerializer"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~setViewerLayout"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getFilePath"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Services.java[Services~startService~QInstance;"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getFile"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~syncExec~QRunnable;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider~update~QViewerCell;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~compare~QIFile;~QIFile;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~modifiedFilesChanged~QModifiedFilesEvent;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider~updateCellProperties~QViewerCell;~QRFile;~QStyledString;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~updateFiles~QImmutableList\&lt;QRFile;&gt;;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~emptyFile~QString;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getFile"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~emptyFile~QString;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources~filePathIsCached~QString;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~Task~QString;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~filterFiles~QString;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Services.java[Services~startServices"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getActiveFilePathStrings"/>
 		<explicit-entry-point
@@ -176,9 +176,15 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider~styler~QFont;~QColor;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider~createStyledText~QRFile;"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{IOpenerListener.java[IOpenerListener~start"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources~end"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles~partActivationChanged~QPartActivationEvent;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{RecentFilesModificationEvent.java[RecentFilesModificationEvent~RecentFilesModificationEvent~QImmutableList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{IOpenerListener.java[IOpenerListener~stop"/>
 		<explicit-entry-point
@@ -188,7 +194,13 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles~deserializedAccessedFiles~QDeserializedAccessedFilesEvent;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider~measure~QEvent;~QObject;"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~setupViewer"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{WorkspaceFilesEvent.java[WorkspaceFilesEvent~WorkspaceFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~Task"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{OpenerResourceChangeListener.java[OpenerResourceChangeListener~remove"/>
 		<explicit-entry-point
@@ -196,13 +208,15 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory[PartListener~partBroughtToTop~QIWorkbenchPart;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~begin"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isHiddenFile~QIResource;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{RecentFilesModificationEvent.java[RecentFilesModificationEvent~getFiles"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory[PartListener~PartListener"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isNotValidResourceFile~QIResource;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory[PartListener~PartListener"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles~end"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles~modifiedFilesChanged~QRecentFilesModificationEvent;"/>
 		<explicit-entry-point
@@ -222,21 +236,33 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~equals~QObject;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~filter~QString;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider~getSeparator"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FileResourcesEvent.java[FileResourcesEvent~getRFiles"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FileResourcesMapEvent.java[FileResourcesMapEvent~FileResourcesMapEvent~QImmutableMap\&lt;QString;QIFile;&gt;;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~updateText~C"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getDisplay"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilesEvent.java[FilesEvent~FilesEvent~QImmutableList\&lt;QString;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFilesSerializer.java[AccessedFilesSerializer~end"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getPath"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~postAccessedUpdatedRecentFiles~QAccessedFilesEvent;"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~refresh"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~begin"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Services.java[Services~stopServices"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Services.java[Services~end"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles~updateAccessedFiles~QList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{OpenerResourceChangeListener.java[OpenerResourceChangeListener~tryToFindResourceDeltaChanges~QIResourceChangeEvent;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FileResourcesMapEvent.java[FileResourcesMapEvent~getMap"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[DialogShellListener~shellDeiconified~QShellEvent;"/>
 		<explicit-entry-point
@@ -244,23 +270,27 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~asyncExec~QRunnable;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~getFilteredList~QString;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{PartActivationEvent.java[PartActivationEvent~toString"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{DelayedTask.java[DelayedTask~run~QIProgressMonitor;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~tryToGetContentType~QIFile;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~indexResources"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~hashCode"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FileResourcesEvent.java[FileResourcesEvent~getRFiles"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isWindows"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~setupDialog"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{DeserializedAccessedFilesEvent.java[DeserializedAccessedFilesEvent~DeserializedAccessedFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerKeyListener~ViewerKeyListener"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~postModifiedUpdatedRecentFiles~QModifiedFilesEvent;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFilesSerializer.java[AccessedFilesSerializer~accessedFilesChanged~QAccessedFilesEvent;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~backspace"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider~paint~QEvent;~QObject;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[FONT~makeItalicizedFont"/>
 		<explicit-entry-point
@@ -268,11 +298,11 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~getRecentFiles"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~setupTable"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~openFile~QIFile;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getActiveFiles"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{DeserializedAccessedFilesEvent.java[DeserializedAccessedFilesEvent~getFiles"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~readObjectInput~QObjectInput;"/>
 		<explicit-entry-point
@@ -281,6 +311,8 @@
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory[PartListener~partOpened~QIWorkbenchPart;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{EventBus.java[EventBus~unregister~QObject;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~Task~QString;~I~I"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getModificationTime"/>
 		<explicit-entry-point
@@ -294,17 +326,15 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~toString"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{FileResources.java[FileResources~begin"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~newFileInputStream~QString;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getLastModified"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isValidResourceFile~QIResource;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{DelayedTask.java[DelayedTask~run"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FileResourcesMapEvent.java[FileResourcesMapEvent~getMap"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~fileResourcesChanged~QFilterRecentFilesEvent;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~end"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getEditorID~QIFile;"/>
 		<explicit-entry-point
@@ -314,13 +344,11 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getPartService"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{DelayedTask.java[DelayedTask~DelayedTask~QString;~I"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{AbstractOpenerListener.java[AbstractOpenerListener~stop"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getFilePathFromEditorReference~QIEditorReference;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ShellKeyListener~ShellKeyListener"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~filterRecentFiles~QFilterRecentFilesEvent;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getEditor"/>
 		<explicit-entry-point
@@ -330,23 +358,25 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{IOpenerResourceChangeListenerHandler.java[IOpenerResourceChangeListenerHandler~resourceChanged"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory~run"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory[PartListener~partDeactivated~QIWorkbenchPart;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilesEvent.java[FilesEvent~getFiles"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFilesSerializer.java[AccessedFilesSerializer~postEvent"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory~Factory"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{OpenerResourceChangeListener.java[OpenerResourceChangeListener~OpenerResourceChangeListener~QIResourceDeltaVisitor;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{WorkspaceResourcesEvent.java[WorkspaceResourcesEvent~WorkspaceResourcesEvent~QImmutableList\&lt;QIFile;&gt;;"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources~addNewResourceFiles~QArrayList\&lt;QRFile;&gt;;~QString;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{DeserializedAccessedFilesEvent.java[DeserializedAccessedFilesEvent~getFiles"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~filterViewer"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory[PartListener~partActivated~QIWorkbenchPart;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~postEvent~QList\&lt;QRFile;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources~begin"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~closeFiles"/>
 		<explicit-entry-point
@@ -354,35 +384,33 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[DialogShellListener~shellDeactivated~QShellEvent;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{InitModule.java[InitModule~configure"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~WorkspaceResources"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilesEvent.java[FilesEvent~getFiles"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{DelayedTask.java[DelayedTask~execute"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isMediaTypeText~QIFile;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~reset"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Services.java[Services~Services"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Services.java[Services~begin"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~serialize~QString;~QObject;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~begin"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isWierd~QIResource;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~RFile~QIFile;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{WorkspaceFilesEvent.java[WorkspaceFilesEvent~getFiles"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getShell"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{EventBus.java[EventBus~post~QObject;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{RecentFilesEvent.java[RecentFilesEvent~RecentFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles~postEvent"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getName"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~_updateViewer~QList\&lt;QRFile;&gt;;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~updateFilesFromWorkspace"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getName"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~fileResourcesChanged~QFileResourcesEvent;"/>
 		<explicit-entry-point
@@ -392,9 +420,9 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~openEditor~QIFile;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~updateRecentFiles~QImmutableList\&lt;QString;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles~begin"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilterRecentFilesEvent.java[FilterRecentFilesEvent~FilterRecentFilesEvent~QString;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~updateRecentFiles~QImmutableList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources~makeResourceFiles~QImmutableList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
@@ -404,19 +432,13 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isResourceFile~QIResource;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFilesSerializer.java[AccessedFilesSerializer~begin"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerFocusListener~ViewerFocusListener"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~deserialize~QString;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{RecentFilesModificationEvent.java[RecentFilesModificationEvent~RecentFilesModificationEvent~QImmutableList\&lt;QString;&gt;;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~belongsTo~QObject;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ShellKeyListener~keyReleased~QKeyEvent;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getActiveEditorParts"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext[FlushEventsRunnable~FlushEventsRunnable"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[DialogShellListener~shellActivated~QShellEvent;"/>
 		<explicit-entry-point
@@ -424,39 +446,43 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[DialogShellListener~shellClosed~QShellEvent;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~postEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{AccessedFilesEvent.java[AccessedFilesEvent~AccessedFilesEvent~QImmutableList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{InitModule.java[InitModule~registerEventBusListeners"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilterRecentFilesResultEvent.java[FilterRecentFilesResultEvent~FilterRecentFilesResultEvent~QImmutableList\&lt;QRFile;&gt;;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Services.java[Services~stopService~QInstance;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{EventBus.java[EventBus~EventBus"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~updateFiles~QIResource;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{DelayedTask.java[DelayedTask~belongsTo~QObject;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[FONT~makeNormalFont"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext[FlushEventsRunnable~run"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~begin"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FileResourcesEvent.java[FileResourcesEvent~FileResourcesEvent~QImmutableList\&lt;QRFile;&gt;;"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~end"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{OpenerResourceChangeListener.java[OpenerResourceChangeListener~resourceChanged~QIResourceChangeEvent;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ContentProvider~updateElement~I"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~listenForTextSelection"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerKeyListener~keyPressed~QKeyEvent;"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getContentTypeFromMediaType~QIFile;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~run~QIProgressMonitor;"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilterRecentFilesEvent.java[FilterRecentFilesEvent~getString"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~Dialog"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task~run"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles~end"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~removeFakePaths~QList\&lt;QString;&gt;;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~createTableColumn"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getContentType~QIFile;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[FONT~getDefaultFontHeight"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilterRecentFilesEvent.java[FilterRecentFilesEvent~getString"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[DialogShellListener~shellIconified~QShellEvent;"/>
 		<explicit-entry-point
@@ -464,11 +490,13 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getEditorPart~QIEditorReference;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources~init"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory~end"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getFile~QIEditorPart;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile~getContentType"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerKeyListener~keyReleased~QKeyEvent;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getPluginFolderPath"/>
 		<explicit-entry-point
@@ -476,11 +504,13 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~getFiles"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{OpenerResourceChangeListener.java[OpenerResourceChangeListener~findChangedResource~QIResourceChangeEvent;"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~isNotResourceFile~QIResource;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~setTextLayout"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{WorkspaceFilesEvent.java[WorkspaceFilesEvent~getFiles"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~delete~I"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~getActiveEditorReferences"/>
 		<explicit-entry-point
@@ -488,115 +518,113 @@
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ContentProvider~inputChanged~QViewer;~QObject;~QObject;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{FileResources.java[FileResources~FileResources"/>
-		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources~updateResourceFiles~QRecentFilesEvent;"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~setupText"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~writeOutput~QObject;~QObjectOutput;"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog~begin"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext~closeObjectInput~QObjectInput;"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter~fileResourcesChanged~QFileResourcesEvent;"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory~begin"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFilesSerializer.java[AccessedFilesSerializer"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilterRecentFilesResultEvent.java[FilterRecentFilesResultEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory[PartListener"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{ModifiedFilesEvent.java[ModifiedFilesEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[TextModifyListener"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerKeyListener"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{InitModule.java[InitModule"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{IOpenerResourceChangeListenerHandler.java[IOpenerResourceChangeListenerHandler"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilterRecentFilesEvent.java[FilterRecentFilesEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[TextFocusListener"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{ShowFastOpenDialogEvent.java[ShowFastOpenDialogEvent"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{AccessedFilesEvent.java[AccessedFilesEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{RecentFilesModificationEvent.java[RecentFilesModificationEvent"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FilesEvent.java[FilesEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{DeserializedAccessedFilesEvent.java[DeserializedAccessedFilesEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{RecentFilesEvent.java[RecentFilesEvent"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{DelayedTask.java[DelayedTask"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FileResourcesMapEvent.java[FileResourcesMapEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{DeserializedAccessedFilesEvent.java[DeserializedAccessedFilesEvent"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{AccessedFiles.java[AccessedFiles"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilesEvent.java[FilesEvent"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FileResourcesEvent.java[FileResourcesEvent"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.files{RecentFiles.java[RecentFiles"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FileResourcesMapEvent.java[FileResourcesMapEvent"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{FileResources.java[FileResources"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Services.java[Services"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[FONT"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{RecentFilesEvent.java[RecentFilesEvent"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{RecentFilesModificationEvent.java[RecentFilesModificationEvent"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{WorkspaceResources.java[WorkspaceResources"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{WorkspaceResourcesEvent.java[WorkspaceResourcesEvent"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilterRecentFilesEvent.java[FilterRecentFilesEvent"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RFile.java[RFile"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerDoubleClickListener"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{EventBus.java[EventBus"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{WorkspaceFilesEvent.java[WorkspaceFilesEvent"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{Task.java[Task"/>
 		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources"/>
+		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ContentProvider"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{WorkspaceResourcesEvent.java[WorkspaceResourcesEvent"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{AbstractOpenerListener.java[AbstractOpenerListener"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{IOpenerListener.java[IOpenerListener"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{ModifiedFilesEvent.java[ModifiedFilesEvent"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{AccessedFilesEvent.java[AccessedFilesEvent"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{OpenerResourceChangeListener.java[OpenerResourceChangeListener"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[LabelProvider"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerFocusListener"/>
+		<explicit-entry-point
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{FilterRecentFilesResultEvent.java[FilterRecentFilesResultEvent"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog"/>
 		<explicit-entry-point
 				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[DialogShellListener"/>
 		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{Factory.java[Factory[PartListener"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{PartActivationEvent.java[PartActivationEvent"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[TextModifyListener"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{IOpenerResourceChangeListenerHandler.java[IOpenerResourceChangeListenerHandler"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[TextFocusListener"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{FileResourcesEvent.java[FileResourcesEvent"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{ShowFastOpenDialogEvent.java[ShowFastOpenDialogEvent"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{FileResources.java[FileResources"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen{EventBus.java[EventBus"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResourcesFilter.java[RecentResourcesFilter"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.events{WorkspaceFilesEvent.java[WorkspaceFilesEvent"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.resources{RecentResources.java[RecentResources"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{IOpenerListener.java[IOpenerListener"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener{EditorContext.java[EditorContext[FlushEventsRunnable"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.listeners{OpenerResourceChangeListener.java[OpenerResourceChangeListener"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ViewerFocusListener"/>
-		<explicit-entry-point
-				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.ui{Dialog.java[Dialog[ShellKeyListener"/>
+				handle="=com.laboki.eclipse.plugin.fastopen/src&lt;com.laboki.eclipse.plugin.fastopen.opener.events{PartActivationEvent.java[PartActivationEvent"/>
 	</explicit-entry-points>
 	<include-main
 			enabled="true"/>

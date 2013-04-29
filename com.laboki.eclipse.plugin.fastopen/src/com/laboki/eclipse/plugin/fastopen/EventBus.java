@@ -4,7 +4,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import com.google.common.eventbus.AsyncEventBus;
-import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 
 public final class EventBus {
 
@@ -22,12 +21,12 @@ public final class EventBus {
 	}
 
 	public static void post(final Object object) {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void execute() {
 				EventBus.BUS.post(object);
 			}
-		});
+		}.begin();
 	}
 }

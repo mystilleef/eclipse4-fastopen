@@ -48,11 +48,11 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
-import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
+import com.laboki.eclipse.plugin.fastopen.opener.events.FileResourcesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.FilterRecentFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.FilterRecentFilesResultEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.resources.RFile;
 
 @Log

@@ -17,8 +17,8 @@ import com.google.common.collect.Lists;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
+import com.laboki.eclipse.plugin.fastopen.opener.events.WorkspaceResourcesEvent;
 
 public final class WorkspaceResources implements IResourceVisitor, Comparator<IFile>, Instance {
 
@@ -52,7 +52,7 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 			}
 
 			@Override
-			protected void postExecute() {
+			public void postExecute() {
 				this.postEvent();
 			}
 

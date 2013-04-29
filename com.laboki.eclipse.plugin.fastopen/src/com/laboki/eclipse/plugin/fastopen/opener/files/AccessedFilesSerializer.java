@@ -10,9 +10,9 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
+import com.laboki.eclipse.plugin.fastopen.opener.events.AccessedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.DeserializedAccessedFilesEvent;
 
 public final class AccessedFilesSerializer implements Instance {
 

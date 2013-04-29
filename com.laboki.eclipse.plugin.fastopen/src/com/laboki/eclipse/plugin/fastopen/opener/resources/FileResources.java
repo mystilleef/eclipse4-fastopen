@@ -19,10 +19,10 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
-import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
+import com.laboki.eclipse.plugin.fastopen.opener.events.FileResourcesMapEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.ModifiedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.listeners.OpenerResourceChangeListener;
 
 public final class FileResources implements IResourceDeltaVisitor, Instance {
@@ -74,7 +74,7 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 			}
 
 			@Override
-			protected void postExecute() {
+			public void postExecute() {
 				FileResources.this.postEvents();
 			}
 		});

@@ -11,11 +11,11 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
-import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
+import com.laboki.eclipse.plugin.fastopen.opener.events.AccessedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.ModifiedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesModificationEvent;
 
 public final class RecentFiles implements Instance {
 
@@ -23,7 +23,7 @@ public final class RecentFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void postUpdatedRecentFiles(final ModifiedFilesEvent event) {
+	public void postModifiedUpdatedRecentFiles(final ModifiedFilesEvent event) {
 		EditorContext.asyncExec(new Task() {
 
 			@Override
@@ -40,7 +40,7 @@ public final class RecentFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void postUpdatedRecentFiles(final AccessedFilesEvent event) {
+	public void postAccessedUpdatedRecentFiles(final AccessedFilesEvent event) {
 		EditorContext.asyncExec(new Task() {
 
 			private final List<String> rfiles = Lists.newArrayList(RecentFiles.this.getRecentFiles());
