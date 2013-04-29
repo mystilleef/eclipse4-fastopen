@@ -1,6 +1,5 @@
 package com.laboki.eclipse.plugin.fastopen;
 
-import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.Services;
 
 public enum Plugin implements Instance {
@@ -10,25 +9,25 @@ public enum Plugin implements Instance {
 
 	@Override
 	public Instance begin() {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void asyncExec() {
 				Plugin.SERVICES.begin();
 			}
-		});
+		}.begin();
 		return this;
 	}
 
 	@Override
 	public Instance end() {
-		EditorContext.asyncExec(new Task() {
+		new Task() {
 
 			@Override
 			public void asyncExec() {
 				Plugin.SERVICES.end();
 			}
-		});
+		}.begin();
 		return this;
 	}
 }
