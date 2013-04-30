@@ -31,7 +31,6 @@ public enum Factory implements Instance {
 	public static void startRecentFilesMonitor(final IWorkbenchPart part) {
 		if (EditorContext.isInvalidPart(part)) return;
 		EventBus.post(new PartActivationEvent());
-		System.out.println(part);
 	}
 
 	private final class PartListener implements IPartListener {
