@@ -6,6 +6,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
+import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.opener.events.PartActivationEvent;
 
 public enum Factory implements Instance {
@@ -30,6 +31,7 @@ public enum Factory implements Instance {
 	public static void startRecentFilesMonitor(final IWorkbenchPart part) {
 		if (EditorContext.isInvalidPart(part)) return;
 		EventBus.post(new PartActivationEvent());
+		System.out.println(part);
 	}
 
 	private final class PartListener implements IPartListener {
@@ -38,23 +40,25 @@ public enum Factory implements Instance {
 
 		@Override
 		public void partActivated(final IWorkbenchPart part) {
-			Factory.startRecentFilesMonitor(part);
+			EditorContext.asyncExec(new Task() {
+
+				@Override
+				public void execute() {
+					Factory.startRecentFilesMonitor(part);
+				}
+			});
 		}
 
 		@Override
 		public void partClosed(final IWorkbenchPart part) {}
 
 		@Override
-		public void partBroughtToTop(final IWorkbenchPart part) {
-			Factory.startRecentFilesMonitor(part);
-		}
+		public void partBroughtToTop(final IWorkbenchPart part) {}
 
 		@Override
 		public void partDeactivated(final IWorkbenchPart part) {}
 
 		@Override
-		public void partOpened(final IWorkbenchPart part) {
-			Factory.startRecentFilesMonitor(part);
-		}
+		public void partOpened(final IWorkbenchPart part) {}
 	}
 }
