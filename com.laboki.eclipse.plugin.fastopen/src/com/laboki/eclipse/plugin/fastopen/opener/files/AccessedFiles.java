@@ -16,8 +16,8 @@ import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.DeserializedAccessedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.PartActivationEvent;
-import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesModificationEvent;
 
 public final class AccessedFiles implements Instance {
 
@@ -30,7 +30,7 @@ public final class AccessedFiles implements Instance {
 		new Task() {
 
 			@Override
-			public void execute() {
+			public void asyncExec() {
 				AccessedFiles.this.updateAccessedFiles(event.getFiles());
 				AccessedFiles.this.updateAccessedFiles(AccessedFiles.this.getAccessedFiles());
 				this.arrangeFiles();
@@ -53,8 +53,8 @@ public final class AccessedFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void modifiedFilesChanged(final RecentFilesModificationEvent event) {
-		new Task() {
+	public void modifiedFilesChanged(final ModifiedFilesEvent event) {
+		new Task("accessed files recent files modification event", 500) {
 
 			@Override
 			public void execute() {
@@ -86,12 +86,13 @@ public final class AccessedFiles implements Instance {
 			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
 
 			@Override
-			public void execute() {
+			public void asyncExec() {
 				final String path = EditorContext.getPath();
 				if (path.length() == 0) return;
 				this.moveCurrentFileToTopOfList();
 				this.update(this.getAccessedFilesInsertionIndex(), path);
 				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
+				AccessedFiles.this.postEvent();
 			}
 
 			protected int getAccessedFilesInsertionIndex() {
@@ -107,24 +108,20 @@ public final class AccessedFiles implements Instance {
 				this.aFiles.remove(path);
 				this.aFiles.add(index, path);
 			}
-
-			@Override
-			public void postExecute() {
-				AccessedFiles.this.postEvent();
-			}
 		}.begin();
 	}
 
-	private void updateAccessedFiles(final List<String> files) {
+	private synchronized void updateAccessedFiles(final List<String> files) {
 		this.accessedFiles.removeAll(files);
 		this.accessedFiles.addAll(0, files);
+		this.accessedFiles.remove("");
 	}
 
 	private void postEvent() {
 		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this.getAccessedFiles())));
 	}
 
-	private ArrayList<String> getAccessedFiles() {
+	private synchronized ArrayList<String> getAccessedFiles() {
 		return Lists.newArrayList(this.accessedFiles);
 	}
 
