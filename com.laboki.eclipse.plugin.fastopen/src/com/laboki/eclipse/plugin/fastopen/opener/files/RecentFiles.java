@@ -12,7 +12,6 @@ import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.opener.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesModificationEvent;
 
 public final class RecentFiles implements Instance {
 
@@ -26,12 +25,12 @@ public final class RecentFiles implements Instance {
 			@Override
 			public void execute() {
 				RecentFiles.this.updateRecentFiles(event.getFiles());
-				this.postRecentFilesModificationEvent();
 			}
 
-			private void postRecentFilesModificationEvent() {
-				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
-			}
+			@Override
+			public void postExecute() {
+				RecentFiles.this.postRecentFilesEvent();
+			};
 		}.begin();
 	}
 
@@ -48,28 +47,33 @@ public final class RecentFiles implements Instance {
 			}
 
 			private void mergeAccessedAndRecentFiles(final ImmutableList<String> files) {
-				this.update(files);
-				RecentFiles.this.updateRecentFiles(ImmutableList.copyOf(this.rfiles));
-				this.postRecentFilesEvent();
+				RecentFiles.this.updateRecentFiles(files);
 			}
 
+			@SuppressWarnings("unused")
 			private void update(final ImmutableList<String> files) {
 				this.rfiles.removeAll(files);
 				this.rfiles.addAll(0, files);
 			}
 
-			private void postRecentFilesEvent() {
-				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
+			@Override
+			public void postExecute() {
+				RecentFiles.this.postRecentFilesEvent();
 			}
 		}.begin();
 	}
 
-	protected void updateRecentFiles(final ImmutableList<String> files) {
-		this.recentFiles.clear();
-		this.recentFiles.addAll(files);
+	private synchronized void updateRecentFiles(final ImmutableList<String> files) {
+		this.recentFiles.removeAll(files);
+		this.recentFiles.addAll(0, files);
+		this.recentFiles.remove("");
 	}
 
-	private ImmutableList<String> getRecentFiles() {
+	private void postRecentFilesEvent() {
+		EventBus.post(new RecentFilesEvent(this.getRecentFiles()));
+	}
+
+	private synchronized ImmutableList<String> getRecentFiles() {
 		return ImmutableList.copyOf(this.recentFiles);
 	}
 
