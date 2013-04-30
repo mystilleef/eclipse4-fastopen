@@ -34,7 +34,7 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void worskpaceResources(final WorkspaceResourcesEvent event) {
-		new Task("fastopen file resource updater task", 250) {
+		new Task("fastopen file resource updater task") {
 
 			ImmutableList<IFile> resources = event.getResources();
 
@@ -95,7 +95,7 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 		return true;
 	}
 
-	private void addResource(final IResource file) {
+	private synchronized void addResource(final IResource file) {
 		if ((file == null) || EditorContext.isNotValidResourceFile(file)) return;
 		final String filepath = EditorContext.getURIPath(file);
 		this.fileResourcesMap.put(filepath, (IFile) file);
@@ -104,7 +104,7 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 		this.postEvents();
 	}
 
-	private void removeResource(final IResource file) {
+	private synchronized void removeResource(final IResource file) {
 		if (file == null) return;
 		final String filePath = EditorContext.getURIPath(file);
 		this.fileResourcesMap.remove(filePath);
