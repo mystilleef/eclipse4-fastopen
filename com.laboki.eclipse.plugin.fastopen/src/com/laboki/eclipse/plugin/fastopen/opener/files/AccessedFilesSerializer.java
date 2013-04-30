@@ -22,32 +22,21 @@ public final class AccessedFilesSerializer implements Instance {
 		EditorContext.emptyFile(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
 	}
 
-	private static void postEvent() {
-		EventBus.post(new DeserializedAccessedFilesEvent(ImmutableList.copyOf(AccessedFilesSerializer.deserialize())));
-	}
-
 	@Subscribe
 	@AllowConcurrentEvents
-	public static void accessedFilesChanged(final AccessedFilesEvent event) {
+	public static synchronized void accessedFilesChanged(final AccessedFilesEvent event) {
 		new Task() {
 
 			@Override
 			public void execute() {
-				AccessedFilesSerializer.serialize(event.getFiles());
+				this.serialize(event.getFiles());
+			}
+
+			private void serialize(final Collection<String> files) {
+				if (files.size() == 0) return;
+				EditorContext.serialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH, files);
 			}
 		}.begin();
-	}
-
-	private static void serialize(final Collection<String> files) {
-		if (files.size() == 0) return;
-		EditorContext.serialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH, files);
-	}
-
-	@SuppressWarnings("unchecked")
-	private static List<String> deserialize() {
-		final Object files = EditorContext.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
-		if (files == null) return Lists.newArrayList();
-		return (List<String>) files;
 	}
 
 	@Override
@@ -55,6 +44,17 @@ public final class AccessedFilesSerializer implements Instance {
 		EventBus.register(this);
 		AccessedFilesSerializer.postEvent();
 		return this;
+	}
+
+	private static void postEvent() {
+		EventBus.post(new DeserializedAccessedFilesEvent(ImmutableList.copyOf(AccessedFilesSerializer.deserialize())));
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<String> deserialize() {
+		final Object files = EditorContext.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
+		if (files == null) return Lists.newArrayList();
+		return (List<String>) files;
 	}
 
 	@Override
