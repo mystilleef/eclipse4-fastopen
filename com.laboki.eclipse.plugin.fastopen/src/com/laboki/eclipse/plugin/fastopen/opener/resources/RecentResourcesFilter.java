@@ -39,6 +39,8 @@ public final class RecentResourcesFilter implements Instance {
 	public void filterRecentFiles(final FilterRecentFilesEvent event) {
 		new Task() {
 
+			private final List<RFile> recentFiles = RecentResourcesFilter.this.getFiles();
+
 			@Override
 			public void execute() {
 				this.filter(event.getString());
@@ -46,7 +48,7 @@ public final class RecentResourcesFilter implements Instance {
 
 			private void filter(final String string) {
 				final String trimmedString = string.trim();
-				if (trimmedString.length() == 0) this.postEvent(RecentResourcesFilter.this.getFiles());
+				if (trimmedString.length() == 0) this.postEvent(this.recentFiles);
 				else this.filterFiles(trimmedString);
 			}
 
@@ -61,7 +63,7 @@ public final class RecentResourcesFilter implements Instance {
 
 			private List<RFile> getFilteredList(final String string) {
 				final List<RFile> filteredList = Lists.newArrayList();
-				for (final RFile rFile : RecentResourcesFilter.this.getFiles())
+				for (final RFile rFile : this.recentFiles)
 					if (this.matches(rFile, string)) filteredList.add(rFile);
 				return filteredList;
 			}
