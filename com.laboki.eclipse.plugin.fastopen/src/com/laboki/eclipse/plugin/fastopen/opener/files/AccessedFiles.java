@@ -54,7 +54,7 @@ public final class AccessedFiles implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void modifiedFilesChanged(final ModifiedFilesEvent event) {
-		new Task("accessed files recent files modification event", 500) {
+		new Task("accessed files recent files modification event", 1000) {
 
 			@Override
 			public void execute() {
