@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableList;
 
 public final class RecentFilesModificationEvent {
 
-	private final ImmutableList<String> files;
+	private final ImmutableList<Object> files;
 
-	public RecentFilesModificationEvent(final ImmutableList<String> files) {
-		this.files = files;
+	public RecentFilesModificationEvent(final ImmutableList<Object> immutableList) {
+		this.files = immutableList;
 	}
 
-	public ImmutableList<String> getFiles() {
+	public ImmutableList<Object> getFiles() {
 		return this.files;
 	}
 }
