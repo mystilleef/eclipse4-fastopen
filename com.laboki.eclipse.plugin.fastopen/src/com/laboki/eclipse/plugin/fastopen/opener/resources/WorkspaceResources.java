@@ -14,36 +14,54 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
 import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
+import com.laboki.eclipse.plugin.fastopen.opener.events.IndexResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.WorkspaceResourcesEvent;
 
 public final class WorkspaceResources implements IResourceVisitor, Comparator<IFile>, Instance {
 
-	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-	private final IWorkspaceRoot root = this.workspace.getRoot();
 	private final List<IFile> resources = Lists.newArrayList();
 
 	@Override
 	public Instance begin() {
+		EventBus.register(this);
 		this.indexResources();
 		return this;
 	}
 
-	private void indexResources() {
-		new Task() {
+	@Subscribe
+	@AllowConcurrentEvents
+	public void indexResources(@SuppressWarnings("unused") final IndexResourcesEvent event) {
+		new Task("FASTOPEN_INDEX_RESOURCES", 250) {
 
 			@Override
 			public void execute() {
+				WorkspaceResources.this.indexResources();
+			}
+		}.begin();
+	}
+
+	private synchronized void indexResources() {
+		new Task() {
+
+			private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			private final IWorkspaceRoot root = this.workspace.getRoot();
+
+			@Override
+			public void execute() {
+				WorkspaceResources.this.resources.clear();
 				this.updateFilesFromWorkspace();
 				this.sortFilesByModificationTime();
 			}
 
 			private void updateFilesFromWorkspace() {
 				try {
-					WorkspaceResources.this.root.accept(WorkspaceResources.this);
+					this.root.accept(WorkspaceResources.this);
 				} catch (final Exception e) {
 					// Do nothing.
 				}
@@ -66,6 +84,7 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 
 	@Override
 	public Instance end() {
+		EventBus.unregister(this);
 		this.resources.clear();
 		return this;
 	}

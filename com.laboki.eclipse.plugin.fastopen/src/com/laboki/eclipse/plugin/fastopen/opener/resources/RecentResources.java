@@ -28,18 +28,18 @@ public final class RecentResources implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void fileResourcesMap(final FileResourcesMapEvent event) {
-		new Task() {
-
-			@Override
-			public void execute() {
-				RecentResources.this.updateFileResourcesMap(event.getMap());
-				RecentResources.this.makeResourceFiles(ImmutableList.copyOf(event.getMap().keySet()));
-			}
-		}.begin();
+		this.clearResources();
+		RecentResources.this.updateFileResourcesMap(event.getMap());
+		RecentResources.this.makeResourceFiles(ImmutableList.copyOf(event.getMap().keySet()));
 	}
 
-	private synchronized void updateFileResourcesMap(final ImmutableMap<String, IFile> map) {
+	private void clearResources() {
 		this.fileResourcesMap.clear();
+		this.cachedResourceFiles.clear();
+		this.fileResources.clear();
+	}
+
+	private void updateFileResourcesMap(final ImmutableMap<String, IFile> map) {
 		this.fileResourcesMap.putAll(map);
 	}
 

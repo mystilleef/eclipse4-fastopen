@@ -4,12 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -21,61 +19,46 @@ import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.events.FileResourcesMapEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.IndexResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.listeners.OpenerResourceChangeListener;
 
 public final class FileResources implements IResourceDeltaVisitor, Instance {
 
-	private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
-	private final List<String> modifiedFiles = Lists.newArrayList();
 	private final OpenerResourceChangeListener listener = new OpenerResourceChangeListener(this);
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void worskpaceResources(final WorkspaceResourcesEvent event) {
-		new Task("fastopen file resource updater task") {
+	public static void worskpaceResources(final WorkspaceResourcesEvent event) {
+		new Task("FASTOPEN_INDEX_RESOURCES", 250) {
 
+			private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
+			private final List<String> modifiedFiles = Lists.newArrayList();
 			ImmutableList<IFile> resources = event.getResources();
 
 			@Override
 			public void execute() {
 				this.buildFileResourcesMap();
-				this.updateModifiedFiles();
+				this.buildModifiedFilesList();
 			}
 
 			private void buildFileResourcesMap() {
-				FileResources.this.fileResourcesMap.putAll(this.buildMapFromResources());
+				this.fileResourcesMap.clear();
+				for (final IFile file : this.resources)
+					this.fileResourcesMap.put(EditorContext.getURIPath(file), file);
 			}
 
-			private Map<String, IFile> buildMapFromResources() {
-				return Maps.uniqueIndex(this.resources, new Function<IFile, String>() {
-
-					@Override
-					public String apply(final IFile file) {
-						return EditorContext.getURIPath(file);
-					}
-				});
-			}
-
-			private void updateModifiedFiles() {
-				FileResources.this.modifiedFiles.clear();
-				FileResources.this.modifiedFiles.addAll(this.getPathsFromResources());
-			}
-
-			private List<String> getPathsFromResources() {
-				return Lists.transform(this.resources, new Function<IFile, String>() {
-
-					@Override
-					public String apply(final IFile file) {
-						return EditorContext.getURIPath(file);
-					}
-				});
+			private void buildModifiedFilesList() {
+				this.modifiedFiles.clear();
+				for (final IFile file : this.resources)
+					this.modifiedFiles.add(EditorContext.getURIPath(file));
 			}
 
 			@Override
 			public void postExecute() {
-				FileResources.this.postEvents();
+				EventBus.post(new FileResourcesMapEvent(ImmutableMap.copyOf(this.fileResourcesMap)));
+				EventBus.post(new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles)));
 			}
 		}.begin();
 	}
@@ -84,10 +67,10 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 	public boolean visit(final IResourceDelta delta) throws CoreException {
 		switch (delta.getKind()) {
 			case IResourceDelta.ADDED:
-				this.addResource(delta.getResource());
+				FileResources.indexResource();
 				break;
 			case IResourceDelta.REMOVED:
-				this.removeResource(delta.getResource());
+				FileResources.indexResource();
 				break;
 			default:
 				break;
@@ -95,26 +78,15 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 		return true;
 	}
 
-	private synchronized void addResource(final IResource file) {
-		if ((file == null) || EditorContext.isNotValidResourceFile(file)) return;
-		final String filepath = EditorContext.getURIPath(file);
-		this.fileResourcesMap.put(filepath, (IFile) file);
-		this.modifiedFiles.remove(filepath);
-		this.modifiedFiles.add(0, filepath);
-		this.postEvents();
-	}
+	private static void indexResource() {
+		EditorContext.asyncExec(new Task("FASTOPEN_INDEX_RESOURCES", 1000) {
 
-	private synchronized void removeResource(final IResource file) {
-		if (file == null) return;
-		final String filePath = EditorContext.getURIPath(file);
-		this.fileResourcesMap.remove(filePath);
-		this.modifiedFiles.remove(filePath);
-		this.postEvents();
-	}
-
-	private void postEvents() {
-		EventBus.post(new FileResourcesMapEvent(ImmutableMap.copyOf(this.fileResourcesMap)));
-		EventBus.post(new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles)));
+			@Override
+			public void execute() {
+				EditorContext.cancelJobsBelongingTo("FASTOPEN_INDEX_RESOURCES");
+				EventBus.post(new IndexResourcesEvent());
+			}
+		});
 	}
 
 	@Override
@@ -127,8 +99,6 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 	@Override
 	public Instance end() {
 		EventBus.unregister(this);
-		this.fileResourcesMap.clear();
-		this.modifiedFiles.clear();
 		this.listener.stop();
 		return this;
 	}
