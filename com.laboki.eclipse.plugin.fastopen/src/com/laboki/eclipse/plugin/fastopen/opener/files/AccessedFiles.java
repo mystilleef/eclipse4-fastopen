@@ -1,5 +1,6 @@
 package com.laboki.eclipse.plugin.fastopen.opener.files;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,13 +61,12 @@ public final class AccessedFiles implements Instance {
 				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(Lists.newArrayList(this.removeDeletedFiles(event.getFiles()))));
 			}
 
-			private Collection<String> removeDeletedFiles(final ImmutableList<Object> immutableList) {
-				for (final Object file : AccessedFiles.this.getAccessedFiles()) {}
+			private Collection<String> removeDeletedFiles(final ImmutableList<String> files) {
 				return Collections2.filter(AccessedFiles.this.getAccessedFiles(), new Predicate<String>() {
 
 					@Override
 					public boolean apply(final String file) {
-						return immutableList.contains(file);
+						return files.contains(file);
 					}
 				});
 			}
@@ -83,7 +83,7 @@ public final class AccessedFiles implements Instance {
 	public void partActivationChanged(@SuppressWarnings("unused") final PartActivationEvent event) {
 		new Task() {
 
-			private final List<Object> aFiles = AccessedFiles.this.getAccessedFiles();
+			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
 
 			@Override
 			public void asyncExec() {
@@ -121,7 +121,7 @@ public final class AccessedFiles implements Instance {
 		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this.getAccessedFiles())));
 	}
 
-	private synchronized List<Object> getAccessedFiles() {
+	private synchronized ArrayList<String> getAccessedFiles() {
 		return Lists.newArrayList(this.accessedFiles);
 	}
 

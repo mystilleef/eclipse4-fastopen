@@ -1,5 +1,6 @@
 package com.laboki.eclipse.plugin.fastopen.opener.files;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -31,9 +32,9 @@ public final class AccessedFilesSerializer implements Instance {
 				this.serialize(event.getFiles());
 			}
 
-			private void serialize(final ImmutableList<Object> immutableList) {
-				if (immutableList.size() == 0) return;
-				EditorContext.serialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH, immutableList);
+			private void serialize(final Collection<String> files) {
+				if (files.size() == 0) return;
+				EditorContext.serialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH, files);
 			}
 		}.begin();
 	}

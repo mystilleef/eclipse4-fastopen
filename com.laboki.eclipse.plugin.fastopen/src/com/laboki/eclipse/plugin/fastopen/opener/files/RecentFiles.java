@@ -1,6 +1,5 @@
 package com.laboki.eclipse.plugin.fastopen.opener.files;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -17,7 +16,7 @@ import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesModificationE
 
 public final class RecentFiles implements Instance {
 
-	private final List<Object> recentFiles = Collections.synchronizedList(Lists.newArrayList());
+	private final List<String> recentFiles = Lists.newArrayList();
 
 	@Subscribe
 	@AllowConcurrentEvents
@@ -29,15 +28,15 @@ public final class RecentFiles implements Instance {
 				this.resetRecentFiles(event.getFiles());
 			}
 
-			private void resetRecentFiles(final ImmutableList<Object> immutableList) {
+			private void resetRecentFiles(final ImmutableList<String> files) {
 				synchronized (RecentFiles.this.recentFiles) {
-					this.update(immutableList);
+					this.update(files);
 				}
 			}
 
-			private void update(final ImmutableList<Object> immutableList) {
+			private void update(final ImmutableList<String> files) {
 				RecentFiles.this.recentFiles.clear();
-				RecentFiles.this.recentFiles.addAll(immutableList);
+				RecentFiles.this.recentFiles.addAll(files);
 				RecentFiles.this.recentFiles.remove("");
 			}
 
@@ -53,7 +52,7 @@ public final class RecentFiles implements Instance {
 	public void postAccessedUpdatedRecentFiles(final AccessedFilesEvent event) {
 		new Task() {
 
-			private final ImmutableList<Object> files = event.getFiles();
+			private final ImmutableList<String> files = event.getFiles();
 
 			@Override
 			public void execute() {
@@ -66,7 +65,7 @@ public final class RecentFiles implements Instance {
 				}
 			}
 
-			private void update(final ImmutableList<Object> files) {
+			private void update(final ImmutableList<String> files) {
 				RecentFiles.this.recentFiles.removeAll(files);
 				RecentFiles.this.recentFiles.addAll(0, files);
 				RecentFiles.this.recentFiles.remove("");
@@ -79,7 +78,7 @@ public final class RecentFiles implements Instance {
 		}.begin();
 	}
 
-	private synchronized ImmutableList<Object> getRecentFiles() {
+	private synchronized ImmutableList<String> getRecentFiles() {
 		return ImmutableList.copyOf(this.recentFiles);
 	}
 

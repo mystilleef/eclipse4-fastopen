@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableList;
 
 public class FilesEvent {
 
-	private final ImmutableList<Object> files;
+	private final ImmutableList<String> files;
 
-	public FilesEvent(final ImmutableList<Object> immutableList) {
-		this.files = immutableList;
+	public FilesEvent(final ImmutableList<String> files) {
+		this.files = files;
 	}
 
-	public ImmutableList<Object> getFiles() {
+	public ImmutableList<String> getFiles() {
 		return this.files;
 	}
 }
