@@ -28,6 +28,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -53,6 +55,7 @@ public final class EditorContext {
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
 	public static final String PLUGIN_NAME = "com.laboki.eclipse.plugin.fastopen";
 	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
+	public static final IJobManager JOB_MANAGER = Job.getJobManager();
 
 	private EditorContext() {}
 
@@ -407,5 +410,9 @@ public final class EditorContext {
 
 	public static boolean isWindows() {
 		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
+	}
+
+	public static void cancelJobsBelongingTo(final String jobName) {
+		EditorContext.JOB_MANAGER.cancel(jobName);
 	}
 }

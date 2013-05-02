@@ -12,6 +12,7 @@ import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.opener.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesModificationEvent;
 
 public final class RecentFiles implements Instance {
 
@@ -24,12 +25,24 @@ public final class RecentFiles implements Instance {
 
 			@Override
 			public void execute() {
-				RecentFiles.this.updateRecentFiles(event.getFiles());
+				this.resetRecentFiles(event.getFiles());
+			}
+
+			private void resetRecentFiles(final ImmutableList<String> files) {
+				synchronized (RecentFiles.this.recentFiles) {
+					this.update(files);
+				}
+			}
+
+			private void update(final ImmutableList<String> files) {
+				RecentFiles.this.recentFiles.clear();
+				RecentFiles.this.recentFiles.addAll(files);
+				RecentFiles.this.recentFiles.remove("");
 			}
 
 			@Override
 			public void postExecute() {
-				RecentFiles.this.postRecentFilesEvent();
+				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
 			};
 		}.begin();
 	}
@@ -39,38 +52,30 @@ public final class RecentFiles implements Instance {
 	public void postAccessedUpdatedRecentFiles(final AccessedFilesEvent event) {
 		new Task() {
 
-			private final List<String> rfiles = Lists.newArrayList(RecentFiles.this.getRecentFiles());
+			private final ImmutableList<String> files = event.getFiles();
 
 			@Override
 			public void execute() {
-				this.mergeAccessedAndRecentFiles(event.getFiles());
+				this.mergeAccessedAndRecentFiles();
 			}
 
-			private void mergeAccessedAndRecentFiles(final ImmutableList<String> files) {
-				RecentFiles.this.updateRecentFiles(files);
+			private void mergeAccessedAndRecentFiles() {
+				synchronized (RecentFiles.this.recentFiles) {
+					this.update(this.files);
+				}
 			}
 
-			@SuppressWarnings("unused")
 			private void update(final ImmutableList<String> files) {
-				this.rfiles.removeAll(files);
-				this.rfiles.addAll(0, files);
+				RecentFiles.this.recentFiles.removeAll(files);
+				RecentFiles.this.recentFiles.addAll(0, files);
+				RecentFiles.this.recentFiles.remove("");
 			}
 
 			@Override
 			public void postExecute() {
-				RecentFiles.this.postRecentFilesEvent();
+				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
 			}
 		}.begin();
-	}
-
-	private synchronized void updateRecentFiles(final ImmutableList<String> files) {
-		this.recentFiles.removeAll(files);
-		this.recentFiles.addAll(0, files);
-		this.recentFiles.remove("");
-	}
-
-	private void postRecentFilesEvent() {
-		EventBus.post(new RecentFilesEvent(this.getRecentFiles()));
 	}
 
 	private synchronized ImmutableList<String> getRecentFiles() {

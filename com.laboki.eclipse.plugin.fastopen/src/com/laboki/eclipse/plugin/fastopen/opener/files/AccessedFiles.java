@@ -16,8 +16,8 @@ import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.opener.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.opener.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.DeserializedAccessedFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.opener.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.opener.events.PartActivationEvent;
+import com.laboki.eclipse.plugin.fastopen.opener.events.RecentFilesModificationEvent;
 
 public final class AccessedFiles implements Instance {
 
@@ -53,7 +53,7 @@ public final class AccessedFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void modifiedFilesChanged(final ModifiedFilesEvent event) {
+	public void modifiedFilesChanged(final RecentFilesModificationEvent event) {
 		new Task("accessed files recent files modification event", 1000) {
 
 			@Override
