@@ -1,11 +1,8 @@
 package com.laboki.eclipse.plugin.fastopen.opener.files;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -56,19 +53,18 @@ public final class AccessedFiles implements Instance {
 	public void modifiedFilesChanged(final RecentFilesModificationEvent event) {
 		new Task("accessed files recent files modification event", 1000) {
 
+			private final ImmutableList<String> modifiedFiles = event.getFiles();
+
 			@Override
 			public void execute() {
-				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(Lists.newArrayList(this.removeDeletedFiles(event.getFiles()))));
+				AccessedFiles.this.updateAccessedFiles(this.removeDeletedFilesFromAccessList());
 			}
 
-			private Collection<String> removeDeletedFiles(final ImmutableList<String> files) {
-				return Collections2.filter(AccessedFiles.this.getAccessedFiles(), new Predicate<String>() {
-
-					@Override
-					public boolean apply(final String file) {
-						return files.contains(file);
-					}
-				});
+			private ImmutableList<String> removeDeletedFilesFromAccessList() {
+				final List<String> files = Lists.newArrayList();
+				for (final String file : AccessedFiles.this.getAccessedFiles())
+					if (this.modifiedFiles.contains(file)) files.add(file);
+				return ImmutableList.copyOf(files);
 			}
 
 			@Override
@@ -95,16 +91,16 @@ public final class AccessedFiles implements Instance {
 				AccessedFiles.this.postEvent();
 			}
 
-			protected int getAccessedFilesInsertionIndex() {
+			private int getAccessedFilesInsertionIndex() {
 				return this.aFiles.size() == 0 ? 0 : 1;
 			}
 
-			protected void moveCurrentFileToTopOfList() {
+			private void moveCurrentFileToTopOfList() {
 				if (this.aFiles.size() < AccessedFiles.ACCESSED_FILES_REINDEX_WATERMARK) return;
 				this.update(0, this.aFiles.get(1));
 			}
 
-			protected void update(final int index, final String path) {
+			private void update(final int index, final String path) {
 				this.aFiles.remove(path);
 				this.aFiles.add(index, path);
 			}
