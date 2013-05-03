@@ -23,7 +23,7 @@ public final class AccessedFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void deserializedAccessedFiles(final DeserializedAccessedFilesEvent event) {
+	public void updateAccessedFiles(final DeserializedAccessedFilesEvent event) {
 		new Task() {
 
 			@Override
@@ -50,7 +50,7 @@ public final class AccessedFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void modifiedFilesChanged(final RecentFilesModificationEvent event) {
+	public void updateAccessedFiles(final RecentFilesModificationEvent event) {
 		new Task("accessed files recent files modification event", 1000) {
 
 			private final ImmutableList<String> modifiedFiles = event.getFiles();
@@ -76,7 +76,7 @@ public final class AccessedFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void partActivationChanged(@SuppressWarnings("unused") final PartActivationEvent event) {
+	public void updateAccessedFiles(@SuppressWarnings("unused") final PartActivationEvent event) {
 		new Task() {
 
 			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
