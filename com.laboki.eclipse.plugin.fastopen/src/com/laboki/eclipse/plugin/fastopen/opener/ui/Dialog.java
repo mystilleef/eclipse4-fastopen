@@ -313,7 +313,9 @@ public final class Dialog implements Instance {
 	}
 
 	private static void updateText(final char character) {
+		EditorContext.flushEvents();
 		Dialog.TEXT.insert(String.valueOf(character));
+		EditorContext.flushEvents();
 	}
 
 	private enum FONT {
