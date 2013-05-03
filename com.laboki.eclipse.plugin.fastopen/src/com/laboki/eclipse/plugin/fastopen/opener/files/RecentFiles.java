@@ -21,7 +21,7 @@ public final class RecentFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void postModifiedUpdatedRecentFiles(final ModifiedFilesEvent event) {
+	public void postModifiedRecentFiles(final ModifiedFilesEvent event) {
 		new Task() {
 
 			@Override
@@ -50,7 +50,7 @@ public final class RecentFiles implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void postAccessedUpdatedRecentFiles(final AccessedFilesEvent event) {
+	public void postAccessedRecentFiles(final AccessedFilesEvent event) {
 		new Task() {
 
 			private final ImmutableList<String> files = event.getFiles();
