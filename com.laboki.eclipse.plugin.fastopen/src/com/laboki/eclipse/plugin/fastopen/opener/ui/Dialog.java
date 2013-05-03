@@ -70,61 +70,52 @@ public final class Dialog implements Instance {
 		this.addListeners();
 	}
 
-	@Subscribe
-	@AllowConcurrentEvents
-	public static void fileResourcesChanged(final FileResourcesEvent event) {
-		new Task() {
-
-			@Override
-			public void asyncExec() {
-				Dialog.updateViewer(event.getrFiles());
-			}
-		}.begin();
+	private static void arrangeWidgets() {
+		Dialog.setDialogLayout();
+		Dialog.setTextLayout();
+		Dialog.setViewerLayout();
+		Dialog.SHELL.pack();
+		Dialog.TABLE.pack();
 	}
 
-	@Subscribe
-	@AllowConcurrentEvents
-	public static void fileResourcesChanged(final FilterRecentFilesResultEvent event) {
-		new Task() {
-
-			@Override
-			public void asyncExec() {
-				Dialog.updateViewer(event.getrFiles());
-			}
-		}.begin();
+	private static void setDialogLayout() {
+		final GridLayout layout = new GridLayout(1, true);
+		Dialog.spaceDialogLayout(layout);
+		Dialog.SHELL.setLayout(layout);
+		Dialog.SHELL.setLayoutData(Dialog.createFillGridData());
 	}
 
-	@SuppressWarnings("static-method")
-	@Subscribe
-	@AllowConcurrentEvents
-	public void showDialog(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
-		new Task() {
-
-			@Override
-			public void asyncExec() {
-				Dialog.SHELL.open();
-				Dialog.focusViewer();
-			}
-		}.begin();
+	private static void setTextLayout() {
+		final GridData textGridData = new GridData();
+		textGridData.horizontalAlignment = GridData.FILL;
+		textGridData.grabExcessHorizontalSpace = true;
+		Dialog.TEXT.setLayoutData(textGridData);
 	}
 
-	public static void reset() {
-		Dialog.TEXT.setText("");
+	private static void setViewerLayout() {
+		Dialog.VIEWER.getTable().setLayoutData(Dialog.createFillGridData());
 	}
 
-	protected static void updateViewer(final List<RFile> rFiles) {
-		try {
-			Dialog._updateViewer(rFiles);
-		} catch (final Exception e) {}
+	private static void setupDialog() {
+		Dialog.SHELL.setTabList(Lists.newArrayList(Dialog.VIEWER.getControl()).toArray(new Control[1]));
+		Dialog.SHELL.setSize(Dialog.WIDTH, Dialog.HEIGHT);
 	}
 
-	private static void _updateViewer(final List<RFile> rFiles) {
-		Dialog.VIEWER.getControl().setRedraw(false);
-		Dialog.VIEWER.setInput(rFiles.toArray(new RFile[rFiles.size()]));
-		Dialog.VIEWER.setItemCount(rFiles.size());
-		Dialog.refresh();
-		Dialog.VIEWER.getControl().setRedraw(true);
-		Dialog.focusViewer();
+	private static void setupText() {
+		Dialog.TEXT.setMessage("start typing to filter files...");
+	}
+
+	private void setupViewer() {
+		this.setupTable();
+		Dialog.VIEWER.setContentProvider(this.new ContentProvider());
+		Dialog.VIEWER.setUseHashlookup(true);
+	}
+
+	private void setupTable() {
+		Dialog.TABLE.setLinesVisible(true);
+		Dialog.TABLE.setHeaderVisible(false);
+		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width, Dialog.TABLE.getClientArea().height);
+		this.createTableColumn();
 	}
 
 	private void addListeners() {
@@ -162,17 +153,57 @@ public final class Dialog implements Instance {
 		});
 	}
 
-	private void setupViewer() {
-		this.setupTable();
-		Dialog.VIEWER.setContentProvider(this.new ContentProvider());
-		Dialog.VIEWER.setUseHashlookup(true);
+	@Subscribe
+	@AllowConcurrentEvents
+	public static void fileResourcesChanged(final FileResourcesEvent event) {
+		new Task() {
+
+			@Override
+			public void asyncExec() {
+				Dialog.updateViewer(event.getrFiles());
+			}
+		}.begin();
 	}
 
-	private void setupTable() {
-		Dialog.TABLE.setLinesVisible(true);
-		Dialog.TABLE.setHeaderVisible(false);
-		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width, Dialog.TABLE.getClientArea().height);
-		this.createTableColumn();
+	@Subscribe
+	@AllowConcurrentEvents
+	public static void fileResourcesChanged(final FilterRecentFilesResultEvent event) {
+		new Task() {
+
+			@Override
+			public void asyncExec() {
+				Dialog.updateViewer(event.getrFiles());
+			}
+		}.begin();
+	}
+
+	protected static void updateViewer(final List<RFile> rFiles) {
+		try {
+			Dialog._updateViewer(rFiles);
+		} catch (final Exception e) {}
+	}
+
+	private static void _updateViewer(final List<RFile> rFiles) {
+		Dialog.VIEWER.getControl().setRedraw(false);
+		Dialog.VIEWER.setInput(rFiles.toArray(new RFile[rFiles.size()]));
+		Dialog.VIEWER.setItemCount(rFiles.size());
+		Dialog.refresh();
+		Dialog.VIEWER.getControl().setRedraw(true);
+		Dialog.focusViewer();
+	}
+
+	@SuppressWarnings("static-method")
+	@Subscribe
+	@AllowConcurrentEvents
+	public void showDialog(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
+		new Task() {
+
+			@Override
+			public void asyncExec() {
+				Dialog.SHELL.open();
+				Dialog.focusViewer();
+			}
+		}.begin();
 	}
 
 	private void createTableColumn() {
@@ -181,43 +212,6 @@ public final class Dialog implements Instance {
 		col.getColumn().setResizable(true);
 		col.setLabelProvider(new LabelProvider());
 		if (!EditorContext.isWindows()) col.getColumn().pack();
-	}
-
-	private static void _focusViewer() {
-		Dialog.TABLE.setFocus();
-		Dialog.TABLE.forceFocus();
-	}
-
-	private static void arrangeWidgets() {
-		Dialog.setDialogLayout();
-		Dialog.setTextLayout();
-		Dialog.setViewerLayout();
-		Dialog.SHELL.pack();
-		Dialog.TABLE.pack();
-	}
-
-	private static void backspace() {
-		final int end = Dialog.TEXT.getCaretPosition();
-		if (end < 1) return;
-		Dialog.delete(end);
-	}
-
-	private static void delete(final int end) {
-		final int start = end - (Dialog.TEXT.getSelectionText().length() > 0 ? Dialog.TEXT.getSelectionText().length() : 1);
-		Dialog.TEXT.setSelection(start, end);
-		Dialog.TEXT.cut();
-		Dialog.TEXT.setSelection(start, start);
-	}
-
-	private static void closeFiles() {
-		for (final int index : Dialog.TABLE.getSelectionIndices())
-			new Task() {
-
-				@Override
-				public void asyncExec() {
-					EditorContext.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
-				}
-			}.begin();
 	}
 
 	private static GridData createFillGridData() {
@@ -229,80 +223,6 @@ public final class Dialog implements Instance {
 		EventBus.post(new FilterRecentFilesEvent(searchString));
 	}
 
-	private static void focusViewer() {
-		Dialog._focusViewer();
-		Dialog.TABLE.setSelection(Dialog.TABLE.getTopIndex());
-	}
-
-	private static boolean isValidCharacter(final String character) {
-		return Dialog.TEXT_PATTERN.matcher(character).matches();
-	}
-
-	private static void openFile(final IFile file) {
-		try {
-			EditorContext.openEditor(file);
-		} catch (final Exception e) {
-			Dialog.openLink(file);
-		}
-	}
-
-	private static void openFiles() {
-		for (final int index : Dialog.TABLE.getSelectionIndices())
-			new Task() {
-
-				@Override
-				public void asyncExec() {
-					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
-				}
-			}.begin();
-	}
-
-	private static void openLink(final IFile file) {
-		try {
-			EditorContext.openLink(file);
-		} catch (final Exception e) {
-			// Dialog.log.log(Level.SEVERE, "Failed to open linked file", e);
-		}
-	}
-
-	private static void refocusViewer() {
-		Dialog._focusViewer();
-		Dialog.TABLE.setSelection(Dialog.TABLE.getSelectionIndex());
-	}
-
-	private static void refresh() {
-		EditorContext.flushEvents();
-		Dialog.VIEWER.refresh(true, true);
-		EditorContext.flushEvents();
-	}
-
-	private static void setDialogLayout() {
-		final GridLayout layout = new GridLayout(1, true);
-		Dialog.spaceDialogLayout(layout);
-		Dialog.SHELL.setLayout(layout);
-		Dialog.SHELL.setLayoutData(Dialog.createFillGridData());
-	}
-
-	private static void setTextLayout() {
-		final GridData textGridData = new GridData();
-		textGridData.horizontalAlignment = GridData.FILL;
-		textGridData.grabExcessHorizontalSpace = true;
-		Dialog.TEXT.setLayoutData(textGridData);
-	}
-
-	private static void setupDialog() {
-		Dialog.SHELL.setTabList(Lists.newArrayList(Dialog.VIEWER.getControl()).toArray(new Control[1]));
-		Dialog.SHELL.setSize(Dialog.WIDTH, Dialog.HEIGHT);
-	}
-
-	private static void setupText() {
-		Dialog.TEXT.setMessage("start typing to filter files...");
-	}
-
-	private static void setViewerLayout() {
-		Dialog.VIEWER.getTable().setLayoutData(Dialog.createFillGridData());
-	}
-
 	private static void spaceDialogLayout(final GridLayout layout) {
 		layout.marginLeft = Dialog.SPACING_SIZE_IN_PIXELS;
 		layout.marginTop = Dialog.SPACING_SIZE_IN_PIXELS;
@@ -310,12 +230,6 @@ public final class Dialog implements Instance {
 		layout.marginBottom = Dialog.SPACING_SIZE_IN_PIXELS;
 		layout.horizontalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
 		layout.verticalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
-	}
-
-	private static void updateText(final char character) {
-		EditorContext.flushEvents();
-		Dialog.TEXT.insert(String.valueOf(character));
-		EditorContext.flushEvents();
 	}
 
 	private enum FONT {
@@ -413,6 +327,21 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void shellIconified(final ShellEvent arg0) {}
+	}
+
+	private static void focusViewer() {
+		Dialog._focusViewer();
+		Dialog.TABLE.setSelection(Dialog.TABLE.getTopIndex());
+	}
+
+	public static void reset() {
+		Dialog.TEXT.setText("");
+	}
+
+	private static void refresh() {
+		EditorContext.flushEvents();
+		Dialog.VIEWER.refresh(true, true);
+		EditorContext.flushEvents();
 	}
 
 	private final class LabelProvider extends StyledCellLabelProvider {
@@ -515,6 +444,67 @@ public final class Dialog implements Instance {
 		public void keyReleased(final KeyEvent arg0) {}
 	}
 
+	private static boolean isValidCharacter(final String character) {
+		return Dialog.TEXT_PATTERN.matcher(character).matches();
+	}
+
+	private static void updateText(final char character) {
+		EditorContext.flushEvents();
+		Dialog.TEXT.insert(String.valueOf(character));
+		EditorContext.flushEvents();
+	}
+
+	private static void backspace() {
+		final int end = Dialog.TEXT.getCaretPosition();
+		if (end < 1) return;
+		Dialog.delete(end);
+	}
+
+	private static void delete(final int end) {
+		final int start = end - (Dialog.TEXT.getSelectionText().length() > 0 ? Dialog.TEXT.getSelectionText().length() : 1);
+		Dialog.TEXT.setSelection(start, end);
+		Dialog.TEXT.cut();
+		Dialog.TEXT.setSelection(start, start);
+	}
+
+	private static void openFiles() {
+		for (final int index : Dialog.TABLE.getSelectionIndices())
+			new Task() {
+
+				@Override
+				public void asyncExec() {
+					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
+				}
+			}.begin();
+	}
+
+	private static void openFile(final IFile file) {
+		try {
+			EditorContext.openEditor(file);
+		} catch (final Exception e) {
+			Dialog.openLink(file);
+		}
+	}
+
+	private static void openLink(final IFile file) {
+		try {
+			EditorContext.openLink(file);
+		} catch (final Exception e) {
+			// Dialog.log.log(Level.SEVERE, "Failed to open linked file", e);
+		}
+	}
+
+	private static void closeFiles() {
+		for (final int index : Dialog.TABLE.getSelectionIndices())
+			new Task() {
+
+				@Override
+				public void asyncExec() {
+					EditorContext.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
+				}
+			}.begin();
+	}
+
 	private final class TextFocusListener implements FocusListener {
 
 		public TextFocusListener() {}
@@ -561,6 +551,16 @@ public final class Dialog implements Instance {
 				}
 			}.begin();
 		}
+	}
+
+	private static void refocusViewer() {
+		Dialog._focusViewer();
+		Dialog.TABLE.setSelection(Dialog.TABLE.getSelectionIndex());
+	}
+
+	private static void _focusViewer() {
+		Dialog.TABLE.setFocus();
+		Dialog.TABLE.forceFocus();
 	}
 
 	private final class ViewerDoubleClickListener implements IDoubleClickListener {
