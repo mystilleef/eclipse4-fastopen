@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.EventBus;
@@ -73,7 +74,7 @@ public final class RecentFiles implements Instance {
 
 			@Override
 			public void postExecute() {
-				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
+				EventBus.post(new RecentFilesEvent(ImmutableList.copyOf(Sets.newLinkedHashSet(RecentFiles.this.getRecentFiles()))));
 			}
 		}.begin();
 	}
