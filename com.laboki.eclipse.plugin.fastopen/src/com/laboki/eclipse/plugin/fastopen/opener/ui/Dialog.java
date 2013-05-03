@@ -496,42 +496,18 @@ public final class Dialog implements Instance {
 		public void keyPressed(final KeyEvent event) {
 			if (Dialog.isValidCharacter(String.valueOf(event.character))) {
 				event.doit = false;
-				EditorContext.asyncExec(new Task() {
-
-					@Override
-					public void asyncExec() {
-						Dialog.updateText(event.character);
-					}
-				});
+				Dialog.updateText(event.character);
 			} else if (event.keyCode == SWT.BS) {
 				event.doit = false;
-				EditorContext.asyncExec(new Task() {
-
-					@Override
-					public void asyncExec() {
-						Dialog.backspace();
-					}
-				});
+				Dialog.backspace();
 			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
 				event.doit = false;
-				EditorContext.asyncExec(new Task() {
-
-					@Override
-					public void asyncExec() {
-						Dialog.SHELL.close();
-						Dialog.openFiles();
-					}
-				});
+				Dialog.SHELL.close();
+				Dialog.openFiles();
 			} else if ((event.keyCode == SWT.DEL)) {
 				event.doit = false;
-				EditorContext.asyncExec(new Task() {
-
-					@Override
-					public void asyncExec() {
-						Dialog.SHELL.close();
-						Dialog.closeFiles();
-					}
-				});
+				Dialog.SHELL.close();
+				Dialog.closeFiles();
 			}
 		}
 
