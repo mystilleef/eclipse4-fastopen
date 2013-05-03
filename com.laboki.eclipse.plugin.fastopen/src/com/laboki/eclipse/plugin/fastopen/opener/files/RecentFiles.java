@@ -31,11 +31,11 @@ public final class RecentFiles implements Instance {
 
 			private void resetRecentFiles(final ImmutableList<String> files) {
 				synchronized (RecentFiles.this.recentFiles) {
-					this.update(files);
+					this.reset(files);
 				}
 			}
 
-			private void update(final ImmutableList<String> files) {
+			private void reset(final ImmutableList<String> files) {
 				RecentFiles.this.recentFiles.clear();
 				RecentFiles.this.recentFiles.addAll(files);
 				RecentFiles.this.recentFiles.remove("");
@@ -57,16 +57,16 @@ public final class RecentFiles implements Instance {
 
 			@Override
 			public void execute() {
-				this.mergeAccessedAndRecentFiles();
+				this.mergeAccessedToRecentFiles();
 			}
 
-			private void mergeAccessedAndRecentFiles() {
+			private void mergeAccessedToRecentFiles() {
 				synchronized (RecentFiles.this.recentFiles) {
-					this.update(this.files);
+					this.merge(this.files);
 				}
 			}
 
-			private void update(final ImmutableList<String> files) {
+			private void merge(final ImmutableList<String> files) {
 				RecentFiles.this.recentFiles.removeAll(files);
 				RecentFiles.this.recentFiles.addAll(0, files);
 				RecentFiles.this.recentFiles.remove("");
