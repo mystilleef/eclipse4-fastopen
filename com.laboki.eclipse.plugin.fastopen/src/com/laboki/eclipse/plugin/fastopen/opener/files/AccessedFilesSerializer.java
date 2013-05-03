@@ -24,7 +24,7 @@ public final class AccessedFilesSerializer implements Instance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public static synchronized void accessedFilesChanged(final AccessedFilesEvent event) {
+	public static synchronized void serializeAccessedFiles(final AccessedFilesEvent event) {
 		new Task() {
 
 			@Override
