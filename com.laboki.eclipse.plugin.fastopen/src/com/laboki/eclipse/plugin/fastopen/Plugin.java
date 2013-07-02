@@ -1,7 +1,7 @@
 package com.laboki.eclipse.plugin.fastopen;
 
 import com.laboki.eclipse.plugin.fastopen.main.Services;
-import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 
 public enum Plugin implements Instance {
 	INSTANCE;
@@ -10,10 +10,10 @@ public enum Plugin implements Instance {
 
 	@Override
 	public Instance begin() {
-		new Task() {
+		new AsyncTask() {
 
 			@Override
-			public void execute() {
+			public void asyncExecute() {
 				Plugin.SERVICES.begin();
 			}
 		}.begin();
@@ -22,10 +22,10 @@ public enum Plugin implements Instance {
 
 	@Override
 	public Instance end() {
-		new Task() {
+		new AsyncTask() {
 
 			@Override
-			public void execute() {
+			public void asyncExecute() {
 				Plugin.SERVICES.end();
 			}
 		}.begin();
