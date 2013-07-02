@@ -1,6 +1,6 @@
 package com.laboki.eclipse.plugin.fastopen;
 
-import com.laboki.eclipse.plugin.fastopen.opener.Services;
+import com.laboki.eclipse.plugin.fastopen.main.Services;
 
 public enum Plugin implements Instance {
 	INSTANCE;
