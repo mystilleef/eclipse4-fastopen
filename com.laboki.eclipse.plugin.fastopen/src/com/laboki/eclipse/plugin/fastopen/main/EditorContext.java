@@ -19,6 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -56,6 +58,7 @@ public final class EditorContext {
 	public static final String PLUGIN_NAME = "com.laboki.eclipse.plugin.fastopen";
 	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
 	public static final IJobManager JOB_MANAGER = Job.getJobManager();
+	private final static Logger LOGGER = Logger.getLogger(EditorContext.class.getName());
 
 	private EditorContext() {}
 
@@ -73,7 +76,7 @@ public final class EditorContext {
 		try {
 			EditorContext.getActivePage().closeEditors(EditorContext.getActivePage().findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT), true);
 		} catch (final Exception e) {
-			// EditorContext.log.log(Level.INFO, "failed to close editor for some odd reason", e);
+			EditorContext.LOGGER.log(Level.WARNING, "Failed to close editor.", e);
 		}
 	}
 
@@ -95,7 +98,7 @@ public final class EditorContext {
 		try {
 			EditorContext.tryToFlushEvents();
 		} catch (final Exception e) {
-			// EditorContext.log.log(Level.INFO, "failed to flush events");
+			EditorContext.LOGGER.log(Level.WARNING, "failed to flush events", e);
 		}
 	}
 
@@ -315,7 +318,7 @@ public final class EditorContext {
 		try {
 			input.close();
 		} catch (final Exception e) {
-			// EditorContext.log.log(Level.FINE, "Failed to close object input for serializable", e);
+			EditorContext.LOGGER.log(Level.WARNING, "Failed to close object input for serializable", e);
 		}
 	}
 
@@ -417,7 +420,8 @@ public final class EditorContext {
 		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
 	}
 
-	public static void cancelJobsBelongingTo(final String jobName) {
-		EditorContext.JOB_MANAGER.cancel(jobName);
+	public static void cancelJobsBelongingTo(final String... jobNames) {
+		for (final String jobName : jobNames)
+			EditorContext.JOB_MANAGER.cancel(jobName);
 	}
 }
