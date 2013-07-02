@@ -1,9 +1,10 @@
-package com.laboki.eclipse.plugin.fastopen;
+package com.laboki.eclipse.plugin.fastopen.main;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import com.google.common.eventbus.AsyncEventBus;
+import com.laboki.eclipse.plugin.fastopen.Task;
 
 public final class EventBus {
 
