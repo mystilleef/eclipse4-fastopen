@@ -61,7 +61,7 @@ public final class RecentResources implements Instance {
 			}
 
 			@Override
-			public void postExecute() {
+			public void postExec() {
 				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
 			}
 		}.begin();

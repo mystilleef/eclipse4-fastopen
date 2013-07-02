@@ -42,7 +42,7 @@ public final class RecentFiles implements Instance {
 			}
 
 			@Override
-			public void postExecute() {
+			public void postExec() {
 				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
 			};
 		}.begin();
@@ -73,7 +73,7 @@ public final class RecentFiles implements Instance {
 			}
 
 			@Override
-			public void postExecute() {
+			public void postExec() {
 				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
 			}
 		}.begin();

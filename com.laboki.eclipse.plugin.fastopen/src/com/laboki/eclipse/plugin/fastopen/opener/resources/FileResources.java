@@ -56,7 +56,7 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 			}
 
 			@Override
-			public void postExecute() {
+			public void postExec() {
 				EventBus.post(new FileResourcesMapEvent(ImmutableMap.copyOf(this.fileResourcesMap)));
 				EventBus.post(new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles)));
 			}

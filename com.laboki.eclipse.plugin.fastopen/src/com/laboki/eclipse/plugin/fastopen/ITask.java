@@ -6,5 +6,5 @@ interface ITask {
 
 	void asyncExec();
 
-	void postExecute();
+	void postExec();
 }

@@ -360,10 +360,22 @@ public final class Dialog implements Instance {
 		public void keyPressed(final KeyEvent event) {
 			if (Dialog.isValidCharacter(String.valueOf(event.character))) {
 				event.doit = false;
-				Dialog.updateText(event.character);
+				new Task() {
+
+					@Override
+					public void asyncExec() {
+						Dialog.updateText(event.character);
+					}
+				}.begin();
 			} else if (event.keyCode == SWT.BS) {
 				event.doit = false;
-				Dialog.backspace();
+				new Task() {
+
+					@Override
+					public void asyncExec() {
+						Dialog.backspace();
+					}
+				}.begin();
 			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
 				event.doit = false;
 				Dialog.SHELL.close();
@@ -475,10 +487,9 @@ public final class Dialog implements Instance {
 		Dialog.focusViewer();
 	}
 
-	@SuppressWarnings("static-method")
 	@Subscribe
 	@AllowConcurrentEvents
-	public void showDialog(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
+	public static void showDialog(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
 		new Task() {
 
 			@Override
@@ -508,13 +519,11 @@ public final class Dialog implements Instance {
 		return Dialog.TEXT_PATTERN.matcher(character).matches();
 	}
 
-	private static void updateText(final char character) {
-		EditorContext.flushEvents();
+	private synchronized static void updateText(final char character) {
 		Dialog.TEXT.insert(String.valueOf(character));
-		EditorContext.flushEvents();
 	}
 
-	private static void backspace() {
+	private synchronized static void backspace() {
 		final int end = Dialog.TEXT.getCaretPosition();
 		if (end < 1) return;
 		Dialog.delete(end);

@@ -41,7 +41,7 @@ abstract class AbstractTask extends Job implements Runnable, ITask {
 		if (monitor.isCanceled()) return Status.CANCEL_STATUS;
 		this.execute();
 		this.runAsyncExec();
-		this.postExecute();
+		this.postExec();
 		this.runTask();
 		return Status.OK_STATUS;
 	}
@@ -71,5 +71,5 @@ abstract class AbstractTask extends Job implements Runnable, ITask {
 	public void asyncExec() {}
 
 	@Override
-	public void postExecute() {}
+	public void postExec() {}
 }

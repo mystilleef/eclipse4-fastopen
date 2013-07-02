@@ -72,7 +72,7 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 			}
 
 			@Override
-			public void postExecute() {
+			public void postExec() {
 				this.postEvent();
 			}
 
