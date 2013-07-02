@@ -3,6 +3,8 @@ package com.laboki.eclipse.plugin.fastopen.resources;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -27,6 +29,7 @@ import com.laboki.eclipse.plugin.fastopen.task.Task;
 public final class WorkspaceResources extends AbstractEventBusInstance implements IResourceVisitor, Comparator<IFile> {
 
 	private final List<IFile> resources = Lists.newArrayList();
+	private final static Logger LOGGER = Logger.getLogger(WorkspaceResources.class.getName());
 
 	@Override
 	public Instance begin() {
@@ -63,7 +66,9 @@ public final class WorkspaceResources extends AbstractEventBusInstance implement
 			private void updateFilesFromWorkspace() {
 				try {
 					this.root.accept(WorkspaceResources.this);
-				} catch (final Exception e) {}
+				} catch (final Exception e) {
+					WorkspaceResources.LOGGER.log(Level.WARNING, "Failed to update files from workspace.", e);
+				}
 			}
 
 			private void sortFilesByModificationTime() {
