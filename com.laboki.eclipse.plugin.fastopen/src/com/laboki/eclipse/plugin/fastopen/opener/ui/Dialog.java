@@ -85,6 +85,19 @@ public final class Dialog implements Instance {
 		Dialog.SHELL.setLayoutData(Dialog.createFillGridData());
 	}
 
+	private static void spaceDialogLayout(final GridLayout layout) {
+		layout.marginLeft = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.marginTop = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.marginRight = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.marginBottom = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.horizontalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.verticalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
+	}
+
+	private static GridData createFillGridData() {
+		return new GridData(GridData.FILL, GridData.FILL, true, true, 1, 1);
+	}
+
 	private static void setTextLayout() {
 		final GridData textGridData = new GridData();
 		textGridData.horizontalAlignment = GridData.FILL;
@@ -111,11 +124,149 @@ public final class Dialog implements Instance {
 		Dialog.VIEWER.setUseHashlookup(true);
 	}
 
+	private final class ContentProvider implements ILazyContentProvider {
+
+		private RFile[] rFiles;
+
+		public ContentProvider() {}
+
+		@Override
+		public void dispose() {}
+
+		@Override
+		public void inputChanged(final Viewer arg0, final Object oldInput, final Object newInput) {
+			this.rFiles = (RFile[]) newInput;
+		}
+
+		@Override
+		public void updateElement(final int index) {
+			try {
+				Dialog.VIEWER.replace(this.rFiles[index], index);
+			} catch (final Exception e) {
+				// Dialog.log.log(Level.FINE, "Failed to update index for lazy content provider.", e);
+			}
+		}
+	}
+
 	private void setupTable() {
 		Dialog.TABLE.setLinesVisible(true);
 		Dialog.TABLE.setHeaderVisible(false);
 		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width, Dialog.TABLE.getClientArea().height);
 		this.createTableColumn();
+	}
+
+	private void createTableColumn() {
+		final TableViewerColumn col = new TableViewerColumn(Dialog.VIEWER, SWT.RIGHT | SWT.LEFT | SWT.CENTER);
+		col.getColumn().setWidth(Dialog.TABLE.getClientArea().width);
+		col.getColumn().setResizable(true);
+		col.setLabelProvider(new LabelProvider());
+		if (!EditorContext.isWindows()) col.getColumn().pack();
+	}
+
+	private final class LabelProvider extends StyledCellLabelProvider {
+
+		private final String separator = this.getSeparator();
+		private final StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
+		private final StyledString.Styler folderStyler = this.styler(FONT.NORMAL_FONT, this.color(SWT.COLOR_DARK_GRAY));
+		private final StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
+		private final StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
+
+		public LabelProvider() {
+			this.setOwnerDrawEnabled(true);
+		}
+
+		@Override
+		protected StyleRange prepareStyleRange(final StyleRange styleRange, final boolean applyColors) {
+			return super.prepareStyleRange(styleRange, applyColors);
+		}
+
+		@Override
+		protected void paint(final Event event, final Object element) {
+			super.paint(event, element);
+		}
+
+		@Override
+		protected void measure(final Event event, final Object element) {
+			super.measure(event, element);
+		}
+
+		@Override
+		public void update(final ViewerCell cell) {
+			this.updateCellProperties(cell, (RFile) cell.getElement(), this.createStyledText((RFile) cell.getElement()));
+			super.update(cell);
+		}
+
+		private void updateCellProperties(final ViewerCell cell, final RFile file, final StyledString text) {
+			cell.setText(text.toString());
+			cell.setImage(file.getContentTypeImage());
+			cell.setStyleRanges(text.getStyleRanges());
+		}
+
+		private StyledString createStyledText(final RFile file) {
+			final StyledString text = new StyledString();
+			text.append(file.getName() + this.separator, this.filenameStyler);
+			text.append("in  ", this.inStyler);
+			text.append(file.getFolder() + this.separator, this.folderStyler);
+			text.append("modified  ", this.modifiedStyler);
+			text.append(file.getModificationTime() + "  ", this.timeStyler);
+			text.append(file.getContentTypeString(), this.typeStyler);
+			return text;
+		}
+
+		private Color color(final int color) {
+			return Display.getCurrent().getSystemColor(color);
+		}
+
+		private StyledString.Styler styler(final Font font, final Color color) {
+			return new StyledString.Styler() {
+
+				@Override
+				public void applyStyles(final TextStyle textStyle) {
+					textStyle.font = font;
+					textStyle.foreground = color;
+				}
+			};
+		}
+
+		private String getSeparator() {
+			if (EditorContext.isWindows()) return "  ";
+			return System.getProperty("line.separator");
+		}
+	}
+
+	private enum FONT {
+		FONT;
+
+		private static final FontData[] FONT_DATAS = Dialog.TABLE.getFont().getFontData();
+		private static final String DEFAULT_FONT_NAME = FONT.FONT_DATAS[0].getName();
+		private static final int DEFAULT_FONT_HEIGHT = FONT.FONT_DATAS[0].getHeight();
+		public static final Font ITALIC_FONT = FONT.makeItalicizedFont();
+		public static final Font LARGE_BOLD_FONT = FONT.makeLargeBoldFont();
+		public static final Font SMALL_BOLD_FONT = FONT.makeSmallBoldFont();
+		public static final Font SMALL_ITALIC_FONT = FONT.makeSmallItalicizedFont();
+		public static final Font NORMAL_FONT = FONT.makeNormalFont();
+
+		private static Font makeItalicizedFont() {
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT, SWT.ITALIC);
+		}
+
+		private static Font makeLargeBoldFont() {
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT + 2, SWT.BOLD);
+		}
+
+		private static Font makeSmallBoldFont() {
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT - 2, SWT.BOLD);
+		}
+
+		private static Font makeSmallItalicizedFont() {
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT - 2, SWT.ITALIC);
+		}
+
+		private static Font makeNormalFont() {
+			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT, SWT.NORMAL);
+		}
 	}
 
 	private void addListeners() {
@@ -127,6 +278,138 @@ public final class Dialog implements Instance {
 		Dialog.TEXT.addModifyListener(new TextModifyListener());
 		Dialog.VIEWER.addDoubleClickListener(new ViewerDoubleClickListener());
 		Dialog.listenForTextSelection();
+	}
+
+	private final class DialogShellListener implements ShellListener {
+
+		public DialogShellListener() {}
+
+		@Override
+		public void shellActivated(final ShellEvent arg0) {
+			new Task() {
+
+				@Override
+				public void asyncExec() {
+					Dialog.focusViewer();
+				}
+			}.begin();
+		}
+
+		@Override
+		public void shellClosed(final ShellEvent event) {
+			event.doit = false;
+			Dialog.SHELL.setVisible(false);
+			Dialog.reset();
+		}
+
+		@Override
+		public void shellDeactivated(final ShellEvent arg0) {
+			new Task() {
+
+				@Override
+				public void asyncExec() {
+					Dialog.refresh();
+				}
+			}.begin();
+		}
+
+		@Override
+		public void shellDeiconified(final ShellEvent arg0) {}
+
+		@Override
+		public void shellIconified(final ShellEvent arg0) {}
+	}
+
+	private final class ViewerFocusListener implements FocusListener {
+
+		public ViewerFocusListener() {}
+
+		@Override
+		public void focusGained(final FocusEvent arg0) {}
+
+		@Override
+		public void focusLost(final FocusEvent arg0) {
+			new Task() {
+
+				@Override
+				public void asyncExec() {
+					Dialog.refocusViewer();
+				}
+			}.begin();
+		}
+	}
+
+	private final class TextFocusListener implements FocusListener {
+
+		public TextFocusListener() {}
+
+		@Override
+		public void focusGained(final FocusEvent arg0) {
+			Dialog.refocusViewer();
+		}
+
+		@Override
+		public void focusLost(final FocusEvent arg0) {}
+	}
+
+	private final class ViewerKeyListener implements KeyListener {
+
+		public ViewerKeyListener() {}
+
+		@Override
+		public void keyPressed(final KeyEvent event) {
+			if (Dialog.isValidCharacter(String.valueOf(event.character))) {
+				event.doit = false;
+				Dialog.updateText(event.character);
+			} else if (event.keyCode == SWT.BS) {
+				event.doit = false;
+				Dialog.backspace();
+			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
+				event.doit = false;
+				Dialog.SHELL.close();
+				Dialog.openFiles();
+			} else if ((event.keyCode == SWT.DEL)) {
+				event.doit = false;
+				Dialog.SHELL.close();
+				Dialog.closeFiles();
+			}
+		}
+
+		@Override
+		public void keyReleased(final KeyEvent arg0) {}
+	}
+
+	private final class TextModifyListener implements ModifyListener {
+
+		public TextModifyListener() {}
+
+		@Override
+		public void modifyText(final ModifyEvent arg0) {
+			new Task() {
+
+				@Override
+				public void asyncExec() {
+					Dialog.filterViewer();
+				}
+			}.begin();
+		}
+	}
+
+	private final class ViewerDoubleClickListener implements IDoubleClickListener {
+
+		public ViewerDoubleClickListener() {}
+
+		@Override
+		public void doubleClick(final DoubleClickEvent arg0) {
+			new Task() {
+
+				@Override
+				public void asyncExec() {
+					Dialog.SHELL.close();
+					Dialog.openFiles();
+				}
+			}.begin();
+		}
 	}
 
 	private static void listenForTextSelection() {
@@ -206,129 +489,6 @@ public final class Dialog implements Instance {
 		}.begin();
 	}
 
-	private void createTableColumn() {
-		final TableViewerColumn col = new TableViewerColumn(Dialog.VIEWER, SWT.RIGHT | SWT.LEFT | SWT.CENTER);
-		col.getColumn().setWidth(Dialog.TABLE.getClientArea().width);
-		col.getColumn().setResizable(true);
-		col.setLabelProvider(new LabelProvider());
-		if (!EditorContext.isWindows()) col.getColumn().pack();
-	}
-
-	private static GridData createFillGridData() {
-		return new GridData(GridData.FILL, GridData.FILL, true, true, 1, 1);
-	}
-
-	private static void filterViewer() {
-		final String searchString = Dialog.TEXT.getText().trim();
-		EventBus.post(new FilterRecentFilesEvent(searchString));
-	}
-
-	private static void spaceDialogLayout(final GridLayout layout) {
-		layout.marginLeft = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.marginTop = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.marginRight = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.marginBottom = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.horizontalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.verticalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
-	}
-
-	private enum FONT {
-		FONT;
-
-		private static final FontData[] FONT_DATAS = Dialog.TABLE.getFont().getFontData();
-		private static final String DEFAULT_FONT_NAME = FONT.FONT_DATAS[0].getName();
-		private static final int DEFAULT_FONT_HEIGHT = FONT.FONT_DATAS[0].getHeight();
-		public static final Font ITALIC_FONT = FONT.makeItalicizedFont();
-		public static final Font LARGE_BOLD_FONT = FONT.makeLargeBoldFont();
-		public static final Font SMALL_BOLD_FONT = FONT.makeSmallBoldFont();
-		public static final Font SMALL_ITALIC_FONT = FONT.makeSmallItalicizedFont();
-		public static final Font NORMAL_FONT = FONT.makeNormalFont();
-
-		private static Font makeItalicizedFont() {
-			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT, SWT.ITALIC);
-		}
-
-		private static Font makeLargeBoldFont() {
-			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT + 2, SWT.BOLD);
-		}
-
-		private static Font makeSmallBoldFont() {
-			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT - 2, SWT.BOLD);
-		}
-
-		private static Font makeSmallItalicizedFont() {
-			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT - 2, SWT.ITALIC);
-		}
-
-		private static Font makeNormalFont() {
-			return new Font(EditorContext.DISPLAY, FONT.DEFAULT_FONT_NAME, FONT.DEFAULT_FONT_HEIGHT, SWT.NORMAL);
-		}
-	}
-
-	private final class ContentProvider implements ILazyContentProvider {
-
-		private RFile[] rFiles;
-
-		public ContentProvider() {}
-
-		@Override
-		public void dispose() {}
-
-		@Override
-		public void inputChanged(final Viewer arg0, final Object oldInput, final Object newInput) {
-			this.rFiles = (RFile[]) newInput;
-		}
-
-		@Override
-		public void updateElement(final int index) {
-			try {
-				Dialog.VIEWER.replace(this.rFiles[index], index);
-			} catch (final Exception e) {
-				// Dialog.log.log(Level.FINE, "Failed to update index for lazy content provider.", e);
-			}
-		}
-	}
-
-	private final class DialogShellListener implements ShellListener {
-
-		public DialogShellListener() {}
-
-		@Override
-		public void shellActivated(final ShellEvent arg0) {
-			new Task() {
-
-				@Override
-				public void asyncExec() {
-					Dialog.focusViewer();
-				}
-			}.begin();
-		}
-
-		@Override
-		public void shellClosed(final ShellEvent event) {
-			event.doit = false;
-			Dialog.SHELL.setVisible(false);
-			Dialog.reset();
-		}
-
-		@Override
-		public void shellDeactivated(final ShellEvent arg0) {
-			new Task() {
-
-				@Override
-				public void asyncExec() {
-					Dialog.refresh();
-				}
-			}.begin();
-		}
-
-		@Override
-		public void shellDeiconified(final ShellEvent arg0) {}
-
-		@Override
-		public void shellIconified(final ShellEvent arg0) {}
-	}
-
 	private static void focusViewer() {
 		Dialog._focusViewer();
 		Dialog.TABLE.setSelection(Dialog.TABLE.getTopIndex());
@@ -342,106 +502,6 @@ public final class Dialog implements Instance {
 		EditorContext.flushEvents();
 		Dialog.VIEWER.refresh(true, true);
 		EditorContext.flushEvents();
-	}
-
-	private final class LabelProvider extends StyledCellLabelProvider {
-
-		private final String separator = this.getSeparator();
-		private final StyledString.Styler filenameStyler = this.styler(FONT.LARGE_BOLD_FONT, null);
-		private final StyledString.Styler folderStyler = this.styler(FONT.NORMAL_FONT, this.color(SWT.COLOR_DARK_GRAY));
-		private final StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
-		private final StyledString.Styler modifiedStyler = this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
-		private final StyledString.Styler timeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
-		private final StyledString.Styler typeStyler = this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
-
-		public LabelProvider() {
-			this.setOwnerDrawEnabled(true);
-		}
-
-		@Override
-		protected StyleRange prepareStyleRange(final StyleRange styleRange, final boolean applyColors) {
-			return super.prepareStyleRange(styleRange, applyColors);
-		}
-
-		@Override
-		protected void paint(final Event event, final Object element) {
-			super.paint(event, element);
-		}
-
-		@Override
-		protected void measure(final Event event, final Object element) {
-			super.measure(event, element);
-		}
-
-		@Override
-		public void update(final ViewerCell cell) {
-			this.updateCellProperties(cell, (RFile) cell.getElement(), this.createStyledText((RFile) cell.getElement()));
-			super.update(cell);
-		}
-
-		private void updateCellProperties(final ViewerCell cell, final RFile file, final StyledString text) {
-			cell.setText(text.toString());
-			cell.setImage(file.getContentTypeImage());
-			cell.setStyleRanges(text.getStyleRanges());
-		}
-
-		private StyledString createStyledText(final RFile file) {
-			final StyledString text = new StyledString();
-			text.append(file.getName() + this.separator, this.filenameStyler);
-			text.append("in  ", this.inStyler);
-			text.append(file.getFolder() + this.separator, this.folderStyler);
-			text.append("modified  ", this.modifiedStyler);
-			text.append(file.getModificationTime() + "  ", this.timeStyler);
-			text.append(file.getContentTypeString(), this.typeStyler);
-			return text;
-		}
-
-		private Color color(final int color) {
-			return Display.getCurrent().getSystemColor(color);
-		}
-
-		private StyledString.Styler styler(final Font font, final Color color) {
-			return new StyledString.Styler() {
-
-				@Override
-				public void applyStyles(final TextStyle textStyle) {
-					textStyle.font = font;
-					textStyle.foreground = color;
-				}
-			};
-		}
-
-		private String getSeparator() {
-			if (EditorContext.isWindows()) return "  ";
-			return System.getProperty("line.separator");
-		}
-	}
-
-	private final class ViewerKeyListener implements KeyListener {
-
-		public ViewerKeyListener() {}
-
-		@Override
-		public void keyPressed(final KeyEvent event) {
-			if (Dialog.isValidCharacter(String.valueOf(event.character))) {
-				event.doit = false;
-				Dialog.updateText(event.character);
-			} else if (event.keyCode == SWT.BS) {
-				event.doit = false;
-				Dialog.backspace();
-			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
-				event.doit = false;
-				Dialog.SHELL.close();
-				Dialog.openFiles();
-			} else if ((event.keyCode == SWT.DEL)) {
-				event.doit = false;
-				Dialog.SHELL.close();
-				Dialog.closeFiles();
-			}
-		}
-
-		@Override
-		public void keyReleased(final KeyEvent arg0) {}
 	}
 
 	private static boolean isValidCharacter(final String character) {
@@ -505,52 +565,9 @@ public final class Dialog implements Instance {
 			}.begin();
 	}
 
-	private final class TextFocusListener implements FocusListener {
-
-		public TextFocusListener() {}
-
-		@Override
-		public void focusGained(final FocusEvent arg0) {
-			Dialog.refocusViewer();
-		}
-
-		@Override
-		public void focusLost(final FocusEvent arg0) {}
-	}
-
-	private final class TextModifyListener implements ModifyListener {
-
-		public TextModifyListener() {}
-
-		@Override
-		public void modifyText(final ModifyEvent arg0) {
-			new Task() {
-
-				@Override
-				public void asyncExec() {
-					Dialog.filterViewer();
-				}
-			}.begin();
-		}
-	}
-
-	private final class ViewerFocusListener implements FocusListener {
-
-		public ViewerFocusListener() {}
-
-		@Override
-		public void focusGained(final FocusEvent arg0) {}
-
-		@Override
-		public void focusLost(final FocusEvent arg0) {
-			new Task() {
-
-				@Override
-				public void asyncExec() {
-					Dialog.refocusViewer();
-				}
-			}.begin();
-		}
+	private static void filterViewer() {
+		final String searchString = Dialog.TEXT.getText().trim();
+		EventBus.post(new FilterRecentFilesEvent(searchString));
 	}
 
 	private static void refocusViewer() {
@@ -561,23 +578,6 @@ public final class Dialog implements Instance {
 	private static void _focusViewer() {
 		Dialog.TABLE.setFocus();
 		Dialog.TABLE.forceFocus();
-	}
-
-	private final class ViewerDoubleClickListener implements IDoubleClickListener {
-
-		public ViewerDoubleClickListener() {}
-
-		@Override
-		public void doubleClick(final DoubleClickEvent arg0) {
-			new Task() {
-
-				@Override
-				public void asyncExec() {
-					Dialog.SHELL.close();
-					Dialog.openFiles();
-				}
-			}.begin();
-		}
 	}
 
 	@Override
