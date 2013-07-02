@@ -5,14 +5,14 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.main.files.AccessedFiles;
-import com.laboki.eclipse.plugin.fastopen.main.files.AccessedFilesSerializer;
-import com.laboki.eclipse.plugin.fastopen.main.files.RecentFiles;
-import com.laboki.eclipse.plugin.fastopen.main.resources.FileResources;
-import com.laboki.eclipse.plugin.fastopen.main.resources.RecentResources;
-import com.laboki.eclipse.plugin.fastopen.main.resources.RecentResourcesFilter;
-import com.laboki.eclipse.plugin.fastopen.main.resources.WorkspaceResources;
-import com.laboki.eclipse.plugin.fastopen.main.ui.Dialog;
+import com.laboki.eclipse.plugin.fastopen.files.AccessedFiles;
+import com.laboki.eclipse.plugin.fastopen.files.AccessedFilesSerializer;
+import com.laboki.eclipse.plugin.fastopen.files.RecentFiles;
+import com.laboki.eclipse.plugin.fastopen.resources.FileResources;
+import com.laboki.eclipse.plugin.fastopen.resources.RecentResources;
+import com.laboki.eclipse.plugin.fastopen.resources.RecentResourcesFilter;
+import com.laboki.eclipse.plugin.fastopen.resources.WorkspaceResources;
+import com.laboki.eclipse.plugin.fastopen.ui.Dialog;
 
 public final class Services implements Instance {
 

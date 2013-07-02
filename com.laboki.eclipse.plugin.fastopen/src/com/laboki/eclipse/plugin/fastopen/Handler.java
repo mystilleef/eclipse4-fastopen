@@ -4,8 +4,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
+import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
-import com.laboki.eclipse.plugin.fastopen.main.events.ShowFastOpenDialogEvent;
 
 public final class Handler extends AbstractHandler {
 
