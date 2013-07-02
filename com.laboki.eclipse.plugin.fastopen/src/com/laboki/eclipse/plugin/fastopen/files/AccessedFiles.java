@@ -7,17 +7,18 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.PartActivationEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
+import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
-public final class AccessedFiles implements Instance {
+public final class AccessedFiles extends AbstractEventBusInstance {
 
 	private final List<String> accessedFiles = Lists.newArrayList(EditorContext.getOpenEditorFilePaths());
 	private static final int ACCESSED_FILES_REINDEX_WATERMARK = 3;
@@ -119,15 +120,8 @@ public final class AccessedFiles implements Instance {
 	}
 
 	@Override
-	public Instance begin() {
-		EventBus.register(this);
-		return this;
-	}
-
-	@Override
 	public Instance end() {
-		EventBus.unregister(this);
 		this.accessedFiles.clear();
-		return this;
+		return super.end();
 	}
 }

@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import com.laboki.eclipse.plugin.fastopen.Instance;
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 
 abstract class AbstractTask extends Job implements Runnable, Instance {

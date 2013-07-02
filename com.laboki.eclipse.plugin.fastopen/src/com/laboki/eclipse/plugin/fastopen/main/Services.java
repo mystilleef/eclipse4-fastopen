@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.files.AccessedFiles;
 import com.laboki.eclipse.plugin.fastopen.files.AccessedFilesSerializer;
 import com.laboki.eclipse.plugin.fastopen.files.RecentFiles;
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.resources.FileResources;
 import com.laboki.eclipse.plugin.fastopen.resources.RecentResources;
 import com.laboki.eclipse.plugin.fastopen.resources.RecentResourcesFilter;

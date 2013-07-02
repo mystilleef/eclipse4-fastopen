@@ -6,14 +6,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
+import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
-public final class RecentResourcesFilter implements Instance {
+public final class RecentResourcesFilter extends AbstractEventBusInstance {
 
 	private final List<RFile> rFiles = Lists.newArrayList();
 
@@ -79,15 +80,8 @@ public final class RecentResourcesFilter implements Instance {
 	}
 
 	@Override
-	public Instance begin() {
-		EventBus.register(this);
-		return this;
-	}
-
-	@Override
 	public Instance end() {
-		EventBus.unregister(this);
 		this.rFiles.clear();
-		return this;
+		return super.end();
 	}
 }

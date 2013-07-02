@@ -12,14 +12,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
-public final class RecentResources implements Instance {
+public final class RecentResources extends AbstractEventBusInstance {
 
 	private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 	private final Map<String, RFile> cachedResourceFiles = Maps.newHashMap();
@@ -100,17 +101,10 @@ public final class RecentResources implements Instance {
 	}
 
 	@Override
-	public Instance begin() {
-		EventBus.register(this);
-		return this;
-	}
-
-	@Override
 	public Instance end() {
-		EventBus.unregister(this);
 		this.fileResources.clear();
 		this.cachedResourceFiles.clear();
 		this.fileResourcesMap.clear();
-		return this;
+		return super.end();
 	}
 }

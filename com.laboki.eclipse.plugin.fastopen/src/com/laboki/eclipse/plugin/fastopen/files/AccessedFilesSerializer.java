@@ -7,14 +7,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
-public final class AccessedFilesSerializer implements Instance {
+public final class AccessedFilesSerializer extends AbstractEventBusInstance {
 
 	public static final String SERIALIZABLE_FILE_PATH = EditorContext.getSerializableFilePath("accessed.files.ser");
 
@@ -41,9 +42,8 @@ public final class AccessedFilesSerializer implements Instance {
 
 	@Override
 	public Instance begin() {
-		EventBus.register(this);
 		AccessedFilesSerializer.postEvent();
-		return this;
+		return super.begin();
 	}
 
 	private static void postEvent() {
@@ -55,11 +55,5 @@ public final class AccessedFilesSerializer implements Instance {
 		final Object files = EditorContext.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
 		if (files == null) return Lists.newArrayList();
 		return (List<String>) files;
-	}
-
-	@Override
-	public Instance end() {
-		EventBus.unregister(this);
-		return this;
 	}
 }

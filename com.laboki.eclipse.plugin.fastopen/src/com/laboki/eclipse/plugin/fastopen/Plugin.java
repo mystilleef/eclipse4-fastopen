@@ -1,5 +1,6 @@
 package com.laboki.eclipse.plugin.fastopen;
 
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.Services;
 import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 

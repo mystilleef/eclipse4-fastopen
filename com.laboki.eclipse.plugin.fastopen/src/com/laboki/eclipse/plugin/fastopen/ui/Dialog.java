@@ -40,17 +40,18 @@ import org.eclipse.swt.widgets.Text;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
+import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.resources.RFile;
 import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 
-public final class Dialog implements Instance {
+public final class Dialog extends AbstractEventBusInstance {
 
 	private static final int HEIGHT = 480;
 	private static final int WIDTH = Dialog.HEIGHT * 2;
@@ -590,15 +591,8 @@ public final class Dialog implements Instance {
 	}
 
 	@Override
-	public Instance begin() {
-		EventBus.register(this);
-		return this;
-	}
-
-	@Override
 	public Instance end() {
-		EventBus.unregister(this);
 		Dialog.SHELL.dispose();
-		return this;
+		return super.end();
 	}
 }

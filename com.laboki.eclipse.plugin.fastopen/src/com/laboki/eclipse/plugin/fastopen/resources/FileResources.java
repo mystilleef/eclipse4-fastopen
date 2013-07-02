@@ -14,17 +14,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.Instance;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.IndexResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
+import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.listeners.OpenerResourceChangeListener;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
-public final class FileResources implements IResourceDeltaVisitor, Instance {
+public final class FileResources extends AbstractEventBusInstance implements IResourceDeltaVisitor {
 
 	private final OpenerResourceChangeListener listener = new OpenerResourceChangeListener(this);
 
@@ -87,15 +88,13 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 
 	@Override
 	public Instance begin() {
-		EventBus.register(this);
 		this.listener.start();
-		return this;
+		return super.begin();
 	}
 
 	@Override
 	public Instance end() {
-		EventBus.unregister(this);
 		this.listener.stop();
-		return this;
+		return super.end();
 	}
 }
