@@ -13,11 +13,11 @@ import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class RecentResources implements Instance {
 
@@ -53,16 +53,12 @@ public final class RecentResources implements Instance {
 			@Override
 			public void execute() {
 				this.update(event);
+				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
 			}
 
 			private void update(final RecentFilesEvent event) {
 				this.rFiles.addAll(RecentResources.this.makeResourceFiles(event.getFiles()));
 				RecentResources.this.updateFileResources(this.rFiles);
-			}
-
-			@Override
-			public void postExec() {
-				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
 			}
 		}.begin();
 	}

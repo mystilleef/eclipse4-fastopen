@@ -15,7 +15,6 @@ import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.IndexResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
@@ -23,6 +22,7 @@ import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.listeners.OpenerResourceChangeListener;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class FileResources implements IResourceDeltaVisitor, Instance {
 
@@ -41,6 +41,8 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 			public void execute() {
 				this.buildFileResourcesMap();
 				this.buildModifiedFilesList();
+				EventBus.post(new FileResourcesMapEvent(ImmutableMap.copyOf(this.fileResourcesMap)));
+				EventBus.post(new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles)));
 			}
 
 			private void buildFileResourcesMap() {
@@ -53,12 +55,6 @@ public final class FileResources implements IResourceDeltaVisitor, Instance {
 				this.modifiedFiles.clear();
 				for (final IFile file : this.resources)
 					this.modifiedFiles.add(EditorContext.getURIPath(file));
-			}
-
-			@Override
-			public void postExec() {
-				EventBus.post(new FileResourcesMapEvent(ImmutableMap.copyOf(this.fileResourcesMap)));
-				EventBus.post(new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles)));
 			}
 		}.begin();
 	}

@@ -8,13 +8,14 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.PartActivationEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
+import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class AccessedFiles implements Instance {
 
@@ -24,10 +25,10 @@ public final class AccessedFiles implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void updateAccessedFiles(final DeserializedAccessedFilesEvent event) {
-		new Task() {
+		new AsyncTask() {
 
 			@Override
-			public void asyncExec() {
+			public void asyncExecute() {
 				AccessedFiles.this.updateAccessedFiles(event.getFiles());
 				AccessedFiles.this.updateAccessedFiles(AccessedFiles.this.getAccessedFiles());
 				this.arrangeFiles();
@@ -58,6 +59,7 @@ public final class AccessedFiles implements Instance {
 			@Override
 			public void execute() {
 				AccessedFiles.this.updateAccessedFiles(this.removeDeletedFilesFromAccessList());
+				AccessedFiles.this.postEvent();
 			}
 
 			private ImmutableList<String> removeDeletedFilesFromAccessList() {
@@ -66,23 +68,18 @@ public final class AccessedFiles implements Instance {
 					if (this.modifiedFiles.contains(file)) files.add(file);
 				return ImmutableList.copyOf(files);
 			}
-
-			@Override
-			public void postExec() {
-				AccessedFiles.this.postEvent();
-			}
 		}.begin();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void updateAccessedFiles(@SuppressWarnings("unused") final PartActivationEvent event) {
-		new Task() {
+		new AsyncTask() {
 
 			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
 
 			@Override
-			public void asyncExec() {
+			public void asyncExecute() {
 				final String path = EditorContext.getPath();
 				if (path.length() == 0) return;
 				this.moveCurrentFileToTopOfList();

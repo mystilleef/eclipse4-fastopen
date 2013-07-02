@@ -17,11 +17,11 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.IndexResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class WorkspaceResources implements IResourceVisitor, Comparator<IFile>, Instance {
 
@@ -57,27 +57,17 @@ public final class WorkspaceResources implements IResourceVisitor, Comparator<IF
 				WorkspaceResources.this.resources.clear();
 				this.updateFilesFromWorkspace();
 				this.sortFilesByModificationTime();
+				EventBus.post(new WorkspaceResourcesEvent(ImmutableList.copyOf(WorkspaceResources.this.resources)));
 			}
 
 			private void updateFilesFromWorkspace() {
 				try {
 					this.root.accept(WorkspaceResources.this);
-				} catch (final Exception e) {
-					// Do nothing.
-				}
+				} catch (final Exception e) {}
 			}
 
 			private void sortFilesByModificationTime() {
 				Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
-			}
-
-			@Override
-			public void postExec() {
-				this.postEvent();
-			}
-
-			private void postEvent() {
-				EventBus.post(new WorkspaceResourcesEvent(ImmutableList.copyOf(WorkspaceResources.this.resources)));
 			}
 		}.begin();
 	}

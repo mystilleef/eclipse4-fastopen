@@ -8,12 +8,12 @@ import com.google.common.collect.Sets;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class RecentFiles implements Instance {
 
@@ -27,6 +27,7 @@ public final class RecentFiles implements Instance {
 			@Override
 			public void execute() {
 				this.resetRecentFiles(event.getFiles());
+				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
 			}
 
 			private void resetRecentFiles(final ImmutableList<String> files) {
@@ -40,11 +41,6 @@ public final class RecentFiles implements Instance {
 				RecentFiles.this.recentFiles.addAll(files);
 				RecentFiles.this.recentFiles.remove("");
 			}
-
-			@Override
-			public void postExec() {
-				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
-			};
 		}.begin();
 	}
 
@@ -58,6 +54,7 @@ public final class RecentFiles implements Instance {
 			@Override
 			public void execute() {
 				this.mergeAccessedToRecentFiles();
+				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
 			}
 
 			private void mergeAccessedToRecentFiles() {
@@ -70,11 +67,6 @@ public final class RecentFiles implements Instance {
 				RecentFiles.this.recentFiles.removeAll(files);
 				RecentFiles.this.recentFiles.addAll(0, files);
 				RecentFiles.this.recentFiles.remove("");
-			}
-
-			@Override
-			public void postExec() {
-				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
 			}
 		}.begin();
 	}

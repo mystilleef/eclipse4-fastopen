@@ -5,8 +5,8 @@ import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPart;
 
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.PartActivationEvent;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public enum Factory implements Instance {
 	INSTANCE;
@@ -38,13 +38,13 @@ public enum Factory implements Instance {
 
 		@Override
 		public void partActivated(final IWorkbenchPart part) {
-			EditorContext.asyncExec(new Task() {
+			new Task() {
 
 				@Override
 				public void execute() {
 					Factory.startRecentFilesMonitor(part);
 				}
-			});
+			}.begin();
 		}
 
 		@Override

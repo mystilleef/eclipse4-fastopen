@@ -4,7 +4,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import com.google.common.eventbus.AsyncEventBus;
-import com.laboki.eclipse.plugin.fastopen.Task;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class EventBus {
 

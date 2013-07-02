@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
-import com.laboki.eclipse.plugin.fastopen.Task;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class OpenerResourceChangeListener extends AbstractOpenerListener implements IResourceChangeListener {
 

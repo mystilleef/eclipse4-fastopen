@@ -5,8 +5,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
-import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
+import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 
 public final class Handler extends AbstractHandler {
 
@@ -14,13 +14,13 @@ public final class Handler extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent arg0) throws ExecutionException {
-		EditorContext.asyncExec(new Task() {
+		new AsyncTask() {
 
 			@Override
-			public void execute() {
+			public void asyncExecute() {
 				EventBus.post(new ShowFastOpenDialogEvent());
 			}
-		});
+		}.begin();
 		return null;
 	}
 }

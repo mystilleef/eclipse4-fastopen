@@ -41,7 +41,6 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.Instance;
-import com.laboki.eclipse.plugin.fastopen.Task;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
@@ -49,6 +48,7 @@ import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.resources.RFile;
+import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 
 public final class Dialog implements Instance {
 
@@ -286,10 +286,10 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void shellActivated(final ShellEvent arg0) {
-			new Task() {
+			new AsyncTask() {
 
 				@Override
-				public void asyncExec() {
+				public void asyncExecute() {
 					Dialog.focusViewer();
 				}
 			}.begin();
@@ -304,10 +304,10 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void shellDeactivated(final ShellEvent arg0) {
-			new Task() {
+			new AsyncTask() {
 
 				@Override
-				public void asyncExec() {
+				public void asyncExecute() {
 					Dialog.refresh();
 				}
 			}.begin();
@@ -329,10 +329,10 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void focusLost(final FocusEvent arg0) {
-			new Task() {
+			new AsyncTask() {
 
 				@Override
-				public void asyncExec() {
+				public void asyncExecute() {
 					Dialog.refocusViewer();
 				}
 			}.begin();
@@ -360,19 +360,19 @@ public final class Dialog implements Instance {
 		public void keyPressed(final KeyEvent event) {
 			if (Dialog.isValidCharacter(String.valueOf(event.character))) {
 				event.doit = false;
-				new Task() {
+				new AsyncTask() {
 
 					@Override
-					public void asyncExec() {
+					public void asyncExecute() {
 						Dialog.updateText(event.character);
 					}
 				}.begin();
 			} else if (event.keyCode == SWT.BS) {
 				event.doit = false;
-				new Task() {
+				new AsyncTask() {
 
 					@Override
-					public void asyncExec() {
+					public void asyncExecute() {
 						Dialog.backspace();
 					}
 				}.begin();
@@ -397,10 +397,10 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void modifyText(final ModifyEvent arg0) {
-			new Task() {
+			new AsyncTask() {
 
 				@Override
-				public void asyncExec() {
+				public void asyncExecute() {
 					Dialog.filterViewer();
 				}
 			}.begin();
@@ -413,10 +413,10 @@ public final class Dialog implements Instance {
 
 		@Override
 		public void doubleClick(final DoubleClickEvent arg0) {
-			new Task() {
+			new AsyncTask() {
 
 				@Override
-				public void asyncExec() {
+				public void asyncExecute() {
 					Dialog.SHELL.close();
 					Dialog.openFiles();
 				}
@@ -429,13 +429,13 @@ public final class Dialog implements Instance {
 
 			@Override
 			public void handleEvent(final Event event) {
-				if (this.isCtrlL(event)) EditorContext.asyncExec(new Task() {
+				if (this.isCtrlL(event)) new AsyncTask() {
 
 					@Override
-					public void asyncExec() {
+					public void asyncExecute() {
 						selectText();
 					}
-				});
+				}.begin();
 			}
 
 			private boolean isCtrlL(final Event event) {
@@ -451,10 +451,10 @@ public final class Dialog implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void fileResourcesChanged(final FileResourcesEvent event) {
-		new Task() {
+		new AsyncTask() {
 
 			@Override
-			public void asyncExec() {
+			public void asyncExecute() {
 				Dialog.updateViewer(event.getrFiles());
 			}
 		}.begin();
@@ -463,10 +463,10 @@ public final class Dialog implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void fileResourcesChanged(final FilterRecentFilesResultEvent event) {
-		new Task() {
+		new AsyncTask() {
 
 			@Override
-			public void asyncExec() {
+			public void asyncExecute() {
 				Dialog.updateViewer(event.getrFiles());
 			}
 		}.begin();
@@ -490,10 +490,10 @@ public final class Dialog implements Instance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void showDialog(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
-		new Task() {
+		new AsyncTask() {
 
 			@Override
-			public void asyncExec() {
+			public void asyncExecute() {
 				Dialog.SHELL.open();
 				Dialog.focusViewer();
 			}
@@ -538,10 +538,10 @@ public final class Dialog implements Instance {
 
 	private static void openFiles() {
 		for (final int index : Dialog.TABLE.getSelectionIndices())
-			new Task() {
+			new AsyncTask() {
 
 				@Override
-				public void asyncExec() {
+				public void asyncExecute() {
 					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 				}
 			}.begin();
@@ -565,10 +565,10 @@ public final class Dialog implements Instance {
 
 	private static void closeFiles() {
 		for (final int index : Dialog.TABLE.getSelectionIndices())
-			new Task() {
+			new AsyncTask() {
 
 				@Override
-				public void asyncExec() {
+				public void asyncExecute() {
 					EditorContext.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 				}
 			}.begin();
