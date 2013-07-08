@@ -32,7 +32,7 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void worskpaceResources(final WorkspaceResourcesEvent event) {
-		new Task("FASTOPEN_INDEX_RESOURCES", 250) {
+		new Task(EditorContext.INDEX_RESOURCES_TASK, 250) {
 
 			private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 			private final List<String> modifiedFiles = Lists.newArrayList();
@@ -42,8 +42,7 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 			public void execute() {
 				this.buildFileResourcesMap();
 				this.buildModifiedFilesList();
-				EventBus.post(new FileResourcesMapEvent(ImmutableMap.copyOf(this.fileResourcesMap)));
-				EventBus.post(new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles)));
+				this.postEvents();
 			}
 
 			private void buildFileResourcesMap() {
@@ -56,6 +55,11 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 				this.modifiedFiles.clear();
 				for (final IFile file : this.resources)
 					this.modifiedFiles.add(EditorContext.getURIPath(file));
+			}
+
+			private void postEvents() {
+				EventBus.post(new FileResourcesMapEvent(ImmutableMap.copyOf(this.fileResourcesMap)));
+				EventBus.post(new ModifiedFilesEvent(ImmutableList.copyOf(this.modifiedFiles)));
 			}
 		}.begin();
 	}

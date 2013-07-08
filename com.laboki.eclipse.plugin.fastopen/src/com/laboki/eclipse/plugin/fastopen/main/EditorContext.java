@@ -52,6 +52,7 @@ import com.laboki.eclipse.plugin.fastopen.Activator;
 
 public final class EditorContext {
 
+	public static final String INDEX_RESOURCES_TASK = "Eclipse FastOpen Plugin: Index resources task.";
 	private static EditorContext instance;
 	public static final int SHORT_DELAY_TIME = 250;
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
