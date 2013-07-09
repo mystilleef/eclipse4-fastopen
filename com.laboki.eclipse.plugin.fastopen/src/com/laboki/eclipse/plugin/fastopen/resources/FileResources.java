@@ -46,13 +46,11 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 			}
 
 			private void buildFileResourcesMap() {
-				this.fileResourcesMap.clear();
 				for (final IFile file : this.resources)
 					this.fileResourcesMap.put(EditorContext.getURIPath(file), file);
 			}
 
 			private void buildModifiedFilesList() {
-				this.modifiedFiles.clear();
 				for (final IFile file : this.resources)
 					this.modifiedFiles.add(EditorContext.getURIPath(file));
 			}
