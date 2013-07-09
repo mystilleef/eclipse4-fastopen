@@ -16,7 +16,7 @@ public enum Factory implements Instance {
 
 	@Override
 	public Instance begin() {
-		Factory.startRecentFilesMonitor(Factory.PART_SERVICE.getActivePart());
+		Factory.emitPartActivationEvent(Factory.PART_SERVICE.getActivePart());
 		Factory.PART_SERVICE.addPartListener(this.partListener);
 		return this;
 	}
@@ -27,7 +27,7 @@ public enum Factory implements Instance {
 		return this;
 	}
 
-	public static void startRecentFilesMonitor(final IWorkbenchPart part) {
+	public static void emitPartActivationEvent(final IWorkbenchPart part) {
 		if (EditorContext.isInvalidPart(part)) return;
 		EventBus.post(new PartActivationEvent());
 	}
@@ -42,7 +42,7 @@ public enum Factory implements Instance {
 
 				@Override
 				public void execute() {
-					Factory.startRecentFilesMonitor(part);
+					Factory.emitPartActivationEvent(part);
 				}
 			}.begin();
 		}
