@@ -52,6 +52,8 @@ import com.laboki.eclipse.plugin.fastopen.Activator;
 
 public final class EditorContext {
 
+	public static final int SHORT_DELAY_IN_MILLISECONDS = 60;
+	public static final String EMIT_INDEX_RESOURCE_TASK = "Eclipse Fast Open Plugin: Emit index resource task.";
 	public static final String INDEX_WORKSPACE_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index workspace resources tasks.";
 	public static final String INDEX_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index resources task.";
 	private static EditorContext instance;
@@ -423,7 +425,7 @@ public final class EditorContext {
 	}
 
 	public static void cancelAllJobs() {
-		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK, EditorContext.INDEX_WORKSPACE_RESOURCES_TASK);
+		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK, EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, EditorContext.EMIT_INDEX_RESOURCE_TASK);
 	}
 
 	public static void cancelJobsBelongingTo(final String... jobNames) {
