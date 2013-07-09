@@ -32,7 +32,7 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void worskpaceResources(final WorkspaceResourcesEvent event) {
-		new Task(EditorContext.INDEX_RESOURCES_TASK, 250) {
+		new Task(EditorContext.INDEX_RESOURCES_TASK, EditorContext.SHORT_DELAY_IN_MILLISECONDS) {
 
 			private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 			private final List<String> modifiedFiles = Lists.newArrayList();
@@ -68,10 +68,10 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 	public boolean visit(final IResourceDelta delta) throws CoreException {
 		switch (delta.getKind()) {
 			case IResourceDelta.ADDED:
-				FileResources.indexResource();
+				FileResources.indexResources();
 				break;
 			case IResourceDelta.REMOVED:
-				FileResources.indexResource();
+				FileResources.indexResources();
 				break;
 			default:
 				break;
@@ -79,12 +79,16 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 		return true;
 	}
 
-	private static void indexResource() {
-		EditorContext.asyncExec(new Task("FASTOPEN_INDEX_RESOURCES", 1000) {
+	private static void indexResources() {
+		EditorContext.cancelAllJobs();
+		FileResources.emitIndexResource();
+	}
+
+	private static void emitIndexResource() {
+		EditorContext.asyncExec(new Task(EditorContext.EMIT_INDEX_RESOURCE_TASK, 1000) {
 
 			@Override
 			public void execute() {
-				EditorContext.cancelJobsBelongingTo("FASTOPEN_INDEX_RESOURCES");
 				EventBus.post(new IndexResourcesEvent());
 			}
 		});
