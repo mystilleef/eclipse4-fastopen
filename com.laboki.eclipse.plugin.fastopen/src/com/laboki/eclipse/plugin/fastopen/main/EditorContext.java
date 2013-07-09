@@ -52,7 +52,8 @@ import com.laboki.eclipse.plugin.fastopen.Activator;
 
 public final class EditorContext {
 
-	public static final String INDEX_RESOURCES_TASK = "Eclipse FastOpen Plugin: Index resources task.";
+	public static final String INDEX_WORKSPACE_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index workspace resources tasks.";
+	public static final String INDEX_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index resources task.";
 	private static EditorContext instance;
 	public static final int SHORT_DELAY_TIME = 250;
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
@@ -419,6 +420,10 @@ public final class EditorContext {
 
 	public static boolean isWindows() {
 		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
+	}
+
+	public static void cancelAllJobs() {
+		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK, EditorContext.INDEX_WORKSPACE_RESOURCES_TASK);
 	}
 
 	public static void cancelJobsBelongingTo(final String... jobNames) {
