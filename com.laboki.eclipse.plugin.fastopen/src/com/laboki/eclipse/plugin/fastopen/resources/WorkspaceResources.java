@@ -40,7 +40,7 @@ public final class WorkspaceResources extends AbstractEventBusInstance implement
 	@Subscribe
 	@AllowConcurrentEvents
 	public void indexResources(@SuppressWarnings("unused") final IndexResourcesEvent event) {
-		new Task("FASTOPEN_INDEX_RESOURCES", 250) {
+		new Task(EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, 250) {
 
 			@Override
 			public void execute() {
