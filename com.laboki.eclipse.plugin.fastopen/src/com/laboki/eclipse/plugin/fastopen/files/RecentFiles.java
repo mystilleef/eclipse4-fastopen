@@ -13,6 +13,7 @@ import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
+import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
@@ -22,11 +23,12 @@ public final class RecentFiles extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void postModifiedRecentFiles(final ModifiedFilesEvent event) {
+	public void emitUpdatedRecentFiles(final ModifiedFilesEvent event) {
 		new Task() {
 
 			@Override
 			public void execute() {
+				EditorContext.cancelJobsBelongingTo(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK);
 				this.resetRecentFiles(event.getFiles());
 				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
 			}
@@ -47,18 +49,18 @@ public final class RecentFiles extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void postAccessedRecentFiles(final AccessedFilesEvent event) {
-		new Task() {
+	public void emitUpdatedRecentFiles(final AccessedFilesEvent event) {
+		new Task(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK, 60) {
 
 			private final ImmutableList<String> files = event.getFiles();
 
 			@Override
 			public void execute() {
-				this.mergeAccessedToRecentFiles();
+				this.mergeAccessedAndRecentFiles();
 				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
 			}
 
-			private void mergeAccessedToRecentFiles() {
+			private void mergeAccessedAndRecentFiles() {
 				synchronized (RecentFiles.this.recentFiles) {
 					this.merge(this.files);
 				}
