@@ -24,6 +24,7 @@ public enum Factory implements Instance {
 	@Override
 	public Instance end() {
 		Factory.PART_SERVICE.removePartListener(this.partListener);
+		EditorContext.cancelAllJobs();
 		return this;
 	}
 
