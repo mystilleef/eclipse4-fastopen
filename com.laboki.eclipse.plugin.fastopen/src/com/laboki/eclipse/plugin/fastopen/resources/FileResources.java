@@ -32,7 +32,12 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void worskpaceResources(final WorkspaceResourcesEvent event) {
-		new Task(EditorContext.INDEX_RESOURCES_TASK, EditorContext.SHORT_DELAY_IN_MILLISECONDS) {
+		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK);
+		FileResources.indexResources(event);
+	}
+
+	private static void indexResources(final WorkspaceResourcesEvent event) {
+		new Task(EditorContext.INDEX_RESOURCES_TASK, 1000) {
 
 			private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 			private final List<String> modifiedFiles = Lists.newArrayList();
@@ -64,17 +69,12 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 
 	@Override
 	public boolean visit(final IResourceDelta delta) throws CoreException {
-		switch (delta.getKind()) {
-			case IResourceDelta.ADDED:
-				FileResources.indexResources();
-				break;
-			case IResourceDelta.REMOVED:
-				FileResources.indexResources();
-				break;
-			default:
-				break;
-		}
+		if (FileResources.isAddedOrRemoved(delta.getKind())) FileResources.indexResources();
 		return true;
+	}
+
+	private static boolean isAddedOrRemoved(final int kind) {
+		return (kind == IResourceDelta.ADDED) || (kind == IResourceDelta.REMOVED);
 	}
 
 	private static void indexResources() {
@@ -83,13 +83,13 @@ public final class FileResources extends AbstractEventBusInstance implements IRe
 	}
 
 	private static void emitIndexResource() {
-		EditorContext.asyncExec(new Task(EditorContext.EMIT_INDEX_RESOURCE_TASK, 1000) {
+		new Task(EditorContext.EMIT_INDEX_RESOURCE_TASK, 1000) {
 
 			@Override
 			public void execute() {
 				EventBus.post(new IndexResourcesEvent());
 			}
-		});
+		}.begin();
 	}
 
 	@Override
