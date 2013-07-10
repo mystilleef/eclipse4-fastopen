@@ -40,17 +40,18 @@ public final class WorkspaceResources extends AbstractEventBusInstance implement
 	@Subscribe
 	@AllowConcurrentEvents
 	public void indexResources(@SuppressWarnings("unused") final IndexResourcesEvent event) {
-		new Task(EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, EditorContext.SHORT_DELAY_IN_MILLISECONDS) {
+		new Task(EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, 1000) {
 
 			@Override
 			public void execute() {
+				EditorContext.cancelJobsBelongingTo(EditorContext.CORE_WORKSPACE_INDEXER_TASK);
 				WorkspaceResources.this.indexResources();
 			}
 		}.begin();
 	}
 
 	private synchronized void indexResources() {
-		new Task() {
+		new Task(EditorContext.CORE_WORKSPACE_INDEXER_TASK, 60) {
 
 			private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			private final IWorkspaceRoot root = this.workspace.getRoot();
@@ -72,7 +73,11 @@ public final class WorkspaceResources extends AbstractEventBusInstance implement
 			}
 
 			private void sortFilesByModificationTime() {
-				Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
+				try {
+					Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
+				} catch (final Exception e) {
+					WorkspaceResources.LOGGER.log(Level.WARNING, "Failed to sort workspace resources", e);
+				}
 			}
 		}.begin();
 	}
