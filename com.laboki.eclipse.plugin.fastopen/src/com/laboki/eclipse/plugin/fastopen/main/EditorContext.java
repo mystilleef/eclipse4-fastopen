@@ -52,10 +52,13 @@ import com.laboki.eclipse.plugin.fastopen.Activator;
 
 public final class EditorContext {
 
-	public static final int SHORT_DELAY_IN_MILLISECONDS = 60;
+	public static final String CORE_WORKSPACE_INDEXER_TASK = "Eclipse Fast Open Plugin: Core Workspace Indexer Task";
+	public static final String EMIT_UPDATED_RECENT_FILES_TASK = "Eclipse Fast Open Plugin: Emit updated recent files task";
+	public static final String UPDATE_ACCESSED_FILES_TASK = "Eclipse Fast Open Plugin: Update accessed files task.";
 	public static final String EMIT_INDEX_RESOURCE_TASK = "Eclipse Fast Open Plugin: Emit index resource task.";
 	public static final String INDEX_WORKSPACE_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index workspace resources tasks.";
 	public static final String INDEX_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index resources task.";
+	public static final int SHORT_DELAY_IN_MILLISECONDS = 60;
 	private static EditorContext instance;
 	public static final int SHORT_DELAY_TIME = 250;
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
@@ -426,6 +429,7 @@ public final class EditorContext {
 
 	public static void cancelAllJobs() {
 		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK, EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, EditorContext.EMIT_INDEX_RESOURCE_TASK);
+		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK, EditorContext.EMIT_UPDATED_RECENT_FILES_TASK, EditorContext.CORE_WORKSPACE_INDEXER_TASK);
 	}
 
 	public static void cancelJobsBelongingTo(final String... jobNames) {
