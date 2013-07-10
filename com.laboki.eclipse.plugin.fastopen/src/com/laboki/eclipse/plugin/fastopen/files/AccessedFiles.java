@@ -53,7 +53,12 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void updateAccessedFiles(final RecentFilesModificationEvent event) {
-		new Task("accessed files recent files modification event", 1000) {
+		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
+		this.updateAccessedFilesList(event);
+	}
+
+	private void updateAccessedFilesList(final RecentFilesModificationEvent event) {
+		new Task(EditorContext.UPDATE_ACCESSED_FILES_TASK, 1000) {
 
 			private final ImmutableList<String> modifiedFiles = event.getFiles();
 
@@ -75,7 +80,12 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void updateAccessedFiles(@SuppressWarnings("unused") final PartActivationEvent event) {
-		new AsyncTask() {
+		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
+		this.updateAccessedFilesList();
+	}
+
+	private void updateAccessedFilesList() {
+		new AsyncTask(EditorContext.UPDATE_ACCESSED_FILES_TASK, 60) {
 
 			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
 
