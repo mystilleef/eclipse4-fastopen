@@ -52,6 +52,8 @@ import com.laboki.eclipse.plugin.fastopen.Activator;
 
 public final class EditorContext {
 
+	public static final String UPDATE_R_FILES_TASK = "Eclipse Fast Open Plugin: update rFiles task";
+	public static final String FILTER_RECENT_FILES_TASK = "Eclipse Fast Open Plugin: filter recent files task";
 	public static final String CORE_WORKSPACE_INDEXER_TASK = "Eclipse Fast Open Plugin: Core Workspace Indexer Task";
 	public static final String EMIT_UPDATED_RECENT_FILES_TASK = "Eclipse Fast Open Plugin: Emit updated recent files task";
 	public static final String UPDATE_ACCESSED_FILES_TASK = "Eclipse Fast Open Plugin: Update accessed files task.";
@@ -430,6 +432,7 @@ public final class EditorContext {
 	public static void cancelAllJobs() {
 		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK, EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, EditorContext.EMIT_INDEX_RESOURCE_TASK);
 		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK, EditorContext.EMIT_UPDATED_RECENT_FILES_TASK, EditorContext.CORE_WORKSPACE_INDEXER_TASK);
+		EditorContext.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK, EditorContext.UPDATE_R_FILES_TASK);
 	}
 
 	public static void cancelJobsBelongingTo(final String... jobNames) {
