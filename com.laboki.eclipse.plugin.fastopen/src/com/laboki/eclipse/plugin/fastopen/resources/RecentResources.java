@@ -54,12 +54,16 @@ public final class RecentResources extends AbstractEventBusInstance {
 			@Override
 			public void execute() {
 				this.update(event);
-				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
+				this.postFileResourcesEvent();
 			}
 
 			private void update(final RecentFilesEvent event) {
 				this.rFiles.addAll(RecentResources.this.makeResourceFiles(event.getFiles()));
 				RecentResources.this.updateFileResources(this.rFiles);
+			}
+
+			private void postFileResourcesEvent() {
+				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
 			}
 		}.begin();
 	}
