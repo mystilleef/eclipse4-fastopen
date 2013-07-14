@@ -11,6 +11,7 @@ import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
+import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
@@ -20,25 +21,35 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void updateRFiles(final FileResourcesEvent event) {
-		new Task() {
+	public void fileResourcesEventHandler(final FileResourcesEvent event) {
+		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_R_FILES_TASK);
+		this.updateRFiles(event);
+	}
+
+	private void updateRFiles(final FileResourcesEvent event) {
+		new Task(EditorContext.UPDATE_R_FILES_TASK, 60) {
 
 			@Override
 			public void execute() {
-				RecentResourcesFilter.this.updateFiles(event.getrFiles());
+				this.updateFiles(event.getrFiles());
+			}
+
+			private void updateFiles(final ImmutableList<RFile> rFiles) {
+				RecentResourcesFilter.this.rFiles.clear();
+				RecentResourcesFilter.this.rFiles.addAll(rFiles);
 			}
 		}.begin();
 	}
 
-	private void updateFiles(final ImmutableList<RFile> rFiles) {
-		this.rFiles.clear();
-		this.rFiles.addAll(rFiles);
-	}
-
 	@Subscribe
 	@AllowConcurrentEvents
-	public void filterRecentFiles(final FilterRecentFilesEvent event) {
-		new Task() {
+	public void filterRecentFilesEventHandler(final FilterRecentFilesEvent event) {
+		EditorContext.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK);
+		this.filterRecentFiles(event);
+	}
+
+	private void filterRecentFiles(final FilterRecentFilesEvent event) {
+		new Task(EditorContext.FILTER_RECENT_FILES_TASK, 60) {
 
 			private final List<RFile> recentFiles = RecentResourcesFilter.this.getFiles();
 
