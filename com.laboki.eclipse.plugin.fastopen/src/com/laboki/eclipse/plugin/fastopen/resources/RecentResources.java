@@ -17,11 +17,14 @@ import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
+import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class RecentResources extends AbstractEventBusInstance {
 
+	private static final String EMIT_FIRLE_RESOURCES_EVENT_TASK = "Eclipse Fast Open Plugin: emit file resources event task";
+	private static final String UPDATE_RESOURCES_TASK = "Eclipse Fast Open Plugin: update resources task";
 	private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 	private final Map<String, RFile> cachedResourceFiles = Maps.newHashMap();
 	private final List<RFile> fileResources = Lists.newArrayList();
@@ -29,9 +32,20 @@ public final class RecentResources extends AbstractEventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void fileResourcesMapEventHandler(final FileResourcesMapEvent event) {
-		this.clearResources();
-		RecentResources.this.updateFileResourcesMap(event.getMap());
-		RecentResources.this.makeResourceFiles(ImmutableList.copyOf(event.getMap().keySet()));
+		EditorContext.cancelJobsBelongingTo(RecentResources.UPDATE_RESOURCES_TASK);
+		this.updateResources(event);
+	}
+
+	private void updateResources(final FileResourcesMapEvent event) {
+		new Task(RecentResources.UPDATE_RESOURCES_TASK, 60) {
+
+			@Override
+			public void execute() {
+				RecentResources.this.clearResources();
+				RecentResources.this.updateFileResourcesMap(event.getMap());
+				RecentResources.this.makeResourceFiles(ImmutableList.copyOf(event.getMap().keySet()));
+			}
+		}.begin();
 	}
 
 	private void clearResources() {
@@ -47,7 +61,12 @@ public final class RecentResources extends AbstractEventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void recentFilesEventHandler(final RecentFilesEvent event) {
-		new Task() {
+		EditorContext.cancelJobsBelongingTo(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK);
+		this.emitFileResourcesEvent(event);
+	}
+
+	private void emitFileResourcesEvent(final RecentFilesEvent event) {
+		new Task(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK, 60) {
 
 			private final List<RFile> rFiles = Lists.newArrayList();
 
