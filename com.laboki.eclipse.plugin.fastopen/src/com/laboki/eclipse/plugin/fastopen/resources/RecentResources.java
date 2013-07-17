@@ -28,7 +28,7 @@ public final class RecentResources extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void fileResourcesMap(final FileResourcesMapEvent event) {
+	public void fileResourcesMapEventHandler(final FileResourcesMapEvent event) {
 		this.clearResources();
 		RecentResources.this.updateFileResourcesMap(event.getMap());
 		RecentResources.this.makeResourceFiles(ImmutableList.copyOf(event.getMap().keySet()));
@@ -46,7 +46,7 @@ public final class RecentResources extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void updateResourceFiles(final RecentFilesEvent event) {
+	public void recentFilesEventHandler(final RecentFilesEvent event) {
 		new Task() {
 
 			private final List<RFile> rFiles = Lists.newArrayList();
