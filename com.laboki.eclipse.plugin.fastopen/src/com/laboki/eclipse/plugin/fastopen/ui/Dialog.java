@@ -451,7 +451,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public static void fileResourcesChanged(final FileResourcesEvent event) {
+	public static void fileResourcesEventHandler(final FileResourcesEvent event) {
 		new AsyncTask() {
 
 			@Override
@@ -463,7 +463,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public static void fileResourcesChanged(final FilterRecentFilesResultEvent event) {
+	public static void filterRecentFilesResultEventHandler(final FilterRecentFilesResultEvent event) {
 		new AsyncTask() {
 
 			@Override
@@ -483,18 +483,19 @@ public final class Dialog extends AbstractEventBusInstance {
 		Dialog.VIEWER.getControl().setRedraw(false);
 		Dialog.VIEWER.setInput(rFiles.toArray(new RFile[rFiles.size()]));
 		Dialog.VIEWER.setItemCount(rFiles.size());
-		Dialog.refresh();
 		Dialog.VIEWER.getControl().setRedraw(true);
+		Dialog.refresh();
 		Dialog.focusViewer();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public static void showDialog(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
+	public static void showFastOpenDialogEventHandler(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
 		new AsyncTask() {
 
 			@Override
 			public void asyncExecute() {
+				Dialog.refresh();
 				Dialog.SHELL.open();
 				Dialog.focusViewer();
 			}

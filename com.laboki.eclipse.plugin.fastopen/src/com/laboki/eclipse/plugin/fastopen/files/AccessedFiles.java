@@ -52,7 +52,7 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void updateAccessedFiles(final RecentFilesModificationEvent event) {
+	public void recentFilesModificationEventHandler(final RecentFilesModificationEvent event) {
 		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
 		this.updateAccessedFilesList(event);
 	}
@@ -79,7 +79,7 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void updateAccessedFiles(@SuppressWarnings("unused") final PartActivationEvent event) {
+	public void partActivationEventHandler(@SuppressWarnings("unused") final PartActivationEvent event) {
 		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
 		this.updateAccessedFilesList();
 	}
@@ -123,6 +123,15 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 	private void postEvent() {
 		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this.getAccessedFiles())));
+		// this.printAccessedFiles();
+	}
+
+	@SuppressWarnings("unused")
+	private void printAccessedFiles() {
+		System.out.println("===");
+		for (final String file : this.getAccessedFiles())
+			System.out.println(file);
+		System.out.println("===");
 	}
 
 	private synchronized ArrayList<String> getAccessedFiles() {
