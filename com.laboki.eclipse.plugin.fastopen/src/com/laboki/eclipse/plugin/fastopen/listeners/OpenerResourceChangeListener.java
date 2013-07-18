@@ -7,10 +7,12 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
+import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class OpenerResourceChangeListener extends AbstractOpenerListener implements IResourceChangeListener {
 
+	private static final String FIND_CHANGED_RESOURCE_TASK = "Eclipse Fast Open Plugin: find changed resource task";
 	private final IResourceDeltaVisitor handler;
 	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
@@ -30,7 +32,12 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener i
 
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
-		new Task() {
+		EditorContext.cancelJobsBelongingTo(OpenerResourceChangeListener.FIND_CHANGED_RESOURCE_TASK);
+		this.findResources(event);
+	}
+
+	private void findResources(final IResourceChangeEvent event) {
+		new Task(OpenerResourceChangeListener.FIND_CHANGED_RESOURCE_TASK, 1000) {
 
 			@Override
 			public void execute() {
