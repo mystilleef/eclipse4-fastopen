@@ -1,5 +1,8 @@
 package com.laboki.eclipse.plugin.fastopen.listeners;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
@@ -15,6 +18,7 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener i
 	private static final String FIND_CHANGED_RESOURCE_TASK = "Eclipse Fast Open Plugin: find changed resource task";
 	private final IResourceDeltaVisitor handler;
 	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	private final static Logger LOGGER = Logger.getLogger(OpenerResourceChangeListener.class.getName());
 
 	public OpenerResourceChangeListener(final IResourceDeltaVisitor handler) {
 		this.handler = handler;
@@ -41,18 +45,16 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener i
 
 			@Override
 			public void execute() {
-				this.findChangedResource(event);
-			}
-
-			private void findChangedResource(final IResourceChangeEvent event) {
 				if (event.getType() != IResourceChangeEvent.POST_CHANGE) return;
-				this.tryToFindResourceDeltaChanges(event);
+				this.findResourceDeltaChanges(event);
 			}
 
-			private void tryToFindResourceDeltaChanges(final IResourceChangeEvent event) {
+			private void findResourceDeltaChanges(final IResourceChangeEvent event) {
 				try {
 					event.getDelta().accept(OpenerResourceChangeListener.this.handler);
-				} catch (final CoreException e) {}
+				} catch (final CoreException e) {
+					OpenerResourceChangeListener.LOGGER.log(Level.WARNING, "Failed to find resource delta changes", e);
+				}
 			}
 		}.begin();
 	}
