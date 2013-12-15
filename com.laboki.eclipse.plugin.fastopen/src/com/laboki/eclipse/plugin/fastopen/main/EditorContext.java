@@ -50,7 +50,8 @@ import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
 
-public final class EditorContext {
+public enum EditorContext {
+	INSTANCE;
 
 	public static final String UPDATE_R_FILES_TASK = "Eclipse Fast Open Plugin: update rFiles task";
 	public static final String FILTER_RECENT_FILES_TASK = "Eclipse Fast Open Plugin: filter recent files task";
@@ -61,13 +62,12 @@ public final class EditorContext {
 	public static final String INDEX_WORKSPACE_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index workspace resources tasks.";
 	public static final String INDEX_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index resources task.";
 	public static final int SHORT_DELAY_IN_MILLISECONDS = 60;
-	private static EditorContext instance;
 	public static final int SHORT_DELAY_TIME = 250;
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
 	public static final String PLUGIN_NAME = "com.laboki.eclipse.plugin.fastopen";
 	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
 	public static final IJobManager JOB_MANAGER = Job.getJobManager();
-	private final static Logger LOGGER = Logger.getLogger(EditorContext.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(EditorContext.class.getName());
 
 	private EditorContext() {}
 
@@ -241,11 +241,6 @@ public final class EditorContext {
 
 	public static String getURIPath(final IResource resource) {
 		return resource.getLocationURI().getPath();
-	}
-
-	public static EditorContext instance() {
-		if (EditorContext.instance == null) EditorContext.instance = new EditorContext();
-		return EditorContext.instance;
 	}
 
 	public static boolean isContentTypeText(final IFile file) {
