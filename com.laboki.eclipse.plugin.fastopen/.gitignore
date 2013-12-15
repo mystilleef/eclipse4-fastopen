@@ -1,4 +1,4 @@
-/bin
-/.apt_generated
-/.settings
-/.checkstyle
+bin/
+.apt_generated/
+.settings/
+.checkstyle
