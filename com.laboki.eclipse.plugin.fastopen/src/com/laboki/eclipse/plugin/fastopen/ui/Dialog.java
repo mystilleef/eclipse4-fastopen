@@ -1,6 +1,8 @@
 package com.laboki.eclipse.plugin.fastopen.ui;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
@@ -62,6 +64,7 @@ public final class Dialog extends AbstractEventBusInstance {
 	private static final Text TEXT = new Text(Dialog.SHELL, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH | SWT.NO_FOCUS);
 	private static final TableViewer VIEWER = new TableViewer(Dialog.SHELL, SWT.VIRTUAL | SWT.BORDER | SWT.MULTI);
 	private static final Table TABLE = Dialog.VIEWER.getTable();
+	private final static Logger LOGGER = Logger.getLogger(Dialog.class.getName());
 
 	public Dialog() {
 		Dialog.arrangeWidgets();
@@ -144,7 +147,7 @@ public final class Dialog extends AbstractEventBusInstance {
 			try {
 				Dialog.VIEWER.replace(this.rFiles[index], index);
 			} catch (final Exception e) {
-				// Dialog.log.log(Level.FINE, "Failed to update index for lazy content provider.", e);
+				Dialog.LOGGER.log(Level.FINE, e.getMessage(), e);
 			}
 		}
 	}
