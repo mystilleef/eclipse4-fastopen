@@ -85,7 +85,7 @@ public enum EditorContext {
 		try {
 			EditorContext.getActivePage().closeEditors(EditorContext.getActivePage().findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT), true);
 		} catch (final Exception e) {
-			EditorContext.LOGGER.log(Level.WARNING, "Failed to close editor.", e);
+			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
@@ -100,14 +100,16 @@ public enum EditorContext {
 			final BufferedWriter out = new BufferedWriter(new FileWriter(f));
 			out.write("");
 			out.close();
-		} catch (final IOException e) {}
+		} catch (final IOException e) {
+			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
+		}
 	}
 
 	public static void flushEvents() {
 		try {
 			EditorContext.tryToFlushEvents();
 		} catch (final Exception e) {
-			EditorContext.LOGGER.log(Level.WARNING, "failed to flush events", e);
+			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
@@ -315,7 +317,7 @@ public enum EditorContext {
 		try {
 			EditorContext.writeSerializableToFile(serializable, EditorContext.getObjectOutput(filePath));
 		} catch (final Exception e) {
-			e.printStackTrace();
+			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
@@ -323,7 +325,7 @@ public enum EditorContext {
 		try {
 			input.close();
 		} catch (final Exception e) {
-			EditorContext.LOGGER.log(Level.WARNING, "Failed to close object input for serializable", e);
+			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
@@ -331,7 +333,7 @@ public enum EditorContext {
 		try {
 			output.close();
 		} catch (final Exception e) {
-			e.printStackTrace();
+			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
@@ -358,7 +360,9 @@ public enum EditorContext {
 	private static boolean hasValidCharSet(final IFile file) {
 		try {
 			if (file.getCharset(false) != null) return true;
-		} catch (final CoreException e) {}
+		} catch (final CoreException e) {
+			EditorContext.LOGGER.log(Level.FINEST, e.getMessage(), e);
+		}
 		return false;
 	}
 
@@ -389,7 +393,9 @@ public enum EditorContext {
 	private static Object readObjectInput(final ObjectInput input) {
 		try {
 			return input.readObject();
-		} catch (final Exception e) {} finally {
+		} catch (final Exception e) {
+			EditorContext.LOGGER.log(Level.FINEST, e.getMessage(), e);
+		} finally {
 			EditorContext.closeObjectInput(input);
 		}
 		return null;
@@ -404,7 +410,9 @@ public enum EditorContext {
 	private static ObjectInput tryToGetNewObjectInputStream(final String filePath) {
 		try {
 			return EditorContext.newObjectInputStream(filePath);
-		} catch (final Exception e) {}
+		} catch (final Exception e) {
+			EditorContext.LOGGER.log(Level.FINEST, e.getMessage(), e);
+		}
 		return null;
 	}
 
@@ -412,7 +420,7 @@ public enum EditorContext {
 		try {
 			output.writeObject(serializable);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
