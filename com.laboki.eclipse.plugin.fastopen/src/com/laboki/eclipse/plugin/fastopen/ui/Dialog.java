@@ -479,7 +479,9 @@ public final class Dialog extends AbstractEventBusInstance {
 	protected static void updateViewer(final List<RFile> rFiles) {
 		try {
 			Dialog._updateViewer(rFiles);
-		} catch (final Exception e) {}
+		} catch (final Exception e) {
+			Dialog.LOGGER.log(Level.WARNING, e.getMessage(), e);
+		}
 	}
 
 	private static void _updateViewer(final List<RFile> rFiles) {
@@ -564,7 +566,7 @@ public final class Dialog extends AbstractEventBusInstance {
 		try {
 			EditorContext.openLink(file);
 		} catch (final Exception e) {
-			// Dialog.log.log(Level.SEVERE, "Failed to open linked file", e);
+			Dialog.LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
