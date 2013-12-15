@@ -582,8 +582,7 @@ public final class Dialog extends AbstractEventBusInstance {
 	}
 
 	private static void filterViewer() {
-		final String searchString = Dialog.TEXT.getText().trim();
-		EventBus.post(new FilterRecentFilesEvent(searchString));
+		EventBus.post(new FilterRecentFilesEvent(Dialog.TEXT.getText().trim()));
 	}
 
 	private static void refocusViewer() {
