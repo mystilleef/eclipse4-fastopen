@@ -112,6 +112,7 @@ public final class EditorContext {
 	}
 
 	private static void tryToFlushEvents() {
+		if ((EditorContext.DISPLAY == null) || EditorContext.DISPLAY.isDisposed()) return;
 		while (EditorContext.DISPLAY.readAndDispatch())
 			EditorContext.DISPLAY.update();
 	}
