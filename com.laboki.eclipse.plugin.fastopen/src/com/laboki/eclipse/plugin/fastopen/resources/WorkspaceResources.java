@@ -68,7 +68,7 @@ public final class WorkspaceResources extends AbstractEventBusInstance implement
 				try {
 					this.root.accept(WorkspaceResources.this);
 				} catch (final Exception e) {
-					WorkspaceResources.LOGGER.log(Level.WARNING, "Failed to update files from workspace.", e);
+					WorkspaceResources.LOGGER.log(Level.WARNING, e.getMessage(), e);
 				}
 			}
 
@@ -76,7 +76,7 @@ public final class WorkspaceResources extends AbstractEventBusInstance implement
 				try {
 					Collections.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
 				} catch (final Exception e) {
-					WorkspaceResources.LOGGER.log(Level.WARNING, "Failed to sort workspace resources", e);
+					WorkspaceResources.LOGGER.log(Level.WARNING, e.getMessage(), e);
 				}
 			}
 		}.begin();
