@@ -8,7 +8,7 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="guava-14.0.1.jar"/>
-	<classpathentry kind="lib" path="prettytime-2.1.3.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="guava-14.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="prettytime-2.1.3.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
