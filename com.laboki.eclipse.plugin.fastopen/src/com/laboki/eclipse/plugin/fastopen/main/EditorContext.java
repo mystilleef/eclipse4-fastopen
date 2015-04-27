@@ -323,9 +323,9 @@ public enum EditorContext {
 
 	private static void closeObjectInput(final ObjectInput input) {
 		try {
-			input.close();
+			if (input != null) input.close();
 		} catch (final Exception e) {
-			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
+			EditorContext.LOGGER.log(Level.OFF, e.getMessage(), e);
 		}
 	}
 
