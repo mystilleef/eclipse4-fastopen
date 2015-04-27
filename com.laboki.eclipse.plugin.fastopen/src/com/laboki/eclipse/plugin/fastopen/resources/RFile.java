@@ -25,72 +25,96 @@ public final class RFile {
 	public RFile(final IFile file) {
 		this.file = file;
 		this.name = this.file.getName();
-		this.folder = CharMatcher.anyOf(File.separator).trimFrom(this.file.getParent().getFullPath().toOSString());
+		this.folder =
+			CharMatcher.anyOf(File.separator).trimFrom(
+				this.file.getParent().getFullPath().toOSString());
 		this.contentType = this.getPrivateContentType();
 		this.contentTypeString = this.getPrivateContentTypeString().toLowerCase();
-		this.contentTypeImage = EditorContext.getImage(file.getFullPath().toOSString(), this.contentType);
+		this.contentTypeImage =
+			EditorContext
+				.getImage(file.getFullPath().toOSString(), this.contentType);
 		this.filePath = this.file.getLocation().toOSString();
 	}
 
-	private IContentType getPrivateContentType() {
+	private IContentType
+	getPrivateContentType() {
 		return EditorContext.getContentType(this.file);
 	}
 
-	private String getPrivateContentTypeString() {
+	private String
+	getPrivateContentTypeString() {
 		try {
 			return this.contentType.getName();
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			return "text file";
 		}
 	}
 
-	public String getModificationTime() {
+	public String
+	getModificationTime() {
 		return RFile.PRETTY_TIME.format(new Date(this.getLastModified()));
 	}
 
-	private long getLastModified() {
+	private long
+	getLastModified() {
 		return this.file.getLocation().toFile().lastModified();
 	}
 
 	@Override
-	public String toString() {
-		return String.format("===\nName=%s\nFolder=%s\nContentType=%s\nModificationTime=%s\n===", this.getName(), this.getFolder(), this.getPrivateContentTypeString(), this.getModificationTime());
+	public String
+	toString() {
+		return String.format(
+			"===\nName=%s\nFolder=%s\nContentType=%s\nModificationTime=%s\n===",
+			this.getName(),
+			this.getFolder(),
+			this.getPrivateContentTypeString(),
+			this.getModificationTime());
 	}
 
-	public IContentType getContentType() {
+	public IContentType
+	getContentType() {
 		return this.contentType;
 	}
 
-	public Image getContentTypeImage() {
+	public Image
+	getContentTypeImage() {
 		return this.contentTypeImage;
 	}
 
-	public String getContentTypeString() {
+	public String
+	getContentTypeString() {
 		return this.contentTypeString;
 	}
 
-	public IFile getFile() {
+	public IFile
+	getFile() {
 		return this.file;
 	}
 
-	public String getFilePath() {
+	public String
+	getFilePath() {
 		return this.filePath;
 	}
 
-	public String getFolder() {
+	public String
+	getFolder() {
 		return this.folder;
 	}
 
-	public String getName() {
+	public String
+	getName() {
 		return this.name;
 	}
 
-	public static PrettyTime getPrettyTime() {
+	public static PrettyTime
+	getPrettyTime() {
 		return RFile.PRETTY_TIME;
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean
+	equals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof RFile)) return false;
@@ -102,7 +126,8 @@ public final class RFile {
 	}
 
 	@Override
-	public int hashCode() {
+	public int
+	hashCode() {
 		return (31 * 1) + ((this.filePath == null) ? 0 : this.filePath.hashCode());
 	}
 }

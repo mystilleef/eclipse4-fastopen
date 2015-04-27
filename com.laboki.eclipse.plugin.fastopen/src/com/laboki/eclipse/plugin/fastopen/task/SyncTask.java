@@ -25,7 +25,8 @@ public class SyncTask extends AbstractTask {
 	}
 
 	@Override
-	protected void runTask() {
+	protected void
+	runTask() {
 		this.runSyncExecute();
 	}
 }

@@ -23,108 +23,134 @@ import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class RecentResources extends AbstractEventBusInstance {
 
-	private static final String EMIT_FIRLE_RESOURCES_EVENT_TASK = "Eclipse Fast Open Plugin: emit file resources event task";
-	private static final String UPDATE_RESOURCES_TASK = "Eclipse Fast Open Plugin: update resources task";
+	private static final String EMIT_FIRLE_RESOURCES_EVENT_TASK =
+		"Eclipse Fast Open Plugin: emit file resources event task";
+	private static final String UPDATE_RESOURCES_TASK =
+		"Eclipse Fast Open Plugin: update resources task";
 	private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 	private final Map<String, RFile> cachedResourceFiles = Maps.newHashMap();
 	private final List<RFile> fileResources = Lists.newArrayList();
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void fileResourcesMapEventHandler(final FileResourcesMapEvent event) {
+	public void
+	fileResourcesMapEventHandler(final FileResourcesMapEvent event) {
 		EditorContext.cancelJobsBelongingTo(RecentResources.UPDATE_RESOURCES_TASK);
 		this.updateResources(event);
 	}
 
-	private void updateResources(final FileResourcesMapEvent event) {
+	private void
+	updateResources(final FileResourcesMapEvent event) {
 		new Task(RecentResources.UPDATE_RESOURCES_TASK, 60) {
 
 			@Override
-			public void execute() {
+			public void
+			execute() {
 				RecentResources.this.clearResources();
 				RecentResources.this.updateFileResourcesMap(event.getMap());
-				RecentResources.this.makeResourceFiles(ImmutableList.copyOf(event.getMap().keySet()));
+				RecentResources.this.makeResourceFiles(ImmutableList.copyOf(event
+					.getMap()
+					.keySet()));
 			}
 		}.begin();
 	}
 
-	private void clearResources() {
+	private void
+	clearResources() {
 		this.fileResourcesMap.clear();
 		this.cachedResourceFiles.clear();
 		this.fileResources.clear();
 	}
 
-	private void updateFileResourcesMap(final ImmutableMap<String, IFile> map) {
+	private void
+	updateFileResourcesMap(final ImmutableMap<String, IFile> map) {
 		this.fileResourcesMap.putAll(map);
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void recentFilesEventHandler(final RecentFilesEvent event) {
-		EditorContext.cancelJobsBelongingTo(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK);
+	public void
+	recentFilesEventHandler(final RecentFilesEvent event) {
+		EditorContext
+			.cancelJobsBelongingTo(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK);
 		this.emitFileResourcesEvent(event);
 	}
 
-	private void emitFileResourcesEvent(final RecentFilesEvent event) {
+	private void
+	emitFileResourcesEvent(final RecentFilesEvent event) {
 		new Task(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK, 60) {
 
 			private final List<RFile> rFiles = Lists.newArrayList();
 
 			@Override
-			public void execute() {
+			public void
+			execute() {
 				this.update(event);
 				this.postFileResourcesEvent();
 			}
 
-			private void update(final RecentFilesEvent event) {
-				this.rFiles.addAll(RecentResources.this.makeResourceFiles(event.getFiles()));
+			private void
+			update(final RecentFilesEvent event) {
+				this.rFiles.addAll(RecentResources.this.makeResourceFiles(event
+					.getFiles()));
 				RecentResources.this.updateFileResources(this.rFiles);
 			}
 
-			private void postFileResourcesEvent() {
-				EventBus.post(new FileResourcesEvent(ImmutableList.copyOf(RecentResources.this.getFileResources())));
+			private void
+			postFileResourcesEvent() {
+				EventBus.post(new FileResourcesEvent(ImmutableList
+					.copyOf(RecentResources.this.getFileResources())));
 			}
 		}.begin();
 	}
 
-	private synchronized List<RFile> makeResourceFiles(final ImmutableList<String> immutableList) {
+	private synchronized List<RFile>
+	makeResourceFiles(final ImmutableList<String> immutableList) {
 		final ArrayList<RFile> rFiles = Lists.newArrayList();
 		for (final String filePath : immutableList)
 			this.updateLocalFilesList(rFiles, filePath);
 		return rFiles;
 	}
 
-	private void updateLocalFilesList(final ArrayList<RFile> rFiles, final String filePath) {
-		if (this.cachedResourceFiles.containsKey(filePath)) rFiles.add(this.cachedResourceFiles.get(filePath));
+	private void
+	updateLocalFilesList(final ArrayList<RFile> rFiles, final String filePath) {
+		if (this.cachedResourceFiles.containsKey(filePath)) rFiles
+			.add(this.cachedResourceFiles.get(filePath));
 		else this.addNewResourceFiles(rFiles, filePath);
 	}
 
-	private void addNewResourceFiles(final ArrayList<RFile> rFiles, final String filePath) {
+	private void
+	addNewResourceFiles(final ArrayList<RFile> rFiles, final String filePath) {
 		if (this.filePathIsNotCached(filePath)) return;
 		final RFile rFile = new RFile(this.fileResourcesMap.get(filePath));
 		this.cachedResourceFiles.put(filePath, rFile);
 		rFiles.add(rFile);
 	}
 
-	private boolean filePathIsNotCached(final String filePath) {
+	private boolean
+	filePathIsNotCached(final String filePath) {
 		return !this.filePathIsCached(filePath);
 	}
 
-	private boolean filePathIsCached(final String filePath) {
+	private boolean
+	filePathIsCached(final String filePath) {
 		return this.fileResourcesMap.containsKey(filePath);
 	}
 
-	protected synchronized ArrayList<RFile> getFileResources() {
+	protected synchronized ArrayList<RFile>
+	getFileResources() {
 		return Lists.newArrayList(this.fileResources);
 	}
 
-	private synchronized void updateFileResources(final List<RFile> rFiles) {
+	private synchronized void
+	updateFileResources(final List<RFile> rFiles) {
 		this.fileResources.clear();
 		this.fileResources.addAll(rFiles);
 	}
 
 	@Override
-	public Instance end() {
+	public Instance
+	end() {
 		this.fileResources.clear();
 		this.cachedResourceFiles.clear();
 		this.fileResourcesMap.clear();

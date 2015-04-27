@@ -10,11 +10,13 @@ public enum Plugin implements Instance {
 	private final static Services SERVICES = new Services();
 
 	@Override
-	public Instance begin() {
+	public Instance
+	begin() {
 		new AsyncTask() {
 
 			@Override
-			public void asyncExecute() {
+			public void
+			asyncExecute() {
 				Plugin.SERVICES.begin();
 			}
 		}.begin();
@@ -22,11 +24,13 @@ public enum Plugin implements Instance {
 	}
 
 	@Override
-	public Instance end() {
+	public Instance
+	end() {
 		new AsyncTask() {
 
 			@Override
-			public void asyncExecute() {
+			public void
+			asyncExecute() {
 				Plugin.SERVICES.end();
 			}
 		}.begin();

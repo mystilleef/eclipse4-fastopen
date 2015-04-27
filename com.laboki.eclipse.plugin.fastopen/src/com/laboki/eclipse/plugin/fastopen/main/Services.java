@@ -21,12 +21,14 @@ public final class Services implements Instance {
 	public Services() {}
 
 	@Override
-	public Instance begin() {
+	public Instance
+	begin() {
 		this.startServices();
 		return this;
 	}
 
-	private void startServices() {
+	private void
+	startServices() {
 		this.startService(new Dialog());
 		this.startService(new RecentResourcesFilter());
 		this.startService(new RecentResources());
@@ -38,23 +40,27 @@ public final class Services implements Instance {
 		this.startService(Factory.INSTANCE);
 	}
 
-	private void startService(final Instance instance) {
+	private void
+	startService(final Instance instance) {
 		instance.begin();
 		this.instances.add(instance);
 	}
 
 	@Override
-	public Instance end() {
+	public Instance
+	end() {
 		this.stopServices();
 		return this;
 	}
 
-	private void stopServices() {
+	private void
+	stopServices() {
 		for (final Instance instance : ImmutableList.copyOf(this.instances))
 			this.stopService(instance);
 	}
 
-	private void stopService(final Instance instance) {
+	private void
+	stopService(final Instance instance) {
 		instance.end();
 		this.instances.remove(instance);
 	}

@@ -12,7 +12,8 @@ public final class WorkspaceResourcesEvent {
 		this.resources = resources;
 	}
 
-	public ImmutableList<IFile> getResources() {
+	public ImmutableList<IFile>
+	getResources() {
 		return this.resources;
 	}
 }

@@ -12,7 +12,8 @@ public class FileResourcesMapEvent {
 		this.map = map;
 	}
 
-	public ImmutableMap<String, IFile> getMap() {
+	public ImmutableMap<String, IFile>
+	getMap() {
 		return this.map;
 	}
 }

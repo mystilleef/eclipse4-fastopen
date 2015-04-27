@@ -10,7 +10,8 @@ public final class DeserializedAccessedFilesEvent {
 		this.files = files;
 	}
 
-	public ImmutableList<String> getFiles() {
+	public ImmutableList<String>
+	getFiles() {
 		return this.files;
 	}
 }

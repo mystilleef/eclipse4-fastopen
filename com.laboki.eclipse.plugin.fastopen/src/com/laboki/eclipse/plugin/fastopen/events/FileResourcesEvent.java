@@ -11,7 +11,8 @@ public final class FileResourcesEvent {
 		this.rFiles = rFiles;
 	}
 
-	public ImmutableList<RFile> getrFiles() {
+	public ImmutableList<RFile>
+	getrFiles() {
 		return this.rFiles;
 	}
 }

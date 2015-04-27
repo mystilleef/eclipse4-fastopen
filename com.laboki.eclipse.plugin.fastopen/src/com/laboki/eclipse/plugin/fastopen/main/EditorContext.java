@@ -53,393 +53,531 @@ import com.laboki.eclipse.plugin.fastopen.Activator;
 public enum EditorContext {
 	INSTANCE;
 
-	public static final String UPDATE_R_FILES_TASK = "Eclipse Fast Open Plugin: update rFiles task";
-	public static final String FILTER_RECENT_FILES_TASK = "Eclipse Fast Open Plugin: filter recent files task";
-	public static final String CORE_WORKSPACE_INDEXER_TASK = "Eclipse Fast Open Plugin: Core Workspace Indexer Task";
-	public static final String EMIT_UPDATED_RECENT_FILES_TASK = "Eclipse Fast Open Plugin: Emit updated recent files task";
-	public static final String UPDATE_ACCESSED_FILES_TASK = "Eclipse Fast Open Plugin: Update accessed files task.";
-	public static final String EMIT_INDEX_RESOURCE_TASK = "Eclipse Fast Open Plugin: Emit index resource task.";
-	public static final String INDEX_WORKSPACE_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index workspace resources tasks.";
-	public static final String INDEX_RESOURCES_TASK = "Eclipse Fast Open Plugin: Index resources task.";
+	public static final String UPDATE_R_FILES_TASK =
+		"Eclipse Fast Open Plugin: update rFiles task";
+	public static final String FILTER_RECENT_FILES_TASK =
+		"Eclipse Fast Open Plugin: filter recent files task";
+	public static final String CORE_WORKSPACE_INDEXER_TASK =
+		"Eclipse Fast Open Plugin: Core Workspace Indexer Task";
+	public static final String EMIT_UPDATED_RECENT_FILES_TASK =
+		"Eclipse Fast Open Plugin: Emit updated recent files task";
+	public static final String UPDATE_ACCESSED_FILES_TASK =
+		"Eclipse Fast Open Plugin: Update accessed files task.";
+	public static final String EMIT_INDEX_RESOURCE_TASK =
+		"Eclipse Fast Open Plugin: Emit index resource task.";
+	public static final String INDEX_WORKSPACE_RESOURCES_TASK =
+		"Eclipse Fast Open Plugin: Index workspace resources tasks.";
+	public static final String INDEX_RESOURCES_TASK =
+		"Eclipse Fast Open Plugin: Index resources task.";
 	public static final int SHORT_DELAY_IN_MILLISECONDS = 60;
 	public static final int SHORT_DELAY_TIME = 250;
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
-	public static final String PLUGIN_NAME = "com.laboki.eclipse.plugin.fastopen";
-	private static final IContentType CONTENT_TYPE_TEXT = Platform.getContentTypeManager().getContentType("org.eclipse.core.runtime.text");
+	public static final String PLUGIN_NAME =
+		"com.laboki.eclipse.plugin.fastopen";
+	private static final IContentType CONTENT_TYPE_TEXT = Platform
+		.getContentTypeManager()
+		.getContentType("org.eclipse.core.runtime.text");
 	public static final IJobManager JOB_MANAGER = Job.getJobManager();
-	private static final Logger LOGGER = Logger.getLogger(EditorContext.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(EditorContext.class
+		.getName());
 
 	private EditorContext() {}
 
-	public static void asyncExec(final Runnable runnable) {
+	public static void
+	asyncExec(final Runnable runnable) {
 		if ((EditorContext.DISPLAY == null) || EditorContext.DISPLAY.isDisposed()) return;
 		EditorContext.DISPLAY.asyncExec(runnable);
 	}
 
-	public static void syncExec(final Runnable runnable) {
+	public static void
+	syncExec(final Runnable runnable) {
 		if ((EditorContext.DISPLAY == null) || EditorContext.DISPLAY.isDisposed()) return;
 		EditorContext.DISPLAY.syncExec(runnable);
 	}
 
-	public static void closeEditor(final IFile file) {
+	public static void
+	closeEditor(final IFile file) {
 		try {
-			EditorContext.getActivePage().closeEditors(EditorContext.getActivePage().findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT), true);
-		} catch (final Exception e) {
+			EditorContext.getActivePage().closeEditors(
+				EditorContext.getActivePage().findEditors(
+					new FileEditorInput(file),
+					EditorContext.getEditorID(file),
+					IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT),
+				true);
+		}
+		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
-	public static Object deserialize(final String filePath) {
-		return EditorContext.readObjectInput(EditorContext.tryToGetNewObjectInputStream(filePath));
+	public static Object
+	deserialize(final String filePath) {
+		return EditorContext.readObjectInput(EditorContext
+			.tryToGetNewObjectInputStream(filePath));
 	}
 
-	public static void emptyFile(final String filePath) {
+	public static void
+	emptyFile(final String filePath) {
 		final File f = new File(filePath);
 		if (f.exists()) return;
 		try {
 			final BufferedWriter out = new BufferedWriter(new FileWriter(f));
 			out.write("");
 			out.close();
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
-	public static void flushEvents() {
-		try {
-			EditorContext.tryToFlushEvents();
-		} catch (final Exception e) {
-			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
-		}
-	}
-
-	private static void tryToFlushEvents() {
-		if ((EditorContext.DISPLAY == null) || EditorContext.DISPLAY.isDisposed()) return;
-		while (EditorContext.DISPLAY.readAndDispatch())
-			EditorContext.DISPLAY.update();
-	}
-
-	public static IEditorPart[] getActiveEditorParts() {
+	public static IEditorPart[]
+	getActiveEditorParts() {
 		final List<IEditorPart> parts = Lists.newArrayList();
-		for (final IEditorReference editorReference : EditorContext.getActiveEditorReferences()) {
-			final IEditorPart editorPart = EditorContext.getEditorPart(editorReference);
+		for (final IEditorReference editorReference : EditorContext
+			.getActiveEditorReferences()) {
+			final IEditorPart editorPart =
+				EditorContext.getEditorPart(editorReference);
 			if (EditorContext.isValidPart(editorPart)) parts.add(editorPart);
 		}
 		return parts.toArray(new IEditorPart[parts.size()]);
 	}
 
-	public static IEditorReference[] getActiveEditorReferences() {
-		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+	public static IEditorReference[]
+	getActiveEditorReferences() {
+		return PlatformUI
+			.getWorkbench()
+			.getActiveWorkbenchWindow()
+			.getActivePage()
+			.getEditorReferences();
 	}
 
-	public static String[] getActiveFilePathStrings() {
+	public static String[]
+	getActiveFilePathStrings() {
 		final List<String> strings = Lists.newArrayList();
 		for (final IFile file : EditorContext.getActiveFiles())
 			strings.add(EditorContext.getURIPath(file));
 		return strings.toArray(new String[strings.size()]);
 	}
 
-	public static IFile[] getActiveFiles() {
+	public static IFile[]
+	getActiveFiles() {
 		final List<IFile> files = Lists.newArrayList();
 		for (final IEditorPart editorPart : EditorContext.getActiveEditorParts())
 			files.add(EditorContext.getFile(editorPart));
 		return files.toArray(new IFile[files.size()]);
 	}
 
-	public static IWorkbenchPage getActivePage() {
-		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+	public static IWorkbenchPage
+	getActivePage() {
+		return PlatformUI
+			.getWorkbench()
+			.getActiveWorkbenchWindow()
+			.getActivePage();
 	}
 
-	public static IContentType getContentType(final IFile file) {
+	public static IContentType
+	getContentType(final IFile file) {
 		try {
 			return EditorContext.tryToGetContentType(file);
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			return EditorContext.getContentTypeFromMediaType(file);
 		}
 	}
 
-	public static Display getDisplay() {
+	public static Display
+	getDisplay() {
 		return EditorContext.DISPLAY;
 	}
 
-	public static IEditorPart getEditor() {
+	public static IEditorPart
+	getEditor() {
 		return EditorContext.getActivePage().getActiveEditor();
 	}
 
-	public static IEditorDescriptor getEditorDescriptor(final IFile file) {
+	public static IEditorDescriptor
+	getEditorDescriptor(final IFile file) {
 		try {
 			return IDE.getEditorDescriptor(file);
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			return null;
 		}
 	}
 
-	public static String getEditorID(final IFile file) {
+	public static String
+	getEditorID(final IFile file) {
 		return EditorContext.getEditorDescriptor(file).getId();
 	}
 
-	public static IFile getFile(final IEditorPart editorPart) {
+	public static IFile
+	getFile(final IEditorPart editorPart) {
 		try {
 			return ((FileEditorInput) editorPart.getEditorInput()).getFile();
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			return null;
 		}
 	}
 
-	public static IFile getFile(final String filePathString) {
-		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(Path.fromOSString(new File(filePathString).getAbsolutePath()));
+	public static IFile
+	getFile(final String filePathString) {
+		return ResourcesPlugin
+			.getWorkspace()
+			.getRoot()
+			.getFileForLocation(
+				Path.fromOSString(new File(filePathString).getAbsolutePath()));
 	}
 
-	private static IFile getFile() {
+	private static IFile
+	getFile() {
 		try {
-			return ((FileEditorInput) EditorContext.getEditor().getEditorInput()).getFile();
-		} catch (final Exception e) {
+			return ((FileEditorInput) EditorContext.getEditor().getEditorInput())
+				.getFile();
+		}
+		catch (final Exception e) {
 			return null;
 		}
 	}
 
-	public static String getFilePathFromEditorReference(final IEditorReference file) {
+	public static String
+	getFilePathFromEditorReference(final IEditorReference file) {
 		try {
-			return EditorContext.getURIPath(((IFileEditorInput) file.getEditorInput().getAdapter(IFileEditorInput.class)).getFile());
-		} catch (final Exception e) {
+			return EditorContext.getURIPath(((IFileEditorInput) file
+				.getEditorInput()
+				.getAdapter(IFileEditorInput.class)).getFile());
+		}
+		catch (final Exception e) {
 			return "";
 		}
 	}
 
-	public static Image getImage(final String filename, final IContentType contentType) {
-		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(filename, contentType).createImage();
+	public static Image
+	getImage(final String filename, final IContentType contentType) {
+		return PlatformUI
+			.getWorkbench()
+			.getEditorRegistry()
+			.getImageDescriptor(filename, contentType)
+			.createImage();
 	}
 
-	public static String[] getOpenEditorFilePaths() {
+	public static String[]
+	getOpenEditorFilePaths() {
 		final List<String> filepaths = Lists.newArrayList();
-		for (final IEditorReference file : EditorContext.getActiveEditorReferences())
+		for (final IEditorReference file : EditorContext
+			.getActiveEditorReferences())
 			EditorContext.populateOpenEditorFilePaths(filepaths, file);
 		return filepaths.toArray(new String[filepaths.size()]);
 	}
 
-	public static IPartService getPartService() {
-		return (IPartService) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getService(IPartService.class);
+	public static IPartService
+	getPartService() {
+		return (IPartService) PlatformUI
+			.getWorkbench()
+			.getActiveWorkbenchWindow()
+			.getService(IPartService.class);
 	}
 
-	public static String getPath() {
+	public static String
+	getPath() {
 		try {
 			return EditorContext.getFile().getLocationURI().getPath();
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			return "";
 		}
 	}
 
-	public static String getPluginFolderPath() {
+	public static String
+	getPluginFolderPath() {
 		return Activator.getInstance().getStateLocation().toOSString();
 	}
 
-	public static String getSerializableFilePath(final String fileName) {
+	public static String
+	getSerializableFilePath(final String fileName) {
 		return Paths.get(EditorContext.getPluginFolderPath(), fileName).toString();
 	}
 
-	public static Shell getShell() {
+	public static Shell
+	getShell() {
 		return PlatformUI.getWorkbench().getModalDialogShellProvider().getShell();
 	}
 
-	public static String getURIPath(final IResource resource) {
+	public static String
+	getURIPath(final IResource resource) {
 		return resource.getLocationURI().getPath();
 	}
 
-	public static boolean isContentTypeText(final IFile file) {
+	public static boolean
+	isContentTypeText(final IFile file) {
 		try {
-			return EditorContext.getContentType(file).isKindOf(EditorContext.CONTENT_TYPE_TEXT);
-		} catch (final Exception e) {
+			return EditorContext.getContentType(file).isKindOf(
+				EditorContext.CONTENT_TYPE_TEXT);
+		}
+		catch (final Exception e) {
 			return false;
 		}
 	}
 
-	public static boolean isHiddenFile(final IResource resource) {
+	public static boolean
+	isHiddenFile(final IResource resource) {
 		return resource.getLocation().toFile().isHidden() || resource.isHidden();
 	}
 
-	public static boolean isInvalidPart(final IWorkbenchPart part) {
+	public static boolean
+	isInvalidPart(final IWorkbenchPart part) {
 		return !EditorContext.isValidPart(part);
 	}
 
-	public static boolean isNotResourceFile(final IResource resource) {
+	public static boolean
+	isNotResourceFile(final IResource resource) {
 		return !EditorContext.isResourceFile(resource);
 	}
 
-	public static boolean isNotValidResourceFile(final IResource resource) {
+	public static boolean
+	isNotValidResourceFile(final IResource resource) {
 		return !EditorContext.isValidResourceFile(resource);
 	}
 
-	public static boolean isResourceFile(final IResource resource) {
+	public static boolean
+	isResourceFile(final IResource resource) {
 		return resource.getType() == IResource.FILE;
 	}
 
-	public static boolean isValidPart(final IWorkbenchPart part) {
+	public static boolean
+	isValidPart(final IWorkbenchPart part) {
 		if (part instanceof IEditorPart) return true;
 		return false;
 	}
 
-	public static boolean isValidResourceFile(final IResource resource) {
+	public static boolean
+	isValidResourceFile(final IResource resource) {
 		if (EditorContext.isNotResourceFile(resource)) return false;
 		if (EditorContext.isHiddenFile(resource)) return false;
 		return EditorContext.isTextFile((IFile) resource);
 	}
 
-	public static boolean isWierd(final IResource resource) {
-		return resource.isVirtual() || resource.isPhantom() || resource.isTeamPrivateMember();
+	public static boolean
+	isWierd(final IResource resource) {
+		return resource.isVirtual()
+			|| resource.isPhantom()
+			|| resource.isTeamPrivateMember();
 	}
 
-	public static List<String> nonExistentFilePaths(final List<String> filePaths) {
+	public static List<String>
+	nonExistentFilePaths(final List<String> filePaths) {
 		final List<String> unfoundFiles = new ArrayList<>();
 		for (final String path : filePaths)
 			if (!(new File(path).exists())) unfoundFiles.add(path);
 		return unfoundFiles;
 	}
 
-	public static void openEditor(final IFile file) throws Exception {
-		EditorContext.getActivePage().openEditor(new FileEditorInput(file), EditorContext.getEditorID(file));
+	public static void
+	openEditor(final IFile file) throws Exception {
+		EditorContext.getActivePage().openEditor(
+			new FileEditorInput(file),
+			EditorContext.getEditorID(file));
 	}
 
-	public static void openLink(final IFile file) throws Exception {
-		IDE.openEditorOnFileStore(EditorContext.getActivePage(), EFS.getStore(file.getRawLocationURI()));
+	public static void
+	openLink(final IFile file) throws Exception {
+		IDE.openEditorOnFileStore(
+			EditorContext.getActivePage(),
+			EFS.getStore(file.getRawLocationURI()));
 	}
 
-	public static void populateOpenEditorFilePaths(final List<String> filepaths, final IEditorReference file) {
+	public static void
+	populateOpenEditorFilePaths(final List<String> filepaths,
+															final IEditorReference file) {
 		final String path = EditorContext.getFilePathFromEditorReference(file);
 		if (path.length() == 0) return;
 		filepaths.add(path);
 	}
 
-	public static void removeFakePaths(final List<String> files) {
+	public static void
+	removeFakePaths(final List<String> files) {
 		files.removeAll(EditorContext.nonExistentFilePaths(files));
 	}
 
-	public static void serialize(final String filePath, final Object serializable) {
+	public static void
+	serialize(final String filePath, final Object serializable) {
 		try {
-			EditorContext.writeSerializableToFile(serializable, EditorContext.getObjectOutput(filePath));
-		} catch (final Exception e) {
+			EditorContext.writeSerializableToFile(
+				serializable,
+				EditorContext.getObjectOutput(filePath));
+		}
+		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
-	private static void closeObjectInput(final ObjectInput input) {
+	private static void
+	closeObjectInput(final ObjectInput input) {
 		try {
 			if (input != null) input.close();
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.OFF, e.getMessage(), e);
 		}
 	}
 
-	private static void closeOutput(final ObjectOutput output) {
+	private static void
+	closeOutput(final ObjectOutput output) {
 		try {
 			output.close();
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
-	private static IContentType getContentTypeFromMediaType(final IFile file) {
+	private static IContentType
+	getContentTypeFromMediaType(final IFile file) {
 		try {
-			return Platform.getContentTypeManager().getContentType(EditorContext.getMediaType(file).toString().trim());
-		} catch (final Exception e) {
+			return Platform.getContentTypeManager().getContentType(
+				EditorContext.getMediaType(file).toString().trim());
+		}
+		catch (final Exception e) {
 			return null;
 		}
 	}
 
-	private static IEditorPart getEditorPart(final IEditorReference editorReference) {
+	private static IEditorPart
+	getEditorPart(final IEditorReference editorReference) {
 		return (IEditorPart) editorReference.getPart(false);
 	}
 
-	private static MediaType getMediaType(final IFile file) throws Exception {
-		return MediaType.parse(Files.probeContentType(FileSystems.getDefault().getPath(EditorContext.getURIPath(file))));
+	private static MediaType
+	getMediaType(final IFile file) throws Exception {
+		return MediaType.parse(Files.probeContentType(FileSystems
+			.getDefault()
+			.getPath(EditorContext.getURIPath(file))));
 	}
 
-	private static ObjectOutput getObjectOutput(final String filePath) throws Exception {
-		return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filePath)));
+	private static ObjectOutput
+	getObjectOutput(final String filePath) throws Exception {
+		return new ObjectOutputStream(new BufferedOutputStream(
+			new FileOutputStream(filePath)));
 	}
 
-	private static boolean hasValidCharSet(final IFile file) {
+	private static boolean
+	hasValidCharSet(final IFile file) {
 		try {
 			if (file.getCharset(false) != null) return true;
-		} catch (final CoreException e) {
+		}
+		catch (final CoreException e) {
 			EditorContext.LOGGER.log(Level.FINEST, e.getMessage(), e);
 		}
 		return false;
 	}
 
-	private static boolean isMediaTypeText(final IFile file) {
+	private static boolean
+	isMediaTypeText(final IFile file) {
 		try {
 			return EditorContext.getMediaType(file).is(MediaType.ANY_TEXT_TYPE);
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			return false;
 		}
 	}
 
-	private static boolean isTextFile(final IFile file) {
-		return EditorContext.isMediaTypeText(file) || EditorContext.isContentTypeText(file) || EditorContext.hasValidCharSet(file) || file.isLinked();
+	private static boolean
+	isTextFile(final IFile file) {
+		return EditorContext.isMediaTypeText(file)
+			|| EditorContext.isContentTypeText(file)
+			|| EditorContext.hasValidCharSet(file)
+			|| file.isLinked();
 	}
 
-	private static InputStream newBufferInputStream(final String filePath) throws FileNotFoundException {
+	private static InputStream
+	newBufferInputStream(final String filePath) throws FileNotFoundException {
 		return new BufferedInputStream(EditorContext.newFileInputStream(filePath));
 	}
 
-	private static InputStream newFileInputStream(final String filePath) throws FileNotFoundException {
+	private static InputStream
+	newFileInputStream(final String filePath) throws FileNotFoundException {
 		return new FileInputStream(filePath);
 	}
 
-	private static ObjectInput newObjectInputStream(final String filePath) throws FileNotFoundException, IOException {
+	private static ObjectInput
+	newObjectInputStream(final String filePath)
+		throws FileNotFoundException,
+			IOException {
 		return new ObjectInputStream(EditorContext.newBufferInputStream(filePath));
 	}
 
-	private static Object readObjectInput(final ObjectInput input) {
+	private static Object
+	readObjectInput(final ObjectInput input) {
 		try {
 			return input.readObject();
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.FINEST, e.getMessage(), e);
-		} finally {
+		}
+		finally {
 			EditorContext.closeObjectInput(input);
 		}
 		return null;
 	}
 
-	private static IContentType tryToGetContentType(final IFile file) throws CoreException {
-		final IContentType contentType = file.getContentDescription().getContentType();
-		if (contentType == null) return EditorContext.getContentTypeFromMediaType(file);
+	private static IContentType
+	tryToGetContentType(final IFile file) throws CoreException {
+		final IContentType contentType =
+			file.getContentDescription().getContentType();
+		if (contentType == null) return EditorContext
+			.getContentTypeFromMediaType(file);
 		return contentType;
 	}
 
-	private static ObjectInput tryToGetNewObjectInputStream(final String filePath) {
+	private static ObjectInput
+	tryToGetNewObjectInputStream(final String filePath) {
 		try {
 			return EditorContext.newObjectInputStream(filePath);
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.FINEST, e.getMessage(), e);
 		}
 		return null;
 	}
 
-	private static void writeOutput(final Object serializable, final ObjectOutput output) {
+	private static void
+	writeOutput(final Object serializable, final ObjectOutput output) {
 		try {
 			output.writeObject(serializable);
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
-	private static void writeSerializableToFile(final Object serializable, final ObjectOutput output) {
+	private static void
+	writeSerializableToFile(final Object serializable, final ObjectOutput output) {
 		EditorContext.writeOutput(serializable, output);
 		EditorContext.closeOutput(output);
 	}
 
-	public static boolean isWindows() {
+	public static boolean
+	isWindows() {
 		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
 	}
 
-	public static void cancelAllJobs() {
-		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK, EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, EditorContext.EMIT_INDEX_RESOURCE_TASK);
-		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK, EditorContext.EMIT_UPDATED_RECENT_FILES_TASK, EditorContext.CORE_WORKSPACE_INDEXER_TASK);
-		EditorContext.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK, EditorContext.UPDATE_R_FILES_TASK);
+	public static void
+	cancelAllJobs() {
+		EditorContext.cancelJobsBelongingTo(
+			EditorContext.INDEX_RESOURCES_TASK,
+			EditorContext.INDEX_WORKSPACE_RESOURCES_TASK,
+			EditorContext.EMIT_INDEX_RESOURCE_TASK);
+		EditorContext.cancelJobsBelongingTo(
+			EditorContext.UPDATE_ACCESSED_FILES_TASK,
+			EditorContext.EMIT_UPDATED_RECENT_FILES_TASK,
+			EditorContext.CORE_WORKSPACE_INDEXER_TASK);
+		EditorContext.cancelJobsBelongingTo(
+			EditorContext.FILTER_RECENT_FILES_TASK,
+			EditorContext.UPDATE_R_FILES_TASK);
 	}
 
-	public static void cancelJobsBelongingTo(final String... jobNames) {
+	public static void
+	cancelJobsBelongingTo(final String... jobNames) {
 		for (final String jobName : jobNames)
 			EditorContext.JOB_MANAGER.cancel(jobName);
 	}

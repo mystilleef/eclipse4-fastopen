@@ -2,7 +2,9 @@ package com.laboki.eclipse.plugin.fastopen.listeners;
 
 public interface IOpenerListener {
 
-	void start();
+	void
+	start();
 
-	void stop();
+	void
+	stop();
 }

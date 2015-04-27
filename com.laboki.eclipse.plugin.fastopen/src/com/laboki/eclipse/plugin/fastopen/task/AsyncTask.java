@@ -25,7 +25,8 @@ public class AsyncTask extends AbstractTask {
 	}
 
 	@Override
-	protected void runTask() {
+	protected void
+	runTask() {
 		this.runAsyncExecute();
 	}
 }

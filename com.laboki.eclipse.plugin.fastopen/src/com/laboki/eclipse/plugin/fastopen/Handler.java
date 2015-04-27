@@ -13,11 +13,13 @@ public final class Handler extends AbstractHandler {
 	public Handler() {}
 
 	@Override
-	public Object execute(final ExecutionEvent arg0) throws ExecutionException {
+	public Object
+	execute(final ExecutionEvent arg0) throws ExecutionException {
 		new AsyncTask() {
 
 			@Override
-			public void asyncExecute() {
+			public void
+			asyncExecute() {
 				EventBus.post(new ShowFastOpenDialogEvent());
 			}
 		}.begin();

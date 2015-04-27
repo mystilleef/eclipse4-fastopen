@@ -20,29 +20,35 @@ import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class AccessedFiles extends AbstractEventBusInstance {
 
-	private final List<String> accessedFiles = Lists.newArrayList(EditorContext.getOpenEditorFilePaths());
+	private final List<String> accessedFiles = Lists.newArrayList(EditorContext
+		.getOpenEditorFilePaths());
 	private static final int ACCESSED_FILES_REINDEX_WATERMARK = 3;
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void updateAccessedFiles(final DeserializedAccessedFilesEvent event) {
+	public void
+	updateAccessedFiles(final DeserializedAccessedFilesEvent event) {
 		new AsyncTask() {
 
 			@Override
-			public void asyncExecute() {
+			public void
+			asyncExecute() {
 				AccessedFiles.this.updateAccessedFiles(event.getFiles());
-				AccessedFiles.this.updateAccessedFiles(AccessedFiles.this.getAccessedFiles());
+				AccessedFiles.this.updateAccessedFiles(AccessedFiles.this
+					.getAccessedFiles());
 				this.arrangeFiles();
 			}
 
-			private void arrangeFiles() {
+			private void
+			arrangeFiles() {
 				final List<String> files = AccessedFiles.this.getAccessedFiles();
 				if (files.size() < 2) return;
 				this.insertCurrentPath(files);
 				AccessedFiles.this.updateAccessedFiles(Lists.newArrayList(files));
 			}
 
-			private void insertCurrentPath(final List<String> files) {
+			private void
+			insertCurrentPath(final List<String> files) {
 				final String path = EditorContext.getPath();
 				files.remove(path);
 				files.add(1, path);
@@ -52,23 +58,29 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void recentFilesModificationEventHandler(final RecentFilesModificationEvent event) {
-		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
+	public void
+	recentFilesModificationEventHandler(final RecentFilesModificationEvent event) {
+		EditorContext
+			.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
 		this.updateAccessedFilesList(event);
 	}
 
-	private void updateAccessedFilesList(final RecentFilesModificationEvent event) {
+	private void
+	updateAccessedFilesList(final RecentFilesModificationEvent event) {
 		new Task(EditorContext.UPDATE_ACCESSED_FILES_TASK, 1000) {
 
 			private final ImmutableList<String> modifiedFiles = event.getFiles();
 
 			@Override
-			public void execute() {
-				AccessedFiles.this.updateAccessedFiles(this.removeDeletedFilesFromAccessList());
+			public void
+			execute() {
+				AccessedFiles.this.updateAccessedFiles(this
+					.removeDeletedFilesFromAccessList());
 				AccessedFiles.this.postEvent();
 			}
 
-			private ImmutableList<String> removeDeletedFilesFromAccessList() {
+			private ImmutableList<String>
+			removeDeletedFilesFromAccessList() {
 				final List<String> files = Lists.newArrayList();
 				for (final String file : AccessedFiles.this.getAccessedFiles())
 					if (this.modifiedFiles.contains(file)) files.add(file);
@@ -79,67 +91,82 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void partActivationEventHandler(@SuppressWarnings("unused") final PartActivationEvent event) {
-		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
+	public void
+	partActivationEventHandler(@SuppressWarnings("unused") final PartActivationEvent event) {
+		EditorContext
+			.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
 		this.updateAccessedFilesList();
 	}
 
-	private void updateAccessedFilesList() {
+	private void
+	updateAccessedFilesList() {
 		new AsyncTask(EditorContext.UPDATE_ACCESSED_FILES_TASK, 60) {
 
-			private final List<String> aFiles = AccessedFiles.this.getAccessedFiles();
+			private final List<String> aFiles = AccessedFiles.this
+				.getAccessedFiles();
 
 			@Override
-			public void asyncExecute() {
+			public void
+			asyncExecute() {
 				final String path = EditorContext.getPath();
 				if (path.length() == 0) return;
 				this.moveCurrentFileToTopOfList();
 				this.update(this.getAccessedFilesInsertionIndex(), path);
-				AccessedFiles.this.updateAccessedFiles(ImmutableList.copyOf(this.aFiles));
+				AccessedFiles.this.updateAccessedFiles(ImmutableList
+					.copyOf(this.aFiles));
 				AccessedFiles.this.postEvent();
 			}
 
-			private int getAccessedFilesInsertionIndex() {
+			private int
+			getAccessedFilesInsertionIndex() {
 				return this.aFiles.size() == 0 ? 0 : 1;
 			}
 
-			private void moveCurrentFileToTopOfList() {
+			private void
+			moveCurrentFileToTopOfList() {
 				if (this.aFiles.size() < AccessedFiles.ACCESSED_FILES_REINDEX_WATERMARK) return;
 				this.update(0, this.aFiles.get(1));
 			}
 
-			private void update(final int index, final String path) {
+			private void
+			update(final int index, final String path) {
 				this.aFiles.remove(path);
 				this.aFiles.add(index, path);
 			}
 		}.begin();
 	}
 
-	private synchronized void updateAccessedFiles(final List<String> files) {
+	private synchronized void
+	updateAccessedFiles(final List<String> files) {
 		this.accessedFiles.removeAll(files);
 		this.accessedFiles.addAll(0, files);
 		this.accessedFiles.remove("");
 	}
 
-	private void postEvent() {
-		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this.getAccessedFiles())));
+	private void
+	postEvent() {
+		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this
+			.getAccessedFiles())));
 		// this.printAccessedFiles();
 	}
 
 	@SuppressWarnings("unused")
-	private void printAccessedFiles() {
+	private void
+	printAccessedFiles() {
 		System.out.println("===");
 		for (final String file : this.getAccessedFiles())
 			System.out.println(file);
 		System.out.println("===");
 	}
 
-	private synchronized ArrayList<String> getAccessedFiles() {
+	private synchronized ArrayList<String>
+	getAccessedFiles() {
 		return Lists.newArrayList(this.accessedFiles);
 	}
 
 	@Override
-	public Instance end() {
+	public Instance
+	end() {
 		this.accessedFiles.clear();
 		return super.end();
 	}

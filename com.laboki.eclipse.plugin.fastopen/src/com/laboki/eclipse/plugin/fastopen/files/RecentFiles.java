@@ -19,33 +19,42 @@ import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class RecentFiles extends AbstractEventBusInstance {
 
-	private static final String EMIT_UPDATED_RECENT_FILES_TASK = "Eclipse Fast Open Plugin: emit updated recent files task";
+	private static final String EMIT_UPDATED_RECENT_FILES_TASK =
+		"Eclipse Fast Open Plugin: emit updated recent files task";
 	private final List<String> recentFiles = Lists.newArrayList();
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void modifiedFilesEventHandler(final ModifiedFilesEvent event) {
-		EditorContext.cancelJobsBelongingTo(RecentFiles.EMIT_UPDATED_RECENT_FILES_TASK);
+	public void
+	modifiedFilesEventHandler(final ModifiedFilesEvent event) {
+		EditorContext
+			.cancelJobsBelongingTo(RecentFiles.EMIT_UPDATED_RECENT_FILES_TASK);
 		this.emitUpdatedRecentFiles(event);
 	}
 
-	private void emitUpdatedRecentFiles(final ModifiedFilesEvent event) {
+	private void
+	emitUpdatedRecentFiles(final ModifiedFilesEvent event) {
 		new Task(RecentFiles.EMIT_UPDATED_RECENT_FILES_TASK, 60) {
 
 			@Override
-			public void execute() {
-				EditorContext.cancelJobsBelongingTo(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK);
+			public void
+			execute() {
+				EditorContext
+					.cancelJobsBelongingTo(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK);
 				this.resetRecentFiles(event.getFiles());
-				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this.getRecentFiles()));
+				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this
+					.getRecentFiles()));
 			}
 
-			private void resetRecentFiles(final ImmutableList<String> files) {
+			private void
+			resetRecentFiles(final ImmutableList<String> files) {
 				synchronized (RecentFiles.this.recentFiles) {
 					this.reset(files);
 				}
 			}
 
-			private void reset(final ImmutableList<String> files) {
+			private void
+			reset(final ImmutableList<String> files) {
 				RecentFiles.this.recentFiles.clear();
 				RecentFiles.this.recentFiles.addAll(files);
 				RecentFiles.this.recentFiles.remove("");
@@ -55,29 +64,35 @@ public final class RecentFiles extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void accessedFilesEventHandler(final AccessedFilesEvent event) {
-		EditorContext.cancelJobsBelongingTo(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK);
+	public void
+	accessedFilesEventHandler(final AccessedFilesEvent event) {
+		EditorContext
+			.cancelJobsBelongingTo(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK);
 		this.emitRecentFilesEvent(event);
 	}
 
-	private void emitRecentFilesEvent(final AccessedFilesEvent event) {
+	private void
+	emitRecentFilesEvent(final AccessedFilesEvent event) {
 		new Task(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK) {
 
 			private final ImmutableList<String> files = event.getFiles();
 
 			@Override
-			public void execute() {
+			public void
+			execute() {
 				this.mergeAccessedAndRecentFiles();
 				EventBus.post(new RecentFilesEvent(RecentFiles.this.getRecentFiles()));
 			}
 
-			private void mergeAccessedAndRecentFiles() {
+			private void
+			mergeAccessedAndRecentFiles() {
 				synchronized (RecentFiles.this.recentFiles) {
 					this.merge(this.files);
 				}
 			}
 
-			private void merge(final ImmutableList<String> files) {
+			private void
+			merge(final ImmutableList<String> files) {
 				RecentFiles.this.recentFiles.removeAll(files);
 				RecentFiles.this.recentFiles.addAll(0, files);
 				RecentFiles.this.recentFiles.remove("");
@@ -85,12 +100,14 @@ public final class RecentFiles extends AbstractEventBusInstance {
 		}.begin();
 	}
 
-	private synchronized ImmutableList<String> getRecentFiles() {
+	private synchronized ImmutableList<String>
+	getRecentFiles() {
 		return ImmutableList.copyOf(Sets.newLinkedHashSet(this.recentFiles));
 	}
 
 	@Override
-	public Instance end() {
+	public Instance
+	end() {
 		this.recentFiles.clear();
 		return super.end();
 	}

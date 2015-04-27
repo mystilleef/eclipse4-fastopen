@@ -8,7 +8,8 @@ public final class FilterRecentFilesEvent {
 		this.string = string;
 	}
 
-	public String getString() {
+	public String
+	getString() {
 		return this.string;
 	}
 }

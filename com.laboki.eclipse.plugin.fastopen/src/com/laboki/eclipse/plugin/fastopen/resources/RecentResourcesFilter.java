@@ -21,20 +21,24 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void fileResourcesEventHandler(final FileResourcesEvent event) {
+	public void
+	fileResourcesEventHandler(final FileResourcesEvent event) {
 		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_R_FILES_TASK);
 		this.updateRFiles(event);
 	}
 
-	private void updateRFiles(final FileResourcesEvent event) {
+	private void
+	updateRFiles(final FileResourcesEvent event) {
 		new Task(EditorContext.UPDATE_R_FILES_TASK, 60) {
 
 			@Override
-			public void execute() {
+			public void
+			execute() {
 				this.updateFiles(event.getrFiles());
 			}
 
-			private void updateFiles(final ImmutableList<RFile> rFiles) {
+			private void
+			updateFiles(final ImmutableList<RFile> rFiles) {
 				RecentResourcesFilter.this.rFiles.clear();
 				RecentResourcesFilter.this.rFiles.addAll(rFiles);
 			}
@@ -43,55 +47,68 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 
 	@Subscribe
 	@AllowConcurrentEvents
-	public void filterRecentFilesEventHandler(final FilterRecentFilesEvent event) {
-		EditorContext.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK);
+	public void
+	filterRecentFilesEventHandler(final FilterRecentFilesEvent event) {
+		EditorContext
+			.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK);
 		this.filterRecentFiles(event);
 	}
 
-	private void filterRecentFiles(final FilterRecentFilesEvent event) {
+	private void
+	filterRecentFiles(final FilterRecentFilesEvent event) {
 		new Task(EditorContext.FILTER_RECENT_FILES_TASK, 60) {
 
-			private final List<RFile> recentFiles = RecentResourcesFilter.this.getFiles();
+			private final List<RFile> recentFiles = RecentResourcesFilter.this
+				.getFiles();
 
 			@Override
-			public void execute() {
+			public void
+			execute() {
 				this.filter(event.getString());
 			}
 
-			private void filter(final String string) {
+			private void
+			filter(final String string) {
 				final String trimmedString = string.trim();
 				if (trimmedString.length() == 0) this.postEvent(this.recentFiles);
 				else this.filterFiles(trimmedString);
 			}
 
-			private void filterFiles(final String string) {
+			private void
+			filterFiles(final String string) {
 				final String regexString = ".*" + string + ".*";
 				this.postEvent(this.getFilteredList(regexString));
 			}
 
-			private void postEvent(final List<RFile> rFiles) {
-				EventBus.post(new FilterRecentFilesResultEvent(ImmutableList.copyOf(rFiles)));
+			private void
+			postEvent(final List<RFile> rFiles) {
+				EventBus.post(new FilterRecentFilesResultEvent(ImmutableList
+					.copyOf(rFiles)));
 			}
 
-			private List<RFile> getFilteredList(final String string) {
+			private List<RFile>
+			getFilteredList(final String string) {
 				final List<RFile> filteredList = Lists.newArrayList();
 				for (final RFile rFile : this.recentFiles)
 					if (this.matches(rFile, string)) filteredList.add(rFile);
 				return filteredList;
 			}
 
-			private boolean matches(final RFile rFile, final String string) {
+			private boolean
+			matches(final RFile rFile, final String string) {
 				return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
 			}
 		}.begin();
 	}
 
-	private List<RFile> getFiles() {
+	private List<RFile>
+	getFiles() {
 		return Lists.newArrayList(this.rFiles);
 	}
 
 	@Override
-	public Instance end() {
+	public Instance
+	end() {
 		this.rFiles.clear();
 		return super.end();
 	}

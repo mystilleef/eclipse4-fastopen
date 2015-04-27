@@ -5,12 +5,14 @@ public abstract class AbstractInstance implements Instance {
 	protected AbstractInstance() {}
 
 	@Override
-	public Instance begin() {
+	public Instance
+	begin() {
 		return this;
 	}
 
 	@Override
-	public Instance end() {
+	public Instance
+	end() {
 		return this;
 	}
 }
