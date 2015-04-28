@@ -53,7 +53,7 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 				files.remove(path);
 				files.add(1, path);
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Subscribe
@@ -86,7 +86,7 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 					if (this.modifiedFiles.contains(file)) files.add(file);
 				return ImmutableList.copyOf(files);
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Subscribe
@@ -133,7 +133,7 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 				this.aFiles.remove(path);
 				this.aFiles.add(index, path);
 			}
-		}.begin();
+		}.start();
 	}
 
 	private synchronized void
@@ -166,8 +166,8 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		this.accessedFiles.clear();
-		return super.end();
+		return super.stop();
 	}
 }

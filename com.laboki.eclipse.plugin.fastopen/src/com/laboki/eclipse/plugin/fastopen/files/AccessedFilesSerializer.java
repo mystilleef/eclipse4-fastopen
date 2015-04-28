@@ -43,14 +43,14 @@ public final class AccessedFilesSerializer extends AbstractEventBusInstance {
 					AccessedFilesSerializer.SERIALIZABLE_FILE_PATH,
 					files);
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Override
 	public Instance
-	begin() {
+	start() {
 		AccessedFilesSerializer.postEvent();
-		return super.begin();
+		return super.start();
 	}
 
 	private static void

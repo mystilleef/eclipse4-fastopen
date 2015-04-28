@@ -3,8 +3,8 @@ package com.laboki.eclipse.plugin.fastopen.instance;
 public interface Instance {
 
 	Instance
-	begin();
+	start();
 
 	Instance
-	end();
+	stop();
 }

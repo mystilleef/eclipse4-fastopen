@@ -22,7 +22,7 @@ public final class Handler extends AbstractHandler {
 			asyncExecute() {
 				EventBus.post(new ShowFastOpenDialogEvent());
 			}
-		}.begin();
+		}.start();
 		return null;
 	}
 }

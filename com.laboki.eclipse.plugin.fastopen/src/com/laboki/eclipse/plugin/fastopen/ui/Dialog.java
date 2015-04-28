@@ -390,7 +390,7 @@ public final class Dialog extends AbstractEventBusInstance {
 				asyncExecute() {
 					Dialog.focusViewer();
 				}
-			}.begin();
+			}.start();
 		}
 
 		@Override
@@ -411,7 +411,7 @@ public final class Dialog extends AbstractEventBusInstance {
 				asyncExecute() {
 					Dialog.refresh();
 				}
-			}.begin();
+			}.start();
 		}
 
 		@Override
@@ -441,7 +441,7 @@ public final class Dialog extends AbstractEventBusInstance {
 				asyncExecute() {
 					Dialog.refocusViewer();
 				}
-			}.begin();
+			}.start();
 		}
 	}
 
@@ -476,7 +476,7 @@ public final class Dialog extends AbstractEventBusInstance {
 					asyncExecute() {
 						Dialog.updateText(event.character);
 					}
-				}.begin();
+				}.start();
 			} else if (event.keyCode == SWT.BS) {
 				event.doit = false;
 				new AsyncTask() {
@@ -486,7 +486,7 @@ public final class Dialog extends AbstractEventBusInstance {
 					asyncExecute() {
 						Dialog.backspace();
 					}
-				}.begin();
+				}.start();
 			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
 				event.doit = false;
 				Dialog.SHELL.close();
@@ -517,7 +517,7 @@ public final class Dialog extends AbstractEventBusInstance {
 				asyncExecute() {
 					Dialog.filterViewer();
 				}
-			}.begin();
+			}.start();
 		}
 	}
 
@@ -538,7 +538,7 @@ public final class Dialog extends AbstractEventBusInstance {
 					Dialog.SHELL.close();
 					Dialog.openFiles();
 				}
-			}.begin();
+			}.start();
 		}
 	}
 
@@ -556,7 +556,7 @@ public final class Dialog extends AbstractEventBusInstance {
 					asyncExecute() {
 						selectText();
 					}
-				}.begin();
+				}.start();
 			}
 
 			private boolean
@@ -583,7 +583,7 @@ public final class Dialog extends AbstractEventBusInstance {
 			asyncExecute() {
 				Dialog.updateViewer(event.getrFiles());
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Subscribe
@@ -597,7 +597,7 @@ public final class Dialog extends AbstractEventBusInstance {
 			asyncExecute() {
 				Dialog.updateViewer(event.getrFiles());
 			}
-		}.begin();
+		}.start();
 	}
 
 	protected static void
@@ -633,7 +633,7 @@ public final class Dialog extends AbstractEventBusInstance {
 				Dialog.SHELL.open();
 				Dialog.focusViewer();
 			}
-		}.begin();
+		}.start();
 	}
 
 	private static void
@@ -692,7 +692,7 @@ public final class Dialog extends AbstractEventBusInstance {
 					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index))
 						.getFile());
 				}
-			}.begin();
+			}.start();
 	}
 
 	private static void
@@ -726,7 +726,7 @@ public final class Dialog extends AbstractEventBusInstance {
 					EditorContext
 						.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 				}
-			}.begin();
+			}.start();
 	}
 
 	private static void
@@ -748,8 +748,8 @@ public final class Dialog extends AbstractEventBusInstance {
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		Dialog.SHELL.dispose();
-		return super.end();
+		return super.stop();
 	}
 }

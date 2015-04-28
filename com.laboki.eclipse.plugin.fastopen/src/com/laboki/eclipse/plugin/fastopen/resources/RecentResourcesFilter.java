@@ -42,7 +42,7 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 				RecentResourcesFilter.this.rFiles.clear();
 				RecentResourcesFilter.this.rFiles.addAll(rFiles);
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Subscribe
@@ -98,7 +98,7 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 			matches(final RFile rFile, final String string) {
 				return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
 			}
-		}.begin();
+		}.start();
 	}
 
 	private List<RFile>
@@ -108,8 +108,8 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		this.rFiles.clear();
-		return super.end();
+		return super.stop();
 	}
 }

@@ -6,14 +6,14 @@ public abstract class AbstractEventBusInstance implements Instance {
 
 	@Override
 	public Instance
-	begin() {
+	start() {
 		EventBus.register(this);
 		return this;
 	}
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		EventBus.unregister(this);
 		return this;
 	}

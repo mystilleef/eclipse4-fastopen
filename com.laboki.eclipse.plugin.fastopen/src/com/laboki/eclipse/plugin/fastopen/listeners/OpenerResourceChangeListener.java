@@ -73,6 +73,6 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 						e);
 				}
 			}
-		}.begin();
+		}.start();
 	}
 }

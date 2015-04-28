@@ -22,7 +22,7 @@ public final class Services implements Instance {
 
 	@Override
 	public Instance
-	begin() {
+	start() {
 		this.startServices();
 		return this;
 	}
@@ -42,13 +42,13 @@ public final class Services implements Instance {
 
 	private void
 	startService(final Instance instance) {
-		instance.begin();
+		instance.start();
 		this.instances.add(instance);
 	}
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		this.stopServices();
 		return this;
 	}
@@ -61,7 +61,7 @@ public final class Services implements Instance {
 
 	private void
 	stopService(final Instance instance) {
-		instance.end();
+		instance.stop();
 		this.instances.remove(instance);
 	}
 }

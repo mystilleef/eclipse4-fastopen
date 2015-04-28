@@ -33,6 +33,6 @@ public final class EventBus {
 			execute() {
 				EventBus.BUS.post(object);
 			}
-		}.begin();
+		}.start();
 	}
 }

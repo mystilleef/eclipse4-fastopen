@@ -6,13 +6,13 @@ public abstract class AbstractInstance implements Instance {
 
 	@Override
 	public Instance
-	begin() {
+	start() {
 		return this;
 	}
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		return this;
 	}
 }

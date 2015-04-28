@@ -75,7 +75,7 @@ public final class FileResources extends AbstractEventBusInstance
 				EventBus.post(new ModifiedFilesEvent(ImmutableList
 					.copyOf(this.modifiedFiles)));
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Override
@@ -106,20 +106,20 @@ public final class FileResources extends AbstractEventBusInstance
 			execute() {
 				EventBus.post(new IndexResourcesEvent());
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Override
 	public Instance
-	begin() {
+	start() {
 		this.listener.start();
-		return super.begin();
+		return super.start();
 	}
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		this.listener.stop();
-		return super.end();
+		return super.stop();
 	}
 }

@@ -37,9 +37,9 @@ public final class WorkspaceResources extends AbstractEventBusInstance
 
 	@Override
 	public Instance
-	begin() {
+	start() {
 		this.indexResources();
-		return super.begin();
+		return super.start();
 	}
 
 	@Subscribe
@@ -55,7 +55,7 @@ public final class WorkspaceResources extends AbstractEventBusInstance
 					.cancelJobsBelongingTo(EditorContext.CORE_WORKSPACE_INDEXER_TASK);
 				WorkspaceResources.this.indexResources();
 			}
-		}.begin();
+		}.start();
 	}
 
 	private synchronized void
@@ -96,14 +96,14 @@ public final class WorkspaceResources extends AbstractEventBusInstance
 					WorkspaceResources.LOGGER.log(Level.WARNING, e.getMessage(), e);
 				}
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		this.resources.clear();
-		return super.end();
+		return super.stop();
 	}
 
 	@Override

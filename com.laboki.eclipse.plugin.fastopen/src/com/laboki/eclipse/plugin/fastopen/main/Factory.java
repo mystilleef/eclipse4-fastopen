@@ -17,7 +17,7 @@ public enum Factory implements Instance {
 
 	@Override
 	public Instance
-	begin() {
+	start() {
 		Factory.emitPartActivationEvent(Factory.PART_SERVICE.getActivePart());
 		Factory.PART_SERVICE.addPartListener(this.partListener);
 		return this;
@@ -25,7 +25,7 @@ public enum Factory implements Instance {
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		Factory.PART_SERVICE.removePartListener(this.partListener);
 		EditorContext.cancelAllJobs();
 		return this;
@@ -51,7 +51,7 @@ public enum Factory implements Instance {
 				execute() {
 					Factory.emitPartActivationEvent(part);
 				}
-			}.begin();
+			}.start();
 		}
 
 		@Override

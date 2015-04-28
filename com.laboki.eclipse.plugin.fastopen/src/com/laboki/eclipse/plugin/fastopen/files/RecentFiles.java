@@ -59,7 +59,7 @@ public final class RecentFiles extends AbstractEventBusInstance {
 				RecentFiles.this.recentFiles.addAll(files);
 				RecentFiles.this.recentFiles.remove("");
 			}
-		}.begin();
+		}.start();
 	}
 
 	@Subscribe
@@ -97,7 +97,7 @@ public final class RecentFiles extends AbstractEventBusInstance {
 				RecentFiles.this.recentFiles.addAll(0, files);
 				RecentFiles.this.recentFiles.remove("");
 			}
-		}.begin();
+		}.start();
 	}
 
 	private synchronized ImmutableList<String>
@@ -107,8 +107,8 @@ public final class RecentFiles extends AbstractEventBusInstance {
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		this.recentFiles.clear();
-		return super.end();
+		return super.stop();
 	}
 }

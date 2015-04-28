@@ -52,7 +52,7 @@ public final class RecentResources extends AbstractEventBusInstance {
 					.getMap()
 					.keySet()));
 			}
-		}.begin();
+		}.start();
 	}
 
 	private void
@@ -101,7 +101,7 @@ public final class RecentResources extends AbstractEventBusInstance {
 				EventBus.post(new FileResourcesEvent(ImmutableList
 					.copyOf(RecentResources.this.getFileResources())));
 			}
-		}.begin();
+		}.start();
 	}
 
 	private synchronized List<RFile>
@@ -150,10 +150,10 @@ public final class RecentResources extends AbstractEventBusInstance {
 
 	@Override
 	public Instance
-	end() {
+	stop() {
 		this.fileResources.clear();
 		this.cachedResourceFiles.clear();
 		this.fileResourcesMap.clear();
-		return super.end();
+		return super.stop();
 	}
 }
