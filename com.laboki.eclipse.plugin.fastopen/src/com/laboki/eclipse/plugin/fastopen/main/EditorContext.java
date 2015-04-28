@@ -14,6 +14,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -40,12 +41,15 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartService;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
@@ -97,17 +101,14 @@ public enum EditorContext {
 
 	public static void
 	closeEditor(final IFile file) {
-		try {
-			EditorContext.getActivePage().closeEditors(
-				EditorContext.getActivePage().findEditors(
-					new FileEditorInput(file),
-					EditorContext.getEditorID(file),
-					IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT),
-				true);
-		}
-		catch (final Exception e) {
-			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
-		}
+		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
+		if (!page.isPresent()) return;
+		page.get().closeEditors(
+			page.get().findEditors(
+				new FileEditorInput(file),
+				EditorContext.getEditorID(file),
+				IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT),
+			true);
 	}
 
 	public static Object
@@ -144,11 +145,9 @@ public enum EditorContext {
 
 	public static IEditorReference[]
 	getActiveEditorReferences() {
-		return PlatformUI
-			.getWorkbench()
-			.getActiveWorkbenchWindow()
-			.getActivePage()
-			.getEditorReferences();
+		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
+		if (!page.isPresent()) return new IEditorReference[0];
+		return page.get().getEditorReferences();
 	}
 
 	public static String[]
@@ -167,14 +166,6 @@ public enum EditorContext {
 		return files.toArray(new IFile[files.size()]);
 	}
 
-	public static IWorkbenchPage
-	getActivePage() {
-		return PlatformUI
-			.getWorkbench()
-			.getActiveWorkbenchWindow()
-			.getActivePage();
-	}
-
 	public static IContentType
 	getContentType(final IFile file) {
 		try {
@@ -190,9 +181,31 @@ public enum EditorContext {
 		return EditorContext.DISPLAY;
 	}
 
-	public static IEditorPart
+	public static Optional<IEditorPart>
 	getEditor() {
-		return EditorContext.getActivePage().getActiveEditor();
+		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
+		if (!page.isPresent()) return Optional.absent();
+		return Optional.fromNullable(page.get().getActiveEditor());
+	}
+
+	public static Optional<IWorkbenchPage>
+	getActivePage() {
+		final Optional<IWorkbenchWindow> window =
+			EditorContext.getActiveWorkbenchWindow();
+		if (!window.isPresent()) return Optional.absent();
+		return Optional.fromNullable(window.get().getActivePage());
+	}
+
+	private static Optional<IWorkbenchWindow>
+	getActiveWorkbenchWindow() {
+		return Optional.fromNullable(EditorContext
+			.getWorkbench()
+			.getActiveWorkbenchWindow());
+	}
+
+	private static IWorkbench
+	getWorkbench() {
+		return PlatformUI.getWorkbench();
 	}
 
 	public static IEditorDescriptor
@@ -229,15 +242,13 @@ public enum EditorContext {
 				Path.fromOSString(new File(filePathString).getAbsolutePath()));
 	}
 
-	private static IFile
+	private static Optional<IFile>
 	getFile() {
-		try {
-			return ((FileEditorInput) EditorContext.getEditor().getEditorInput())
-				.getFile();
-		}
-		catch (final Exception e) {
-			return null;
-		}
+		final Optional<IEditorPart> editor = EditorContext.getEditor();
+		if (!editor.isPresent()) return Optional.absent();
+		return Optional.fromNullable(((FileEditorInput) editor
+			.get()
+			.getEditorInput()).getFile());
 	}
 
 	public static String
@@ -254,7 +265,7 @@ public enum EditorContext {
 
 	public static Image
 	getImage(final String filename, final IContentType contentType) {
-		return PlatformUI
+		return EditorContext
 			.getWorkbench()
 			.getEditorRegistry()
 			.getImageDescriptor(filename, contentType)
@@ -270,22 +281,27 @@ public enum EditorContext {
 		return filepaths.toArray(new String[filepaths.size()]);
 	}
 
-	public static IPartService
+	public static Optional<IPartService>
 	getPartService() {
-		return (IPartService) PlatformUI
-			.getWorkbench()
-			.getActiveWorkbenchWindow()
-			.getService(IPartService.class);
+		final Optional<IWorkbenchWindow> window =
+			EditorContext.getActiveWorkbenchWindow();
+		if (!window.isPresent()) return Optional.absent();
+		return Optional.fromNullable((IPartService) window.get().getService(
+			IPartService.class));
 	}
 
 	public static String
 	getPath() {
-		try {
-			return EditorContext.getFile().getLocationURI().getPath();
-		}
-		catch (final Exception e) {
-			return "";
-		}
+		final Optional<IFile> file = EditorContext.getFile();
+		if (!file.isPresent()) return "";
+		final Optional<URI> location = EditorContext.getUriLocation(file);
+		if (!location.isPresent()) return "";
+		return location.get().getPath();
+	}
+
+	private static Optional<URI>
+	getUriLocation(final Optional<IFile> file) {
+		return Optional.fromNullable(file.get().getLocationURI());
 	}
 
 	public static String
@@ -300,7 +316,10 @@ public enum EditorContext {
 
 	public static Shell
 	getShell() {
-		return PlatformUI.getWorkbench().getModalDialogShellProvider().getShell();
+		return EditorContext
+			.getWorkbench()
+			.getModalDialogShellProvider()
+			.getShell();
 	}
 
 	public static String
@@ -374,15 +393,19 @@ public enum EditorContext {
 
 	public static void
 	openEditor(final IFile file) throws Exception {
-		EditorContext.getActivePage().openEditor(
+		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
+		if (!page.isPresent()) return;
+		page.get().openEditor(
 			new FileEditorInput(file),
 			EditorContext.getEditorID(file));
 	}
 
 	public static void
 	openLink(final IFile file) throws Exception {
+		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
+		if (!page.isPresent()) return;
 		IDE.openEditorOnFileStore(
-			EditorContext.getActivePage(),
+			page.get(),
 			EFS.getStore(file.getRawLocationURI()));
 	}
 
