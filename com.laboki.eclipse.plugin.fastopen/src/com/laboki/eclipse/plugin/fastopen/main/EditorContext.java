@@ -26,9 +26,7 @@ import java.util.logging.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.jobs.IJobManager;
@@ -53,6 +51,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
+import com.laboki.eclipse.plugin.fastopen.context.FileContext;
 
 public enum EditorContext {
 	INSTANCE;
@@ -162,8 +161,16 @@ public enum EditorContext {
 	getActiveFiles() {
 		final List<IFile> files = Lists.newArrayList();
 		for (final IEditorPart editorPart : EditorContext.getActiveEditorParts())
-			files.add(EditorContext.getFile(editorPart));
+			EditorContext.addActiveFile(files, editorPart);
 		return files.toArray(new IFile[files.size()]);
+	}
+
+	private static void
+	addActiveFile(final List<IFile> files, final IEditorPart editorPart) {
+		final Optional<IFile> file =
+			EditorContext.getFile(Optional.fromNullable(editorPart));
+		if (!file.isPresent()) return;
+		files.add(file.get());
 	}
 
 	public static IContentType
@@ -223,32 +230,19 @@ public enum EditorContext {
 		return EditorContext.getEditorDescriptor(file).getId();
 	}
 
-	public static IFile
-	getFile(final IEditorPart editorPart) {
-		try {
-			return ((FileEditorInput) editorPart.getEditorInput()).getFile();
-		}
-		catch (final Exception e) {
-			return null;
-		}
+	public static Optional<IFile>
+	getFile(final Optional<IEditorPart> editorPart) {
+		return FileContext.getFile(editorPart);
 	}
 
-	public static IFile
+	public static Optional<IFile>
 	getFile(final String filePathString) {
-		return ResourcesPlugin
-			.getWorkspace()
-			.getRoot()
-			.getFileForLocation(
-				Path.fromOSString(new File(filePathString).getAbsolutePath()));
+		return FileContext.getFile(filePathString);
 	}
 
 	private static Optional<IFile>
 	getFile() {
-		final Optional<IEditorPart> editor = EditorContext.getEditor();
-		if (!editor.isPresent()) return Optional.absent();
-		return Optional.fromNullable(((FileEditorInput) editor
-			.get()
-			.getEditorInput()).getFile());
+		return FileContext.getFile();
 	}
 
 	public static String
