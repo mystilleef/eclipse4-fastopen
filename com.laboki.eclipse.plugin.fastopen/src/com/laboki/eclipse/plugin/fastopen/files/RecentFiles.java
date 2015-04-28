@@ -16,9 +16,11 @@ import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class RecentFiles extends AbstractEventBusInstance {
 
+	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private static final String EMIT_UPDATED_RECENT_FILES_TASK =
 		"Eclipse Fast Open Plugin: emit updated recent files task";
 	private final List<String> recentFiles = Lists.newArrayList();
@@ -34,7 +36,7 @@ public final class RecentFiles extends AbstractEventBusInstance {
 
 	private void
 	emitUpdatedRecentFiles(final ModifiedFilesEvent event) {
-		new Task(RecentFiles.EMIT_UPDATED_RECENT_FILES_TASK, 60) {
+		new Task() {
 
 			@Override
 			public void
@@ -59,7 +61,11 @@ public final class RecentFiles extends AbstractEventBusInstance {
 				RecentFiles.this.recentFiles.addAll(files);
 				RecentFiles.this.recentFiles.remove("");
 			}
-		}.start();
+		}
+			.setRule(RecentFiles.RULE)
+			.setFamily(RecentFiles.EMIT_UPDATED_RECENT_FILES_TASK)
+			.setDelay(60)
+			.start();
 	}
 
 	@Subscribe
@@ -73,7 +79,7 @@ public final class RecentFiles extends AbstractEventBusInstance {
 
 	private void
 	emitRecentFilesEvent(final AccessedFilesEvent event) {
-		new Task(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK) {
+		new Task() {
 
 			private final ImmutableList<String> files = event.getFiles();
 
@@ -97,7 +103,10 @@ public final class RecentFiles extends AbstractEventBusInstance {
 				RecentFiles.this.recentFiles.addAll(0, files);
 				RecentFiles.this.recentFiles.remove("");
 			}
-		}.start();
+		}
+			.setFamily(RecentFiles.EMIT_UPDATED_RECENT_FILES_TASK)
+			.setRule(RecentFiles.RULE)
+			.start();
 	}
 
 	private synchronized ImmutableList<String>

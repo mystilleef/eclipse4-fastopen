@@ -1,32 +1,23 @@
 package com.laboki.eclipse.plugin.fastopen.task;
 
-import org.eclipse.core.runtime.jobs.Job;
+public abstract class Task extends BaseTask implements ExecuteTask {
 
-public class Task extends AbstractTask {
+	public Task() {}
 
-	public Task() {
-		super("", 0, Job.INTERACTIVE);
-	}
+	@Override
+	protected TaskJob
+	newTaskJob() {
+		return new TaskJob() {
 
-	public Task(final String name) {
-		super(name, 0, Job.INTERACTIVE);
-	}
-
-	public Task(final int delayTime) {
-		super("", delayTime, Job.DECORATE);
-	}
-
-	public Task(final String name, final int delayTime) {
-		super(name, delayTime, Job.DECORATE);
-	}
-
-	public Task(final String name, final int delayTime, final int priority) {
-		super(name, delayTime, priority);
+			@Override
+			protected void
+			runTask() {
+				Task.this.execute();
+			}
+		};
 	}
 
 	@Override
-	protected void
-	runTask() {
-		this.runExecute();
-	}
+	public abstract void
+	execute();
 }

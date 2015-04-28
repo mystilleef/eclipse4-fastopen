@@ -25,12 +25,14 @@ import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class WorkspaceResources extends AbstractEventBusInstance
 	implements
 		IResourceVisitor,
 		Comparator<IFile> {
 
+	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private final List<IFile> resources = Lists.newArrayList();
 	private final static Logger LOGGER = Logger
 		.getLogger(WorkspaceResources.class.getName());
@@ -46,7 +48,7 @@ public final class WorkspaceResources extends AbstractEventBusInstance
 	@AllowConcurrentEvents
 	public void
 	indexResources(@SuppressWarnings("unused") final IndexResourcesEvent event) {
-		new Task(EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, 1000) {
+		new Task() {
 
 			@Override
 			public void
@@ -55,12 +57,16 @@ public final class WorkspaceResources extends AbstractEventBusInstance
 					.cancelJobsBelongingTo(EditorContext.CORE_WORKSPACE_INDEXER_TASK);
 				WorkspaceResources.this.indexResources();
 			}
-		}.start();
+		}
+			.setFamily(EditorContext.INDEX_WORKSPACE_RESOURCES_TASK)
+			.setDelay(1000)
+			.setRule(WorkspaceResources.RULE)
+			.start();
 	}
 
 	private synchronized void
 	indexResources() {
-		new Task(EditorContext.CORE_WORKSPACE_INDEXER_TASK, 60) {
+		new Task() {
 
 			private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			private final IWorkspaceRoot root = this.workspace.getRoot();
@@ -96,7 +102,11 @@ public final class WorkspaceResources extends AbstractEventBusInstance
 					WorkspaceResources.LOGGER.log(Level.WARNING, e.getMessage(), e);
 				}
 			}
-		}.start();
+		}
+			.setFamily(EditorContext.CORE_WORKSPACE_INDEXER_TASK)
+			.setDelay(60)
+			.setRule(WorkspaceResources.RULE)
+			.start();
 	}
 
 	@Override

@@ -24,11 +24,13 @@ import com.laboki.eclipse.plugin.fastopen.listeners.OpenerResourceChangeListener
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class FileResources extends AbstractEventBusInstance
 	implements
 		IResourceDeltaVisitor {
 
+	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private final OpenerResourceChangeListener listener =
 		new OpenerResourceChangeListener(this);
 
@@ -42,7 +44,7 @@ public final class FileResources extends AbstractEventBusInstance
 
 	private static void
 	indexResources(final WorkspaceResourcesEvent event) {
-		new Task(EditorContext.INDEX_RESOURCES_TASK, 1000) {
+		new Task() {
 
 			private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 			private final List<String> modifiedFiles = Lists.newArrayList();
@@ -75,7 +77,11 @@ public final class FileResources extends AbstractEventBusInstance
 				EventBus.post(new ModifiedFilesEvent(ImmutableList
 					.copyOf(this.modifiedFiles)));
 			}
-		}.start();
+		}
+			.setRule(FileResources.RULE)
+			.setFamily(EditorContext.INDEX_RESOURCES_TASK)
+			.setDelay(1000)
+			.start();
 	}
 
 	@Override
@@ -99,14 +105,18 @@ public final class FileResources extends AbstractEventBusInstance
 
 	private static void
 	emitIndexResource() {
-		new Task(EditorContext.EMIT_INDEX_RESOURCE_TASK, 1000) {
+		new Task() {
 
 			@Override
 			public void
 			execute() {
 				EventBus.post(new IndexResourcesEvent());
 			}
-		}.start();
+		}
+			.setRule(FileResources.RULE)
+			.setFamily(EditorContext.EMIT_INDEX_RESOURCE_TASK)
+			.setDelay(1000)
+			.start();
 	}
 
 	@Override

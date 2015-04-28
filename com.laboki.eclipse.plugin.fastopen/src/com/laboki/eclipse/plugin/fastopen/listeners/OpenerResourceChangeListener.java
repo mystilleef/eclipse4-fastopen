@@ -12,11 +12,13 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class OpenerResourceChangeListener extends AbstractOpenerListener
 	implements
 		IResourceChangeListener {
 
+	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private static final String FIND_CHANGED_RESOURCE_TASK =
 		"Eclipse Fast Open Plugin: find changed resource task";
 	private final IResourceDeltaVisitor handler;
@@ -52,7 +54,7 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 
 	private void
 	findResources(final IResourceChangeEvent event) {
-		new Task(OpenerResourceChangeListener.FIND_CHANGED_RESOURCE_TASK, 1000) {
+		new Task() {
 
 			@Override
 			public void
@@ -73,6 +75,10 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 						e);
 				}
 			}
-		}.start();
+		}
+			.setRule(OpenerResourceChangeListener.RULE)
+			.setFamily(OpenerResourceChangeListener.FIND_CHANGED_RESOURCE_TASK)
+			.setDelay(1000)
+			.start();
 	}
 }

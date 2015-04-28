@@ -19,7 +19,7 @@ public final class Handler extends AbstractHandler {
 
 			@Override
 			public void
-			asyncExecute() {
+			execute() {
 				EventBus.post(new ShowFastOpenDialogEvent());
 			}
 		}.start();

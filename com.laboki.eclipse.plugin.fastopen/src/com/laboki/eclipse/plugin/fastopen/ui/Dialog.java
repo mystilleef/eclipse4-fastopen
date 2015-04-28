@@ -387,7 +387,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 				@Override
 				public void
-				asyncExecute() {
+				execute() {
 					Dialog.focusViewer();
 				}
 			}.start();
@@ -408,7 +408,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 				@Override
 				public void
-				asyncExecute() {
+				execute() {
 					Dialog.refresh();
 				}
 			}.start();
@@ -438,7 +438,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 				@Override
 				public void
-				asyncExecute() {
+				execute() {
 					Dialog.refocusViewer();
 				}
 			}.start();
@@ -473,7 +473,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 					@Override
 					public void
-					asyncExecute() {
+					execute() {
 						Dialog.updateText(event.character);
 					}
 				}.start();
@@ -483,7 +483,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 					@Override
 					public void
-					asyncExecute() {
+					execute() {
 						Dialog.backspace();
 					}
 				}.start();
@@ -514,7 +514,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 				@Override
 				public void
-				asyncExecute() {
+				execute() {
 					Dialog.filterViewer();
 				}
 			}.start();
@@ -534,7 +534,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 				@Override
 				public void
-				asyncExecute() {
+				execute() {
 					Dialog.SHELL.close();
 					Dialog.openFiles();
 				}
@@ -553,7 +553,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 					@Override
 					public void
-					asyncExecute() {
+					execute() {
 						selectText();
 					}
 				}.start();
@@ -580,7 +580,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 			@Override
 			public void
-			asyncExecute() {
+			execute() {
 				Dialog.updateViewer(event.getrFiles());
 			}
 		}.start();
@@ -594,7 +594,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 			@Override
 			public void
-			asyncExecute() {
+			execute() {
 				Dialog.updateViewer(event.getrFiles());
 			}
 		}.start();
@@ -628,7 +628,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 			@Override
 			public void
-			asyncExecute() {
+			execute() {
 				Dialog.refresh();
 				Dialog.SHELL.open();
 				Dialog.focusViewer();
@@ -688,7 +688,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 				@Override
 				public void
-				asyncExecute() {
+				execute() {
 					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index))
 						.getFile());
 				}
@@ -722,7 +722,7 @@ public final class Dialog extends AbstractEventBusInstance {
 
 				@Override
 				public void
-				asyncExecute() {
+				execute() {
 					EditorContext
 						.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
 				}

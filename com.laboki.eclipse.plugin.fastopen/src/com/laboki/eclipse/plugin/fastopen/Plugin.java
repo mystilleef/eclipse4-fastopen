@@ -16,7 +16,7 @@ public enum Plugin implements Instance {
 
 			@Override
 			public void
-			asyncExecute() {
+			execute() {
 				Plugin.SERVICES.start();
 			}
 		}.start();
@@ -30,7 +30,7 @@ public enum Plugin implements Instance {
 
 			@Override
 			public void
-			asyncExecute() {
+			execute() {
 				Plugin.SERVICES.stop();
 			}
 		}.start();

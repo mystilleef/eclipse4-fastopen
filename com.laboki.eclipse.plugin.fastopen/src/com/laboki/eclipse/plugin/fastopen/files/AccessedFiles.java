@@ -17,9 +17,11 @@ import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class AccessedFiles extends AbstractEventBusInstance {
 
+	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private final List<String> accessedFiles = Lists.newArrayList(EditorContext
 		.getOpenEditorFilePaths());
 	private static final int ACCESSED_FILES_REINDEX_WATERMARK = 3;
@@ -32,7 +34,7 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 			@Override
 			public void
-			asyncExecute() {
+			execute() {
 				AccessedFiles.this.updateAccessedFiles(event.getFiles());
 				AccessedFiles.this.updateAccessedFiles(AccessedFiles.this
 					.getAccessedFiles());
@@ -53,7 +55,7 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 				files.remove(path);
 				files.add(1, path);
 			}
-		}.start();
+		}.setRule(AccessedFiles.RULE).start();
 	}
 
 	@Subscribe
@@ -67,7 +69,7 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 	private void
 	updateAccessedFilesList(final RecentFilesModificationEvent event) {
-		new Task(EditorContext.UPDATE_ACCESSED_FILES_TASK, 1000) {
+		new Task() {
 
 			private final ImmutableList<String> modifiedFiles = event.getFiles();
 
@@ -86,7 +88,11 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 					if (this.modifiedFiles.contains(file)) files.add(file);
 				return ImmutableList.copyOf(files);
 			}
-		}.start();
+		}
+			.setRule(AccessedFiles.RULE)
+			.setFamily(EditorContext.UPDATE_ACCESSED_FILES_TASK)
+			.setDelay(1000)
+			.start();
 	}
 
 	@Subscribe
@@ -100,14 +106,14 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 
 	private void
 	updateAccessedFilesList() {
-		new AsyncTask(EditorContext.UPDATE_ACCESSED_FILES_TASK, 60) {
+		new AsyncTask() {
 
 			private final List<String> aFiles = AccessedFiles.this
 				.getAccessedFiles();
 
 			@Override
 			public void
-			asyncExecute() {
+			execute() {
 				final String path = EditorContext.getPath();
 				if (path.length() == 0) return;
 				this.moveCurrentFileToTopOfList();
@@ -133,7 +139,11 @@ public final class AccessedFiles extends AbstractEventBusInstance {
 				this.aFiles.remove(path);
 				this.aFiles.add(index, path);
 			}
-		}.start();
+		}
+			.setRule(AccessedFiles.RULE)
+			.setFamily(EditorContext.UPDATE_ACCESSED_FILES_TASK)
+			.setDelay(60)
+			.start();
 	}
 
 	private synchronized void

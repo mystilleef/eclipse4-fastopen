@@ -20,9 +20,11 @@ import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class RecentResources extends AbstractEventBusInstance {
 
+	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private static final String EMIT_FIRLE_RESOURCES_EVENT_TASK =
 		"Eclipse Fast Open Plugin: emit file resources event task";
 	private static final String UPDATE_RESOURCES_TASK =
@@ -41,7 +43,7 @@ public final class RecentResources extends AbstractEventBusInstance {
 
 	private void
 	updateResources(final FileResourcesMapEvent event) {
-		new Task(RecentResources.UPDATE_RESOURCES_TASK, 60) {
+		new Task() {
 
 			@Override
 			public void
@@ -52,7 +54,11 @@ public final class RecentResources extends AbstractEventBusInstance {
 					.getMap()
 					.keySet()));
 			}
-		}.start();
+		}
+			.setFamily(RecentResources.UPDATE_RESOURCES_TASK)
+			.setDelay(60)
+			.setRule(RecentResources.RULE)
+			.start();
 	}
 
 	private void
@@ -78,7 +84,7 @@ public final class RecentResources extends AbstractEventBusInstance {
 
 	private void
 	emitFileResourcesEvent(final RecentFilesEvent event) {
-		new Task(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK, 60) {
+		new Task() {
 
 			private final List<RFile> rFiles = Lists.newArrayList();
 
@@ -101,7 +107,11 @@ public final class RecentResources extends AbstractEventBusInstance {
 				EventBus.post(new FileResourcesEvent(ImmutableList
 					.copyOf(RecentResources.this.getFileResources())));
 			}
-		}.start();
+		}
+			.setFamily(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK)
+			.setDelay(60)
+			.setRule(RecentResources.RULE)
+			.start();
 	}
 
 	private synchronized List<RFile>

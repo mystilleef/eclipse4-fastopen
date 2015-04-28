@@ -14,9 +14,11 @@ import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class RecentResourcesFilter extends AbstractEventBusInstance {
 
+	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private final List<RFile> rFiles = Lists.newArrayList();
 
 	@Subscribe
@@ -29,7 +31,7 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 
 	private void
 	updateRFiles(final FileResourcesEvent event) {
-		new Task(EditorContext.UPDATE_R_FILES_TASK, 60) {
+		new Task() {
 
 			@Override
 			public void
@@ -42,7 +44,11 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 				RecentResourcesFilter.this.rFiles.clear();
 				RecentResourcesFilter.this.rFiles.addAll(rFiles);
 			}
-		}.start();
+		}
+			.setRule(RecentResourcesFilter.RULE)
+			.setFamily(EditorContext.UPDATE_R_FILES_TASK)
+			.setDelay(60)
+			.start();
 	}
 
 	@Subscribe
@@ -56,7 +62,7 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 
 	private void
 	filterRecentFiles(final FilterRecentFilesEvent event) {
-		new Task(EditorContext.FILTER_RECENT_FILES_TASK, 60) {
+		new Task() {
 
 			private final List<RFile> recentFiles = RecentResourcesFilter.this
 				.getFiles();
@@ -98,7 +104,11 @@ public final class RecentResourcesFilter extends AbstractEventBusInstance {
 			matches(final RFile rFile, final String string) {
 				return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
 			}
-		}.start();
+		}
+			.setDelay(60)
+			.setFamily(EditorContext.FILTER_RECENT_FILES_TASK)
+			.setRule(RecentResourcesFilter.RULE)
+			.start();
 	}
 
 	private List<RFile>
