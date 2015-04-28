@@ -8,6 +8,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -60,14 +61,20 @@ public final class FileResources extends AbstractEventBusInstance
 
 			private void
 			buildFileResourcesMap() {
-				for (final IFile file : this.resources)
-					this.fileResourcesMap.put(EditorContext.getURIPath(file), file);
+				for (final IFile file : this.resources) {
+					final Optional<String> path = EditorContext.getURIPath(file);
+					if (!path.isPresent()) continue;
+					this.fileResourcesMap.put(path.get(), file);
+				}
 			}
 
 			private void
 			buildModifiedFilesList() {
-				for (final IFile file : this.resources)
-					this.modifiedFiles.add(EditorContext.getURIPath(file));
+				for (final IFile file : this.resources) {
+					final Optional<String> path = EditorContext.getURIPath(file);
+					if (!path.isPresent()) continue;
+					this.modifiedFiles.add(path.get());
+				}
 			}
 
 			private void

@@ -9,6 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Optional;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 
 public final class RFile {
@@ -28,7 +29,7 @@ public final class RFile {
 		this.folder =
 			CharMatcher.anyOf(File.separator).trimFrom(
 				this.file.getParent().getFullPath().toOSString());
-		this.contentType = this.getPrivateContentType();
+		this.contentType = this.getPrivateContentType().get();
 		this.contentTypeString = this.getPrivateContentTypeString().toLowerCase();
 		this.contentTypeImage =
 			EditorContext
@@ -36,9 +37,12 @@ public final class RFile {
 		this.filePath = this.file.getLocation().toOSString();
 	}
 
-	private IContentType
+	private Optional<IContentType>
 	getPrivateContentType() {
-		return EditorContext.getContentType(this.file);
+		final Optional<IContentType> type =
+			EditorContext.getContentType(this.file);
+		if (!type.isPresent()) return Optional.absent();
+		return type;
 	}
 
 	private String

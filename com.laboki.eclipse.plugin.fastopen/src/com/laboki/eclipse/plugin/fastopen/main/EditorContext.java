@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
+import com.laboki.eclipse.plugin.fastopen.context.ContentTypeContext;
 import com.laboki.eclipse.plugin.fastopen.context.FileContext;
 
 public enum EditorContext {
@@ -153,8 +155,11 @@ public enum EditorContext {
 	public static String[]
 	getActiveFilePathStrings() {
 		final List<String> strings = Lists.newArrayList();
-		for (final IFile file : EditorContext.getActiveFiles())
-			strings.add(EditorContext.getURIPath(file));
+		for (final IFile file : EditorContext.getActiveFiles()) {
+			final Optional<String> path = EditorContext.getURIPath(file);
+			if (!path.isPresent()) continue;
+			strings.add(path.get());
+		}
 		return strings.toArray(new String[strings.size()]);
 	}
 
@@ -174,14 +179,12 @@ public enum EditorContext {
 		files.add(file.get());
 	}
 
-	public static IContentType
+	public static Optional<IContentType>
 	getContentType(final IFile file) {
-		try {
-			return EditorContext.tryToGetContentType(file);
-		}
-		catch (final Exception e) {
-			return EditorContext.getContentTypeFromMediaType(file);
-		}
+		final Optional<IContentType> type =
+			ContentTypeContext.getContentTypeFromFile(Optional.fromNullable(file));
+		if (type.isPresent()) return type;
+		return EditorContext.getContentTypeFromMediaType(file);
 	}
 
 	public static Display
@@ -249,9 +252,12 @@ public enum EditorContext {
 	public static String
 	getFilePathFromEditorReference(final IEditorReference file) {
 		try {
-			return EditorContext.getURIPath(((IFileEditorInput) file
-				.getEditorInput()
-				.getAdapter(IFileEditorInput.class)).getFile());
+			final Optional<String> path =
+				EditorContext.getURIPath(((IFileEditorInput) file
+					.getEditorInput()
+					.getAdapter(IFileEditorInput.class)).getFile());
+			if (!path.isPresent()) return "";
+			return path.get();
 		}
 		catch (final Exception e) {
 			return "";
@@ -317,16 +323,18 @@ public enum EditorContext {
 			.getShell();
 	}
 
-	public static String
+	public static Optional<String>
 	getURIPath(final IResource resource) {
-		return resource.getLocationURI().getPath();
+		return Optional.fromNullable(resource.getLocationURI().getPath());
 	}
 
 	public static boolean
 	isContentTypeText(final IFile file) {
 		try {
-			return EditorContext.getContentType(file).isKindOf(
-				EditorContext.CONTENT_TYPE_TEXT);
+			final Optional<IContentType> contentType =
+				EditorContext.getContentType(file);
+			if (!contentType.isPresent()) return false;
+			return contentType.get().isKindOf(EditorContext.CONTENT_TYPE_TEXT);
 		}
 		catch (final Exception e) {
 			return false;
@@ -449,15 +457,13 @@ public enum EditorContext {
 		}
 	}
 
-	private static IContentType
+	private static Optional<IContentType>
 	getContentTypeFromMediaType(final IFile file) {
-		try {
-			return Platform.getContentTypeManager().getContentType(
-				EditorContext.getMediaType(file).toString().trim());
-		}
-		catch (final Exception e) {
-			return null;
-		}
+		final Optional<MediaType> mediaType = EditorContext.getMediaType(file);
+		if (!mediaType.isPresent()) return Optional.absent();
+		return Optional.fromNullable(Platform
+			.getContentTypeManager()
+			.getContentType(mediaType.get().toString().trim()));
 	}
 
 	private static IEditorPart
@@ -465,11 +471,24 @@ public enum EditorContext {
 		return (IEditorPart) editorReference.getPart(false);
 	}
 
-	private static MediaType
-	getMediaType(final IFile file) throws Exception {
-		return MediaType.parse(Files.probeContentType(FileSystems
-			.getDefault()
-			.getPath(EditorContext.getURIPath(file))));
+	private static Optional<MediaType>
+	getMediaType(final IFile file) {
+		final Optional<Path> path = EditorContext.getFileSystemPath(file);
+		if (!path.isPresent()) return Optional.absent();
+		try {
+			return Optional.fromNullable(MediaType.parse(Files.probeContentType(path
+				.get())));
+		}
+		catch (final IOException e) {
+			return Optional.absent();
+		}
+	}
+
+	private static Optional<Path>
+	getFileSystemPath(final IFile file) {
+		final Optional<String> path = EditorContext.getURIPath(file);
+		if (!path.isPresent()) return Optional.absent();
+		return Optional.fromNullable(FileSystems.getDefault().getPath(path.get()));
 	}
 
 	private static ObjectOutput
@@ -492,7 +511,9 @@ public enum EditorContext {
 	private static boolean
 	isMediaTypeText(final IFile file) {
 		try {
-			return EditorContext.getMediaType(file).is(MediaType.ANY_TEXT_TYPE);
+			final Optional<MediaType> mediaType = EditorContext.getMediaType(file);
+			if (!mediaType.isPresent()) return false;
+			return mediaType.get().is(MediaType.ANY_TEXT_TYPE);
 		}
 		catch (final Exception e) {
 			return false;
@@ -536,15 +557,6 @@ public enum EditorContext {
 			EditorContext.closeObjectInput(input);
 		}
 		return null;
-	}
-
-	private static IContentType
-	tryToGetContentType(final IFile file) throws CoreException {
-		final IContentType contentType =
-			file.getContentDescription().getContentType();
-		if (contentType == null) return EditorContext
-			.getContentTypeFromMediaType(file);
-		return contentType;
 	}
 
 	private static ObjectInput
