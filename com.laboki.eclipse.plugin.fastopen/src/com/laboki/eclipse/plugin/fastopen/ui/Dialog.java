@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILazyContentProvider;
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PartInitException;
 
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -700,7 +702,7 @@ public final class Dialog extends AbstractEventBusInstance {
 		try {
 			EditorContext.openEditor(file);
 		}
-		catch (final Exception e) {
+		catch (final PartInitException e) {
 			Dialog.openLink(file);
 		}
 	}
@@ -710,7 +712,10 @@ public final class Dialog extends AbstractEventBusInstance {
 		try {
 			EditorContext.openLink(file);
 		}
-		catch (final Exception e) {
+		catch (final PartInitException e) {
+			Dialog.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+		catch (final CoreException e) {
 			Dialog.LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}

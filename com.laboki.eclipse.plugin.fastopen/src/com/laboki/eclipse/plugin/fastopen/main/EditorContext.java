@@ -43,6 +43,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
@@ -386,7 +387,7 @@ public enum EditorContext {
 	}
 
 	public static void
-	openEditor(final IFile file) throws Exception {
+	openEditor(final IFile file) throws PartInitException {
 		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
 		if (!page.isPresent()) return;
 		page.get().openEditor(
@@ -395,7 +396,7 @@ public enum EditorContext {
 	}
 
 	public static void
-	openLink(final IFile file) throws Exception {
+	openLink(final IFile file) throws PartInitException, CoreException {
 		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
 		if (!page.isPresent()) return;
 		IDE.openEditorOnFileStore(
