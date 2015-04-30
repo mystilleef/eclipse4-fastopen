@@ -24,12 +24,12 @@ public final class AccessedFiles extends EventBusInstance {
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private final List<String> accessedFiles = Lists.newArrayList(EditorContext
 		.getOpenEditorFilePaths());
-	private static final int ACCESSED_FILES_REINDEX_WATERMARK = 3;
+	private static final int WATERMARK = 3;
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void
-	updateAccessedFiles(final DeserializedAccessedFilesEvent event) {
+	eventHandler(final DeserializedAccessedFilesEvent event) {
 		new AsyncTask() {
 
 			@Override
@@ -91,14 +91,14 @@ public final class AccessedFiles extends EventBusInstance {
 		}
 			.setRule(AccessedFiles.RULE)
 			.setFamily(EditorContext.UPDATE_ACCESSED_FILES_TASK)
-			.setDelay(1000)
+			.setDelay(250)
 			.start();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void
-	partActivationEventHandler(@SuppressWarnings("unused") final PartActivationEvent event) {
+	eventHandler(@SuppressWarnings("unused") final PartActivationEvent event) {
 		EditorContext
 			.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
 		this.updateAccessedFilesList();
@@ -130,7 +130,7 @@ public final class AccessedFiles extends EventBusInstance {
 
 			private void
 			moveCurrentFileToTopOfList() {
-				if (this.aFiles.size() < AccessedFiles.ACCESSED_FILES_REINDEX_WATERMARK) return;
+				if (this.aFiles.size() < AccessedFiles.WATERMARK) return;
 				this.update(0, this.aFiles.get(1));
 			}
 
@@ -142,7 +142,6 @@ public final class AccessedFiles extends EventBusInstance {
 		}
 			.setRule(AccessedFiles.RULE)
 			.setFamily(EditorContext.UPDATE_ACCESSED_FILES_TASK)
-			.setDelay(60)
 			.start();
 	}
 
@@ -169,7 +168,7 @@ public final class AccessedFiles extends EventBusInstance {
 		System.out.println("===");
 	}
 
-	private synchronized ArrayList<String>
+	private ArrayList<String>
 	getAccessedFiles() {
 		return Lists.newArrayList(this.accessedFiles);
 	}
