@@ -2,7 +2,7 @@ package com.laboki.eclipse.plugin.fastopen.instance;
 
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 
-public abstract class AbstractEventBusInstance implements Instance {
+public class EventBusInstance implements Instance {
 
 	@Override
 	public Instance

@@ -9,14 +9,14 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
-import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
-public final class RecentResourcesFilter extends AbstractEventBusInstance {
+public final class RecentResourcesFilter extends EventBusInstance {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private final List<RFile> rFiles = Lists.newArrayList();

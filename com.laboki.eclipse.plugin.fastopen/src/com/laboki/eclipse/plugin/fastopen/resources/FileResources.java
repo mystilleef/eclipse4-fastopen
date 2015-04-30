@@ -19,7 +19,7 @@ import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.IndexResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
-import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.listeners.OpenerResourceChangeListener;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
@@ -27,7 +27,7 @@ import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
-public final class FileResources extends AbstractEventBusInstance
+public final class FileResources extends EventBusInstance
 	implements
 		IResourceDeltaVisitor {
 

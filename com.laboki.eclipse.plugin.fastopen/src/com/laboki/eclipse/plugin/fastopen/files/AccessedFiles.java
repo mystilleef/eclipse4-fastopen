@@ -11,7 +11,7 @@ import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.PartActivationEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
-import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
@@ -19,7 +19,7 @@ import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
-public final class AccessedFiles extends AbstractEventBusInstance {
+public final class AccessedFiles extends EventBusInstance {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private final List<String> accessedFiles = Lists.newArrayList(EditorContext

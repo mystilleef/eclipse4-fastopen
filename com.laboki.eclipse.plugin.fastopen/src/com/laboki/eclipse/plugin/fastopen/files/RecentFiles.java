@@ -11,14 +11,14 @@ import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.RecentFilesModificationEvent;
-import com.laboki.eclipse.plugin.fastopen.instance.AbstractEventBusInstance;
+import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
-public final class RecentFiles extends AbstractEventBusInstance {
+public final class RecentFiles extends EventBusInstance {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private static final String EMIT_UPDATED_RECENT_FILES_TASK =

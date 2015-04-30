@@ -1,8 +1,6 @@
 package com.laboki.eclipse.plugin.fastopen.instance;
 
-public abstract class BaseInstance implements Instance {
-
-	protected BaseInstance() {}
+public class BaseInstance implements Instance {
 
 	@Override
 	public Instance
