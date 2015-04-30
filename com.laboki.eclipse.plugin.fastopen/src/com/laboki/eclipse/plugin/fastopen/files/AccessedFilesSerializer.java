@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
@@ -14,19 +13,20 @@ import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class AccessedFilesSerializer extends EventBusInstance {
 
-	public static final String SERIALIZABLE_FILE_PATH = EditorContext
+	private static final TaskMutexRule RULE = new TaskMutexRule();
+	private static final String PATH = EditorContext
 		.getSerializableFilePath("accessed.files.ser");
 
 	public AccessedFilesSerializer() {
-		EditorContext.emptyFile(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
+		EditorContext.emptyFile(AccessedFilesSerializer.PATH);
 	}
 
 	@Subscribe
-	@AllowConcurrentEvents
-	public static synchronized void
+	public static void
 	serializeAccessedFiles(final AccessedFilesEvent event) {
 		new Task() {
 
@@ -39,11 +39,9 @@ public final class AccessedFilesSerializer extends EventBusInstance {
 			private void
 			serialize(final Collection<String> files) {
 				if (files.size() == 0) return;
-				EditorContext.serialize(
-					AccessedFilesSerializer.SERIALIZABLE_FILE_PATH,
-					files);
+				EditorContext.serialize(AccessedFilesSerializer.PATH, files);
 			}
-		}.start();
+		}.setRule(AccessedFilesSerializer.RULE).start();
 	}
 
 	@Override
@@ -63,8 +61,7 @@ public final class AccessedFilesSerializer extends EventBusInstance {
 	private static List<String>
 	deserialize() {
 		final Object files =
-			EditorContext
-				.deserialize(AccessedFilesSerializer.SERIALIZABLE_FILE_PATH);
+			EditorContext.deserialize(AccessedFilesSerializer.PATH);
 		if (files == null) return Lists.newArrayList();
 		return (List<String>) files;
 	}
