@@ -1,16 +1,15 @@
 package com.laboki.eclipse.plugin.fastopen.main;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
-public final class EventBus {
+public enum EventBus {
+	INSTANCE;
 
-	private static final Executor EXECUTOR = Executors.newCachedThreadPool();
-	private static final AsyncEventBus BUS =
-		new AsyncEventBus(EventBus.EXECUTOR);
+	private static final AsyncEventBus BUS = new AsyncEventBus(
+		Executors.newCachedThreadPool());
 
 	private EventBus() {}
 
