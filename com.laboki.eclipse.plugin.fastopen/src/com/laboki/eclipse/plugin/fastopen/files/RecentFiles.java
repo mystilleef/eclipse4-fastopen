@@ -27,13 +27,13 @@ public final class RecentFiles extends EventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void
-	modifiedFilesEventHandler(final ModifiedFilesEvent event) {
+	eventHandler(final ModifiedFilesEvent event) {
 		EditorContext.cancelJobsBelongingTo(RecentFiles.FAMILY);
-		this.emitUpdatedRecentFiles(event);
+		this.emitUpdatedRecentFiles(event.getFiles());
 	}
 
 	private void
-	emitUpdatedRecentFiles(final ModifiedFilesEvent event) {
+	emitUpdatedRecentFiles(final ImmutableList<String> files) {
 		new Task() {
 
 			@Override
@@ -41,45 +41,32 @@ public final class RecentFiles extends EventBusInstance {
 			execute() {
 				EditorContext
 					.cancelJobsBelongingTo(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK);
-				this.resetRecentFiles(event.getFiles());
+				this.resetRecentFiles();
 				EventBus.post(new RecentFilesModificationEvent(RecentFiles.this
 					.getRecentFiles()));
 			}
 
 			private void
-			resetRecentFiles(final ImmutableList<String> files) {
-				synchronized (RecentFiles.this.recentFiles) {
-					this.reset(files);
-				}
-			}
-
-			private void
-			reset(final ImmutableList<String> files) {
+			resetRecentFiles() {
 				RecentFiles.this.recentFiles.clear();
 				RecentFiles.this.recentFiles.addAll(files);
 				RecentFiles.this.recentFiles.remove("");
 			}
-		}
-			.setRule(RecentFiles.RULE)
-			.setFamily(RecentFiles.FAMILY)
-			.setDelay(60)
-			.start();
+		}.setRule(RecentFiles.RULE).setFamily(RecentFiles.FAMILY).start();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void
-	accessedFilesEventHandler(final AccessedFilesEvent event) {
+	eventHandler(final AccessedFilesEvent event) {
 		EditorContext
 			.cancelJobsBelongingTo(EditorContext.EMIT_UPDATED_RECENT_FILES_TASK);
-		this.emitRecentFilesEvent(event);
+		this.emitRecentFilesEvent(event.getFiles());
 	}
 
 	private void
-	emitRecentFilesEvent(final AccessedFilesEvent event) {
+	emitRecentFilesEvent(final ImmutableList<String> files) {
 		new Task() {
-
-			private final ImmutableList<String> files = event.getFiles();
 
 			@Override
 			public void
@@ -90,13 +77,6 @@ public final class RecentFiles extends EventBusInstance {
 
 			private void
 			mergeAccessedAndRecentFiles() {
-				synchronized (RecentFiles.this.recentFiles) {
-					this.merge(this.files);
-				}
-			}
-
-			private void
-			merge(final ImmutableList<String> files) {
 				RecentFiles.this.recentFiles.removeAll(files);
 				RecentFiles.this.recentFiles.addAll(0, files);
 				RecentFiles.this.recentFiles.remove("");
@@ -104,7 +84,7 @@ public final class RecentFiles extends EventBusInstance {
 		}.setFamily(RecentFiles.FAMILY).setRule(RecentFiles.RULE).start();
 	}
 
-	private synchronized ImmutableList<String>
+	private ImmutableList<String>
 	getRecentFiles() {
 		return ImmutableList.copyOf(Sets.newLinkedHashSet(this.recentFiles));
 	}
