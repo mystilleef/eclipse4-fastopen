@@ -625,7 +625,7 @@ public final class Dialog extends AbstractEventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void
-	showFastOpenDialogEventHandler(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
+	eventHandler(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
 		new AsyncTask() {
 
 			@Override
