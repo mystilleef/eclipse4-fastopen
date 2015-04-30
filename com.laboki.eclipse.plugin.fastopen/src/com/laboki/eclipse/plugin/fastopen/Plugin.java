@@ -26,14 +26,7 @@ public enum Plugin implements Instance {
 	@Override
 	public Instance
 	stop() {
-		new AsyncTask() {
-
-			@Override
-			public void
-			execute() {
-				Plugin.SERVICES.stop();
-			}
-		}.start();
+		Plugin.SERVICES.stop();
 		return this;
 	}
 }
