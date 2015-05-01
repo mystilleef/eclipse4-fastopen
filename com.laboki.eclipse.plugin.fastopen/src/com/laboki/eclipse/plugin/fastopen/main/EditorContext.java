@@ -481,6 +481,7 @@ public enum EditorContext {
 			return Optional.fromNullable(MediaType.parse(contentType.get()));
 		}
 		catch (final IOException | SecurityException | IllegalArgumentException e) {
+			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 			return Optional.absent();
 		}
 	}
