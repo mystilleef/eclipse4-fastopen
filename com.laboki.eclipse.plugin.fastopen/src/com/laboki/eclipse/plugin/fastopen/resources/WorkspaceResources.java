@@ -33,8 +33,8 @@ public final class WorkspaceResources extends EventBusInstance
 		Comparator<IFile> {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
-	private final List<IFile> resources = Lists.newArrayList();
-	private final static Logger LOGGER = Logger
+	protected final List<IFile> resources = Lists.newArrayList();
+	protected final static Logger LOGGER = Logger
 		.getLogger(WorkspaceResources.class.getName());
 
 	@Override
@@ -47,7 +47,7 @@ public final class WorkspaceResources extends EventBusInstance
 	@Subscribe
 	@AllowConcurrentEvents
 	public void
-	indexResources(@SuppressWarnings("unused") final IndexResourcesEvent event) {
+	indexResources(final IndexResourcesEvent event) {
 		new Task() {
 
 			@Override
@@ -63,7 +63,7 @@ public final class WorkspaceResources extends EventBusInstance
 			.start();
 	}
 
-	private void
+	protected void
 	indexResources() {
 		new Task() {
 

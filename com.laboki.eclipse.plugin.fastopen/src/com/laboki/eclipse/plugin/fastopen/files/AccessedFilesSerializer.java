@@ -18,7 +18,7 @@ import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 public final class AccessedFilesSerializer extends EventBusInstance {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
-	private static final String PATH = EditorContext
+	protected static final String PATH = EditorContext
 		.getSerializableFilePath("accessed.files.ser");
 
 	public AccessedFilesSerializer() {

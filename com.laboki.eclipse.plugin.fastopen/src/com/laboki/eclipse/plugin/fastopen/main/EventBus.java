@@ -10,7 +10,7 @@ import com.laboki.eclipse.plugin.fastopen.task.Task;
 public enum EventBus {
 	INSTANCE;
 
-	private static final AsyncEventBus BUS = new AsyncEventBus(
+	protected static final AsyncEventBus BUS = new AsyncEventBus(
 		Executors.newCachedThreadPool());
 
 	private EventBus() {}

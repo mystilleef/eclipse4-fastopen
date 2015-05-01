@@ -54,20 +54,19 @@ public final class RecentResources extends EventBusInstance {
 					.getMap()
 					.keySet()));
 			}
-		}
-			.setFamily(RecentResources.UPDATE_RESOURCES_TASK)
+		}.setFamily(RecentResources.UPDATE_RESOURCES_TASK)
 			.setRule(RecentResources.RULE)
 			.start();
 	}
 
-	private void
+	protected void
 	clearResources() {
 		this.fileResourcesMap.clear();
 		this.cachedResourceFiles.clear();
 		this.fileResources.clear();
 	}
 
-	private void
+	protected void
 	updateFileResourcesMap(final ImmutableMap<String, IFile> map) {
 		this.fileResourcesMap.putAll(map);
 	}
@@ -106,13 +105,12 @@ public final class RecentResources extends EventBusInstance {
 				EventBus.post(new FileResourcesEvent(ImmutableList
 					.copyOf(RecentResources.this.getFileResources())));
 			}
-		}
-			.setFamily(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK)
+		}.setFamily(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK)
 			.setRule(RecentResources.RULE)
 			.start();
 	}
 
-	private List<RFile>
+	protected List<RFile>
 	makeResourceFiles(final ImmutableList<String> immutableList) {
 		final ArrayList<RFile> rFiles = Lists.newArrayList();
 		for (final String filePath : immutableList)
@@ -150,7 +148,7 @@ public final class RecentResources extends EventBusInstance {
 		return Lists.newArrayList(this.fileResources);
 	}
 
-	private void
+	protected void
 	updateFileResources(final List<RFile> rFiles) {
 		this.fileResources.clear();
 		this.fileResources.addAll(rFiles);

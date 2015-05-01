@@ -7,7 +7,7 @@ import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 public enum Plugin implements Instance {
 	INSTANCE;
 
-	private final static Services SERVICES = new Services();
+	protected final static Services SERVICES = new Services();
 
 	@Override
 	public Instance

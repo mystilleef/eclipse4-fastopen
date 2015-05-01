@@ -85,8 +85,7 @@ public final class AccessedFiles extends EventBusInstance {
 					if (this.modifiedFiles.contains(file)) files.add(file);
 				return ImmutableList.copyOf(files);
 			}
-		}
-			.setRule(AccessedFiles.RULE)
+		}.setRule(AccessedFiles.RULE)
 			.setFamily(EditorContext.UPDATE_ACCESSED_FILES_TASK)
 			.setDelay(250)
 			.start();
@@ -94,7 +93,7 @@ public final class AccessedFiles extends EventBusInstance {
 
 	@Subscribe
 	public void
-	eventHandler(@SuppressWarnings("unused") final PartActivationEvent event) {
+	eventHandler(final PartActivationEvent event) {
 		EditorContext
 			.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK);
 		this.updateAccessedFilesList();
@@ -135,26 +134,25 @@ public final class AccessedFiles extends EventBusInstance {
 				this.aFiles.remove(path);
 				this.aFiles.add(index, path);
 			}
-		}
-			.setRule(AccessedFiles.RULE)
+		}.setRule(AccessedFiles.RULE)
 			.setFamily(EditorContext.UPDATE_ACCESSED_FILES_TASK)
 			.start();
 	}
 
-	private synchronized void
+	protected void
 	updateAccessedFiles(final List<String> files) {
 		this.accessedFiles.removeAll(files);
 		this.accessedFiles.addAll(0, files);
 		this.accessedFiles.remove("");
 	}
 
-	private void
+	protected void
 	postEvent() {
 		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this
 			.getAccessedFiles())));
 	}
 
-	private ArrayList<String>
+	protected ArrayList<String>
 	getAccessedFiles() {
 		return Lists.newArrayList(this.accessedFiles);
 	}

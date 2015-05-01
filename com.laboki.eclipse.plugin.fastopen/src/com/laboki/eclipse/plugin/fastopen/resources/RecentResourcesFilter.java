@@ -19,7 +19,7 @@ import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 public final class RecentResourcesFilter extends EventBusInstance {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
-	private final List<RFile> rFiles = Lists.newArrayList();
+	protected final List<RFile> rFiles = Lists.newArrayList();
 	private static final int PATTERN_FLAGS = Pattern.CASE_INSENSITIVE
 		| Pattern.CANON_EQ
 		| Pattern.UNICODE_CASE;
@@ -111,7 +111,7 @@ public final class RecentResourcesFilter extends EventBusInstance {
 			.start();
 	}
 
-	private List<RFile>
+	protected List<RFile>
 	getFiles() {
 		return Lists.newArrayList(this.rFiles);
 	}

@@ -22,9 +22,9 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private static final String FAMILY =
 		"Eclipse Fast Open Plugin: find changed resource task";
-	private final IResourceDeltaVisitor handler;
+	protected final IResourceDeltaVisitor handler;
 	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-	private final static Logger LOGGER = Logger
+	protected final static Logger LOGGER = Logger
 		.getLogger(OpenerResourceChangeListener.class.getName());
 
 	public OpenerResourceChangeListener(final IResourceDeltaVisitor handler) {

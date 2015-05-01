@@ -67,19 +67,19 @@ public final class Dialog extends EventBusInstance {
 		| Pattern.UNICODE_CASE;
 	private static final Pattern TEXT_PATTERN = Pattern
 		.compile("\\p{Punct}*|\\w*| *", Dialog.PATTERN_FLAGS);
-	private static final Shell SHELL = new Shell(
+	protected static final Shell SHELL = new Shell(
 		EditorContext.getShell(),
 		SWT.RESIZE | SWT.APPLICATION_MODAL);
-	private static final Text TEXT = new Text(Dialog.SHELL, SWT.SEARCH
+	protected static final Text TEXT = new Text(Dialog.SHELL, SWT.SEARCH
 		| SWT.ICON_CANCEL
 		| SWT.ICON_SEARCH
 		| SWT.NO_FOCUS);
-	private static final TableViewer VIEWER = new TableViewer(
+	protected static final TableViewer VIEWER = new TableViewer(
 		Dialog.SHELL,
 		SWT.VIRTUAL | SWT.BORDER | SWT.MULTI);
-	private static final Table TABLE = Dialog.VIEWER.getTable();
-	private final static Logger LOGGER = Logger
-		.getLogger(Dialog.class.getName());
+	protected static final Table TABLE = Dialog.VIEWER.getTable();
+	protected final static Logger LOGGER = Logger.getLogger(Dialog.class
+		.getName());
 
 	public Dialog() {
 		Dialog.arrangeWidgets();
@@ -565,7 +565,7 @@ public final class Dialog extends EventBusInstance {
 					&& ((event.stateMask & SWT.CTRL) == SWT.CTRL);
 			}
 
-			private void
+			protected void
 			selectText() {
 				Dialog.TEXT.selectAll();
 			}
@@ -623,7 +623,7 @@ public final class Dialog extends EventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void
-	eventHandler(@SuppressWarnings("unused") final ShowFastOpenDialogEvent event) {
+	eventHandler(final ShowFastOpenDialogEvent event) {
 		new AsyncTask() {
 
 			@Override
@@ -636,7 +636,7 @@ public final class Dialog extends EventBusInstance {
 		}.start();
 	}
 
-	private static void
+	protected static void
 	focusViewer() {
 		Dialog._focusViewer();
 		Dialog.TABLE.setSelection(Dialog.TABLE.getTopIndex());
@@ -647,22 +647,22 @@ public final class Dialog extends EventBusInstance {
 		Dialog.TEXT.setText("");
 	}
 
-	private static void
+	protected static void
 	refresh() {
 		Dialog.VIEWER.refresh(true, true);
 	}
 
-	private static boolean
+	protected static boolean
 	isValidCharacter(final String character) {
 		return Dialog.TEXT_PATTERN.matcher(character).matches();
 	}
 
-	private synchronized static void
+	protected static void
 	updateText(final char character) {
 		Dialog.TEXT.insert(String.valueOf(character));
 	}
 
-	private synchronized static void
+	protected static void
 	backspace() {
 		final int end = Dialog.TEXT.getCaretPosition();
 		if (end < 1) return;
@@ -681,7 +681,7 @@ public final class Dialog extends EventBusInstance {
 		Dialog.TEXT.setSelection(start, start);
 	}
 
-	private static void
+	protected static void
 	openFiles() {
 		for (final int index : Dialog.TABLE.getSelectionIndices())
 			new AsyncTask() {
@@ -695,7 +695,7 @@ public final class Dialog extends EventBusInstance {
 			}.start();
 	}
 
-	private static void
+	protected static void
 	openFile(final IFile file) {
 		try {
 			EditorContext.openEditor(file);
@@ -718,7 +718,7 @@ public final class Dialog extends EventBusInstance {
 		}
 	}
 
-	private static void
+	protected static void
 	closeFiles() {
 		for (final int index : Dialog.TABLE.getSelectionIndices())
 			new AsyncTask() {
@@ -732,12 +732,12 @@ public final class Dialog extends EventBusInstance {
 			}.start();
 	}
 
-	private static void
+	protected static void
 	filterViewer() {
 		EventBus.post(new FilterRecentFilesEvent(Dialog.TEXT.getText().trim()));
 	}
 
-	private static void
+	protected static void
 	refocusViewer() {
 		Dialog._focusViewer();
 		Dialog.TABLE.setSelection(Dialog.TABLE.getSelectionIndex());

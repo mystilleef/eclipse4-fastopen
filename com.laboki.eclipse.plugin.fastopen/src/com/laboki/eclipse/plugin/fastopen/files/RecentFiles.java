@@ -22,7 +22,7 @@ public final class RecentFiles extends EventBusInstance {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private static final String FAMILY = "RecentFiles task family";
-	private final List<String> recentFiles = Lists.newArrayList();
+	protected final List<String> recentFiles = Lists.newArrayList();
 
 	@Subscribe
 	@AllowConcurrentEvents
@@ -84,7 +84,7 @@ public final class RecentFiles extends EventBusInstance {
 		}.setFamily(RecentFiles.FAMILY).setRule(RecentFiles.RULE).start();
 	}
 
-	private ImmutableList<String>
+	protected ImmutableList<String>
 	getRecentFiles() {
 		return ImmutableList.copyOf(Sets.newLinkedHashSet(this.recentFiles));
 	}

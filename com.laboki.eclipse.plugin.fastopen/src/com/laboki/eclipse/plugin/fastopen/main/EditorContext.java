@@ -124,7 +124,8 @@ public enum EditorContext {
 		final File f = new File(filePath);
 		if (f.exists()) return;
 		try {
-			final BufferedWriter out = new BufferedWriter(new FileWriter(f));
+			@SuppressWarnings("resource") final BufferedWriter out =
+				new BufferedWriter(new FileWriter(f));
 			out.write("");
 			out.close();
 		}
