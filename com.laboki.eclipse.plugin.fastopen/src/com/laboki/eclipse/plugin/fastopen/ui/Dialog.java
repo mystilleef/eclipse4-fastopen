@@ -456,7 +456,7 @@ public final class Dialog extends EventBusInstance {
 
 	private final class ViewerKeyListener implements KeyListener {
 
-		protected final TaskMutexRule RULE2 = new TaskMutexRule();
+		protected final TaskMutexRule rule = new TaskMutexRule();
 
 		public ViewerKeyListener() {}
 
@@ -472,7 +472,7 @@ public final class Dialog extends EventBusInstance {
 					execute() {
 						Dialog.updateText(event.character);
 					}
-				}.setRule(this.RULE2).start();
+				}.setRule(this.rule).start();
 			} else if (event.keyCode == SWT.BS) {
 				event.doit = false;
 				new AsyncTask() {
@@ -482,7 +482,7 @@ public final class Dialog extends EventBusInstance {
 					execute() {
 						Dialog.backspace();
 					}
-				}.setRule(this.RULE2).start();
+				}.setRule(this.rule).start();
 			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
 				event.doit = false;
 				Dialog.SHELL.close();
@@ -501,7 +501,7 @@ public final class Dialog extends EventBusInstance {
 
 	private final class TextModifyListener implements ModifyListener {
 
-		private final TaskMutexRule RULE2 = new TaskMutexRule();
+		private final TaskMutexRule rule = new TaskMutexRule();
 
 		public TextModifyListener() {}
 
@@ -515,7 +515,7 @@ public final class Dialog extends EventBusInstance {
 				execute() {
 					Dialog.filterViewer();
 				}
-			}.setRule(this.RULE2).start();
+			}.setRule(this.rule).start();
 		}
 	}
 
@@ -523,7 +523,7 @@ public final class Dialog extends EventBusInstance {
 		implements
 			IDoubleClickListener {
 
-		private final TaskMutexRule RULE2 = new TaskMutexRule();
+		private final TaskMutexRule rule = new TaskMutexRule();
 
 		public ViewerDoubleClickListener() {}
 
@@ -538,7 +538,7 @@ public final class Dialog extends EventBusInstance {
 					Dialog.SHELL.close();
 					Dialog.openFiles();
 				}
-			}.setRule(this.RULE2).start();
+			}.setRule(this.rule).start();
 		}
 	}
 
