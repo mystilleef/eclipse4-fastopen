@@ -480,13 +480,7 @@ public enum EditorContext {
 			if (!contentType.isPresent()) return Optional.absent();
 			return Optional.fromNullable(MediaType.parse(contentType.get()));
 		}
-		catch (final IOException e) {
-			return Optional.absent();
-		}
-		catch (final SecurityException e) {
-			return Optional.absent();
-		}
-		catch (final IllegalArgumentException e) {
+		catch (final IOException | SecurityException | IllegalArgumentException e) {
 			return Optional.absent();
 		}
 	}
