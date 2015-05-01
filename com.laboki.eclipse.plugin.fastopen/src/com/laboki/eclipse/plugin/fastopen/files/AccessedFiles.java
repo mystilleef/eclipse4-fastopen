@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.events.AccessedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.DeserializedAccessedFilesEvent;
@@ -27,7 +26,6 @@ public final class AccessedFiles extends EventBusInstance {
 	private static final int WATERMARK = 3;
 
 	@Subscribe
-	@AllowConcurrentEvents
 	public void
 	eventHandler(final DeserializedAccessedFilesEvent event) {
 		new AsyncTask() {
@@ -59,7 +57,6 @@ public final class AccessedFiles extends EventBusInstance {
 	}
 
 	@Subscribe
-	@AllowConcurrentEvents
 	public void
 	recentFilesModificationEventHandler(final RecentFilesModificationEvent event) {
 		EditorContext
@@ -96,7 +93,6 @@ public final class AccessedFiles extends EventBusInstance {
 	}
 
 	@Subscribe
-	@AllowConcurrentEvents
 	public void
 	eventHandler(@SuppressWarnings("unused") final PartActivationEvent event) {
 		EditorContext
@@ -156,16 +152,6 @@ public final class AccessedFiles extends EventBusInstance {
 	postEvent() {
 		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this
 			.getAccessedFiles())));
-		// this.printAccessedFiles();
-	}
-
-	@SuppressWarnings("unused")
-	private void
-	printAccessedFiles() {
-		System.out.println("===");
-		for (final String file : this.getAccessedFiles())
-			System.out.println(file);
-		System.out.println("===");
 	}
 
 	private ArrayList<String>

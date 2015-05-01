@@ -22,9 +22,9 @@ abstract class AbstractOpenerListener implements IOpenerListener {
 		this.isListening = false;
 	}
 
-	protected void
-	add() {}
+	protected abstract void
+	add();
 
-	protected void
-	remove() {}
+	protected abstract void
+	remove();
 }
