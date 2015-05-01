@@ -105,12 +105,12 @@ public enum EditorContext {
 	closeEditor(final IFile file) {
 		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
 		if (!page.isPresent()) return;
-		page.get().closeEditors(
-			page.get().findEditors(
-				new FileEditorInput(file),
-				EditorContext.getEditorID(file),
-				IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT),
-			true);
+		page
+			.get()
+			.closeEditors(page
+				.get()
+				.findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID
+					| IWorkbenchPage.MATCH_INPUT), true);
 	}
 
 	public static Object
@@ -287,8 +287,9 @@ public enum EditorContext {
 		final Optional<IWorkbenchWindow> window =
 			EditorContext.getActiveWorkbenchWindow();
 		if (!window.isPresent()) return Optional.absent();
-		return Optional.fromNullable((IPartService) window.get().getService(
-			IPartService.class));
+		return Optional.fromNullable((IPartService) window
+			.get()
+			.getService(IPartService.class));
 	}
 
 	public static String
@@ -398,18 +399,17 @@ public enum EditorContext {
 	openEditor(final IFile file) throws PartInitException {
 		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
 		if (!page.isPresent()) return;
-		page.get().openEditor(
-			new FileEditorInput(file),
-			EditorContext.getEditorID(file));
+		page
+			.get()
+			.openEditor(new FileEditorInput(file), EditorContext.getEditorID(file));
 	}
 
 	public static void
 	openLink(final IFile file) throws PartInitException, CoreException {
 		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
 		if (!page.isPresent()) return;
-		IDE.openEditorOnFileStore(
-			page.get(),
-			EFS.getStore(file.getRawLocationURI()));
+		IDE.openEditorOnFileStore(page.get(), EFS.getStore(file
+			.getRawLocationURI()));
 	}
 
 	public static void
@@ -428,9 +428,8 @@ public enum EditorContext {
 	public static void
 	serialize(final String filePath, final Object serializable) {
 		try {
-			EditorContext.writeSerializableToFile(
-				serializable,
-				EditorContext.getObjectOutput(filePath));
+			EditorContext.writeSerializableToFile(serializable, EditorContext
+				.getObjectOutput(filePath));
 		}
 		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
@@ -476,10 +475,15 @@ public enum EditorContext {
 		final Optional<Path> path = EditorContext.getFileSystemPath(file);
 		if (!path.isPresent()) return Optional.absent();
 		try {
-			return Optional.fromNullable(MediaType.parse(Files.probeContentType(path
-				.get())));
+			final Optional<String> contentType =
+				Optional.fromNullable(Files.probeContentType(path.get()));
+			if (!contentType.isPresent()) return Optional.absent();
+			return Optional.fromNullable(MediaType.parse(contentType.get()));
 		}
 		catch (final IOException e) {
+			return Optional.absent();
+		}
+		catch (final IllegalArgumentException e) {
 			return Optional.absent();
 		}
 	}
@@ -593,17 +597,12 @@ public enum EditorContext {
 
 	public static void
 	cancelAllJobs() {
-		EditorContext.cancelJobsBelongingTo(
-			EditorContext.INDEX_RESOURCES_TASK,
-			EditorContext.INDEX_WORKSPACE_RESOURCES_TASK,
-			EditorContext.EMIT_INDEX_RESOURCE_TASK);
-		EditorContext.cancelJobsBelongingTo(
-			EditorContext.UPDATE_ACCESSED_FILES_TASK,
-			EditorContext.EMIT_UPDATED_RECENT_FILES_TASK,
-			EditorContext.CORE_WORKSPACE_INDEXER_TASK);
-		EditorContext.cancelJobsBelongingTo(
-			EditorContext.FILTER_RECENT_FILES_TASK,
-			EditorContext.UPDATE_R_FILES_TASK);
+		EditorContext
+			.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK, EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, EditorContext.EMIT_INDEX_RESOURCE_TASK);
+		EditorContext
+			.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK, EditorContext.EMIT_UPDATED_RECENT_FILES_TASK, EditorContext.CORE_WORKSPACE_INDEXER_TASK);
+		EditorContext
+			.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK, EditorContext.UPDATE_R_FILES_TASK);
 	}
 
 	public static void
