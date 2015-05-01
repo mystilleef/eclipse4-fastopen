@@ -2,6 +2,8 @@ package com.laboki.eclipse.plugin.fastopen.main;
 
 import java.util.concurrent.Executors;
 
+import org.eclipse.core.runtime.jobs.Job;
+
 import com.google.common.eventbus.AsyncEventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 
@@ -32,6 +34,6 @@ public enum EventBus {
 			execute() {
 				EventBus.BUS.post(object);
 			}
-		}.start();
+		}.setPriority(Job.INTERACTIVE).start();
 	}
 }
