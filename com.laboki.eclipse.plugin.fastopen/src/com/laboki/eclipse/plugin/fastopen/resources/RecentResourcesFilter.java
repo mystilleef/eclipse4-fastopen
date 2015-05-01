@@ -1,10 +1,10 @@
 package com.laboki.eclipse.plugin.fastopen.resources;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
@@ -20,48 +20,47 @@ public final class RecentResourcesFilter extends EventBusInstance {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private final List<RFile> rFiles = Lists.newArrayList();
+	private static final int PATTERN_FLAGS = Pattern.CASE_INSENSITIVE
+		| Pattern.CANON_EQ
+		| Pattern.UNICODE_CASE;
 
 	@Subscribe
-	@AllowConcurrentEvents
 	public void
-	fileResourcesEventHandler(final FileResourcesEvent event) {
+	eventHandler(final FileResourcesEvent event) {
 		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_R_FILES_TASK);
-		this.updateRFiles(event);
+		this.updateRFiles(event.getrFiles());
 	}
 
 	private void
-	updateRFiles(final FileResourcesEvent event) {
+	updateRFiles(final ImmutableList<RFile> rFiles) {
 		new Task() {
 
 			@Override
 			public void
 			execute() {
-				this.updateFiles(event.getrFiles());
+				this.updateFiles();
 			}
 
 			private void
-			updateFiles(final ImmutableList<RFile> rFiles) {
+			updateFiles() {
 				RecentResourcesFilter.this.rFiles.clear();
 				RecentResourcesFilter.this.rFiles.addAll(rFiles);
 			}
-		}
-			.setRule(RecentResourcesFilter.RULE)
+		}.setRule(RecentResourcesFilter.RULE)
 			.setFamily(EditorContext.UPDATE_R_FILES_TASK)
-			.setDelay(60)
 			.start();
 	}
 
 	@Subscribe
-	@AllowConcurrentEvents
 	public void
-	filterRecentFilesEventHandler(final FilterRecentFilesEvent event) {
+	eventHandler(final FilterRecentFilesEvent event) {
 		EditorContext
 			.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK);
-		this.filterRecentFiles(event);
+		this.filterRecentFiles(event.getString());
 	}
 
 	private void
-	filterRecentFiles(final FilterRecentFilesEvent event) {
+	filterRecentFiles(final String string) {
 		new Task() {
 
 			private final List<RFile> recentFiles = RecentResourcesFilter.this
@@ -70,20 +69,19 @@ public final class RecentResourcesFilter extends EventBusInstance {
 			@Override
 			public void
 			execute() {
-				this.filter(event.getString());
+				this.filter(string.trim());
 			}
 
 			private void
 			filter(final String string) {
-				final String trimmedString = string.trim();
-				if (trimmedString.length() == 0) this.postEvent(this.recentFiles);
-				else this.filterFiles(trimmedString);
+				if (string.isEmpty()) this.postEvent(this.recentFiles);
+				else this.filterFiles(string);
 			}
 
 			private void
 			filterFiles(final String string) {
-				final String regexString = ".*" + string + ".*";
-				this.postEvent(this.getFilteredList(regexString));
+				final String query = ".*" + Pattern.quote(string) + ".*";
+				this.postEvent(this.getFilteredList(query));
 			}
 
 			private void
@@ -93,20 +91,22 @@ public final class RecentResourcesFilter extends EventBusInstance {
 			}
 
 			private List<RFile>
-			getFilteredList(final String string) {
+			getFilteredList(final String query) {
 				final List<RFile> filteredList = Lists.newArrayList();
 				for (final RFile rFile : this.recentFiles)
-					if (this.matches(rFile, string)) filteredList.add(rFile);
+					if (this.matchFound(rFile, query)) filteredList.add(rFile);
 				return filteredList;
 			}
 
 			private boolean
-			matches(final RFile rFile, final String string) {
-				return (rFile.getName().toLowerCase().matches(string.toLowerCase()));
+			matchFound(final RFile rFile, final String query) {
+				if (Pattern
+					.compile(query, RecentResourcesFilter.PATTERN_FLAGS)
+					.matcher(rFile.getName())
+					.find()) return true;
+				return false;
 			}
-		}
-			.setDelay(60)
-			.setFamily(EditorContext.FILTER_RECENT_FILES_TASK)
+		}.setFamily(EditorContext.FILTER_RECENT_FILES_TASK)
 			.setRule(RecentResourcesFilter.RULE)
 			.start();
 	}
