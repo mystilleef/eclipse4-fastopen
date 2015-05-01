@@ -483,6 +483,9 @@ public enum EditorContext {
 		catch (final IOException e) {
 			return Optional.absent();
 		}
+		catch (final SecurityException e) {
+			return Optional.absent();
+		}
 		catch (final IllegalArgumentException e) {
 			return Optional.absent();
 		}
