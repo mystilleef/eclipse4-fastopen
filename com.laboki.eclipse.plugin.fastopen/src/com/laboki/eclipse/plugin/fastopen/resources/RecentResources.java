@@ -56,7 +56,6 @@ public final class RecentResources extends EventBusInstance {
 			}
 		}
 			.setFamily(RecentResources.UPDATE_RESOURCES_TASK)
-			.setDelay(60)
 			.setRule(RecentResources.RULE)
 			.start();
 	}
@@ -76,7 +75,7 @@ public final class RecentResources extends EventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public void
-	recentFilesEventHandler(final RecentFilesEvent event) {
+	eventHandler(final RecentFilesEvent event) {
 		EditorContext
 			.cancelJobsBelongingTo(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK);
 		this.emitFileResourcesEvent(event);
@@ -109,12 +108,11 @@ public final class RecentResources extends EventBusInstance {
 			}
 		}
 			.setFamily(RecentResources.EMIT_FIRLE_RESOURCES_EVENT_TASK)
-			.setDelay(60)
 			.setRule(RecentResources.RULE)
 			.start();
 	}
 
-	private synchronized List<RFile>
+	private List<RFile>
 	makeResourceFiles(final ImmutableList<String> immutableList) {
 		final ArrayList<RFile> rFiles = Lists.newArrayList();
 		for (final String filePath : immutableList)
@@ -147,12 +145,12 @@ public final class RecentResources extends EventBusInstance {
 		return this.fileResourcesMap.containsKey(filePath);
 	}
 
-	protected synchronized ArrayList<RFile>
+	protected ArrayList<RFile>
 	getFileResources() {
 		return Lists.newArrayList(this.fileResources);
 	}
 
-	private synchronized void
+	private void
 	updateFileResources(final List<RFile> rFiles) {
 		this.fileResources.clear();
 		this.fileResources.addAll(rFiles);
