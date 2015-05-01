@@ -105,11 +105,13 @@ public enum EditorContext {
 	closeEditor(final IFile file) {
 		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
 		if (!page.isPresent()) return;
+		final Optional<String> editorID = EditorContext.getEditorID(file);
+		if (!editorID.isPresent()) return;
 		page
 			.get()
 			.closeEditors(page
 				.get()
-				.findEditors(new FileEditorInput(file), EditorContext.getEditorID(file), IWorkbenchPage.MATCH_ID
+				.findEditors(new FileEditorInput(file), editorID.get(), IWorkbenchPage.MATCH_ID
 					| IWorkbenchPage.MATCH_INPUT), true);
 	}
 
@@ -220,19 +222,22 @@ public enum EditorContext {
 		return PlatformUI.getWorkbench();
 	}
 
-	public static IEditorDescriptor
+	public static Optional<IEditorDescriptor>
 	getEditorDescriptor(final IFile file) {
 		try {
-			return IDE.getEditorDescriptor(file);
+			return Optional.fromNullable(IDE.getEditorDescriptor(file));
 		}
-		catch (final Exception e) {
-			return null;
+		catch (final PartInitException e) {
+			return Optional.absent();
 		}
 	}
 
-	public static String
+	public static Optional<String>
 	getEditorID(final IFile file) {
-		return EditorContext.getEditorDescriptor(file).getId();
+		final Optional<IEditorDescriptor> descriptor =
+			EditorContext.getEditorDescriptor(file);
+		if (!descriptor.isPresent()) return Optional.absent();
+		return Optional.fromNullable(descriptor.get().getId());
 	}
 
 	public static Optional<IFile>
@@ -400,9 +405,9 @@ public enum EditorContext {
 	openEditor(final IFile file) throws PartInitException {
 		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
 		if (!page.isPresent()) return;
-		page
-			.get()
-			.openEditor(new FileEditorInput(file), EditorContext.getEditorID(file));
+		final Optional<String> editorID = EditorContext.getEditorID(file);
+		if (!editorID.isPresent()) return;
+		page.get().openEditor(new FileEditorInput(file), editorID.get());
 	}
 
 	public static void
