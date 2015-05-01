@@ -38,7 +38,7 @@ public final class FileResources extends EventBusInstance
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void
-	worskpaceResources(final WorkspaceResourcesEvent event) {
+	eventHandler(final WorkspaceResourcesEvent event) {
 		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK);
 		FileResources.indexResources(event);
 	}
@@ -84,23 +84,21 @@ public final class FileResources extends EventBusInstance
 				EventBus.post(new ModifiedFilesEvent(ImmutableList
 					.copyOf(this.modifiedFiles)));
 			}
-		}
-			.setRule(FileResources.RULE)
+		}.setRule(FileResources.RULE)
 			.setFamily(EditorContext.INDEX_RESOURCES_TASK)
-			.setDelay(1000)
+			.setDelay(250)
 			.start();
 	}
 
 	@Override
 	public boolean
 	visit(final IResourceDelta delta) throws CoreException {
-		if (FileResources.isAddedOrRemoved(delta.getKind())) FileResources
-			.indexResources();
+		if (FileResources.isDelta(delta.getKind())) FileResources.indexResources();
 		return true;
 	}
 
 	private static boolean
-	isAddedOrRemoved(final int kind) {
+	isDelta(final int kind) {
 		return (kind == IResourceDelta.ADDED) || (kind == IResourceDelta.REMOVED);
 	}
 
@@ -119,10 +117,9 @@ public final class FileResources extends EventBusInstance
 			execute() {
 				EventBus.post(new IndexResourcesEvent());
 			}
-		}
-			.setRule(FileResources.RULE)
+		}.setRule(FileResources.RULE)
 			.setFamily(EditorContext.EMIT_INDEX_RESOURCE_TASK)
-			.setDelay(1000)
+			.setDelay(250)
 			.start();
 	}
 

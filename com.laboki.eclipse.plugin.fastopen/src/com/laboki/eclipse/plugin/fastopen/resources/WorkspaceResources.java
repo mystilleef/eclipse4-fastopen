@@ -57,14 +57,13 @@ public final class WorkspaceResources extends EventBusInstance
 					.cancelJobsBelongingTo(EditorContext.CORE_WORKSPACE_INDEXER_TASK);
 				WorkspaceResources.this.indexResources();
 			}
-		}
-			.setFamily(EditorContext.INDEX_WORKSPACE_RESOURCES_TASK)
-			.setDelay(1000)
+		}.setFamily(EditorContext.INDEX_WORKSPACE_RESOURCES_TASK)
+			.setDelay(250)
 			.setRule(WorkspaceResources.RULE)
 			.start();
 	}
 
-	private synchronized void
+	private void
 	indexResources() {
 		new Task() {
 
@@ -77,8 +76,7 @@ public final class WorkspaceResources extends EventBusInstance
 				WorkspaceResources.this.resources.clear();
 				this.updateFilesFromWorkspace();
 				this.sortFilesByModificationTime();
-				EventBus.post(new WorkspaceResourcesEvent(ImmutableList
-					.copyOf(WorkspaceResources.this.resources)));
+				this.postEvent();
 			}
 
 			private void
@@ -94,17 +92,20 @@ public final class WorkspaceResources extends EventBusInstance
 			private void
 			sortFilesByModificationTime() {
 				try {
-					Collections.sort(
-						WorkspaceResources.this.resources,
-						WorkspaceResources.this);
+					Collections
+						.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
 				}
 				catch (final Exception e) {
 					WorkspaceResources.LOGGER.log(Level.WARNING, e.getMessage(), e);
 				}
 			}
-		}
-			.setFamily(EditorContext.CORE_WORKSPACE_INDEXER_TASK)
-			.setDelay(60)
+
+			private void
+			postEvent() {
+				EventBus.post(new WorkspaceResourcesEvent(ImmutableList
+					.copyOf(WorkspaceResources.this.resources)));
+			}
+		}.setFamily(EditorContext.CORE_WORKSPACE_INDEXER_TASK)
 			.setRule(WorkspaceResources.RULE)
 			.start();
 	}
