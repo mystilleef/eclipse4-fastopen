@@ -54,18 +54,19 @@ import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.resources.RFile;
 import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
+import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class Dialog extends EventBusInstance {
 
+	private static final TaskMutexRule RULE = new TaskMutexRule();
 	private static final int HEIGHT = 480;
 	private static final int WIDTH = Dialog.HEIGHT * 2;
 	private static final int SPACING_SIZE_IN_PIXELS = 10;
 	private static final int PATTERN_FLAGS = Pattern.CASE_INSENSITIVE
 		| Pattern.CANON_EQ
 		| Pattern.UNICODE_CASE;
-	private static final Pattern TEXT_PATTERN = Pattern.compile(
-		"\\p{Punct}*|\\w*| *",
-		Dialog.PATTERN_FLAGS);
+	private static final Pattern TEXT_PATTERN = Pattern
+		.compile("\\p{Punct}*|\\w*| *", Dialog.PATTERN_FLAGS);
 	private static final Shell SHELL = new Shell(
 		EditorContext.getShell(),
 		SWT.RESIZE | SWT.APPLICATION_MODAL);
@@ -187,9 +188,8 @@ public final class Dialog extends EventBusInstance {
 	setupTable() {
 		Dialog.TABLE.setLinesVisible(true);
 		Dialog.TABLE.setHeaderVisible(false);
-		Dialog.TABLE.setSize(
-			Dialog.TABLE.getClientArea().width,
-			Dialog.TABLE.getClientArea().height);
+		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width, Dialog.TABLE
+			.getClientArea().height);
 		this.createTableColumn();
 	}
 
@@ -206,24 +206,18 @@ public final class Dialog extends EventBusInstance {
 	private final class LabelProvider extends StyledCellLabelProvider {
 
 		private final String separator = this.getSeparator();
-		private final StyledString.Styler filenameStyler = this.styler(
-			FONT.LARGE_BOLD_FONT,
-			null);
-		private final StyledString.Styler folderStyler = this.styler(
-			FONT.NORMAL_FONT,
-			this.color(SWT.COLOR_DARK_GRAY));
-		private final StyledString.Styler inStyler = this.styler(
-			FONT.ITALIC_FONT,
-			this.color(SWT.COLOR_GRAY));
-		private final StyledString.Styler modifiedStyler = this.styler(
-			FONT.SMALL_ITALIC_FONT,
-			this.color(SWT.COLOR_GRAY));
-		private final StyledString.Styler timeStyler = this.styler(
-			FONT.SMALL_BOLD_FONT,
-			this.color(SWT.COLOR_DARK_RED));
-		private final StyledString.Styler typeStyler = this.styler(
-			FONT.SMALL_BOLD_FONT,
-			this.color(SWT.COLOR_DARK_BLUE));
+		private final StyledString.Styler filenameStyler = this
+			.styler(FONT.LARGE_BOLD_FONT, null);
+		private final StyledString.Styler folderStyler = this
+			.styler(FONT.NORMAL_FONT, this.color(SWT.COLOR_DARK_GRAY));
+		private final StyledString.Styler inStyler = this
+			.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler modifiedStyler = this
+			.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler timeStyler = this
+			.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
+		private final StyledString.Styler typeStyler = this
+			.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
 
 		public LabelProvider() {
 			this.setOwnerDrawEnabled(true);
@@ -250,10 +244,8 @@ public final class Dialog extends EventBusInstance {
 		@Override
 		public void
 		update(final ViewerCell cell) {
-			this.updateCellProperties(
-				cell,
-				(RFile) cell.getElement(),
-				this.createStyledText((RFile) cell.getElement()));
+			this.updateCellProperties(cell, (RFile) cell.getElement(), this
+				.createStyledText((RFile) cell.getElement()));
 			super.update(cell);
 		}
 
@@ -464,6 +456,8 @@ public final class Dialog extends EventBusInstance {
 
 	private final class ViewerKeyListener implements KeyListener {
 
+		protected final TaskMutexRule RULE2 = new TaskMutexRule();
+
 		public ViewerKeyListener() {}
 
 		@Override
@@ -478,7 +472,7 @@ public final class Dialog extends EventBusInstance {
 					execute() {
 						Dialog.updateText(event.character);
 					}
-				}.start();
+				}.setRule(this.RULE2).start();
 			} else if (event.keyCode == SWT.BS) {
 				event.doit = false;
 				new AsyncTask() {
@@ -488,7 +482,7 @@ public final class Dialog extends EventBusInstance {
 					execute() {
 						Dialog.backspace();
 					}
-				}.start();
+				}.setRule(this.RULE2).start();
 			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
 				event.doit = false;
 				Dialog.SHELL.close();
@@ -507,6 +501,8 @@ public final class Dialog extends EventBusInstance {
 
 	private final class TextModifyListener implements ModifyListener {
 
+		private final TaskMutexRule RULE2 = new TaskMutexRule();
+
 		public TextModifyListener() {}
 
 		@Override
@@ -519,13 +515,15 @@ public final class Dialog extends EventBusInstance {
 				execute() {
 					Dialog.filterViewer();
 				}
-			}.start();
+			}.setRule(this.RULE2).start();
 		}
 	}
 
 	private final class ViewerDoubleClickListener
 		implements
 			IDoubleClickListener {
+
+		private final TaskMutexRule RULE2 = new TaskMutexRule();
 
 		public ViewerDoubleClickListener() {}
 
@@ -540,7 +538,7 @@ public final class Dialog extends EventBusInstance {
 					Dialog.SHELL.close();
 					Dialog.openFiles();
 				}
-			}.start();
+			}.setRule(this.RULE2).start();
 		}
 	}
 
@@ -577,7 +575,7 @@ public final class Dialog extends EventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void
-	fileResourcesEventHandler(final FileResourcesEvent event) {
+	eventHandler(final FileResourcesEvent event) {
 		new AsyncTask() {
 
 			@Override
@@ -585,13 +583,13 @@ public final class Dialog extends EventBusInstance {
 			execute() {
 				Dialog.updateViewer(event.getrFiles());
 			}
-		}.start();
+		}.setRule(Dialog.RULE).start();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void
-	filterRecentFilesResultEventHandler(final FilterRecentFilesResultEvent event) {
+	eventHandler(final FilterRecentFilesResultEvent event) {
 		new AsyncTask() {
 
 			@Override
@@ -599,7 +597,7 @@ public final class Dialog extends EventBusInstance {
 			execute() {
 				Dialog.updateViewer(event.getrFiles());
 			}
-		}.start();
+		}.setRule(Dialog.RULE).start();
 	}
 
 	protected static void

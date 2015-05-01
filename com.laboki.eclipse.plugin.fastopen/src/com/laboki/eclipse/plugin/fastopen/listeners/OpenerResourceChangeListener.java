@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -19,7 +20,7 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 		IResourceChangeListener {
 
 	private static final TaskMutexRule RULE = new TaskMutexRule();
-	private static final String FIND_CHANGED_RESOURCE_TASK =
+	private static final String FAMILY =
 		"Eclipse Fast Open Plugin: find changed resource task";
 	private final IResourceDeltaVisitor handler;
 	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -33,9 +34,8 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 	@Override
 	public void
 	add() {
-		this.workspace.addResourceChangeListener(
-			this,
-			IResourceChangeEvent.POST_CHANGE);
+		this.workspace
+			.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	@Override
@@ -47,8 +47,7 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 	@Override
 	public void
 	resourceChanged(final IResourceChangeEvent event) {
-		EditorContext
-			.cancelJobsBelongingTo(OpenerResourceChangeListener.FIND_CHANGED_RESOURCE_TASK);
+		EditorContext.cancelJobsBelongingTo(OpenerResourceChangeListener.FAMILY);
 		this.findResources(event);
 	}
 
@@ -60,24 +59,21 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 			public void
 			execute() {
 				if (event.getType() != IResourceChangeEvent.POST_CHANGE) return;
-				this.findResourceDeltaChanges(event);
+				this.findResourceDeltaChanges(event.getDelta());
 			}
 
 			private void
-			findResourceDeltaChanges(final IResourceChangeEvent event) {
+			findResourceDeltaChanges(final IResourceDelta delta) {
 				try {
-					event.getDelta().accept(OpenerResourceChangeListener.this.handler);
+					delta.accept(OpenerResourceChangeListener.this.handler);
 				}
 				catch (final CoreException e) {
-					OpenerResourceChangeListener.LOGGER.log(
-						Level.WARNING,
-						"Failed to find resource delta changes",
-						e);
+					OpenerResourceChangeListener.LOGGER
+						.log(Level.WARNING, "Failed to find resource delta changes", e);
 				}
 			}
-		}
-			.setRule(OpenerResourceChangeListener.RULE)
-			.setFamily(OpenerResourceChangeListener.FIND_CHANGED_RESOURCE_TASK)
+		}.setRule(OpenerResourceChangeListener.RULE)
+			.setFamily(OpenerResourceChangeListener.FAMILY)
 			.setDelay(1000)
 			.start();
 	}
