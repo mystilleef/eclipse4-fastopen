@@ -9,16 +9,16 @@
 	<extension point="org.eclipse.ui.commands">
 			<category
 				id="com.laboki.eclipse.plugin.fastopen.commands.category"
-				name="Fast Open"
-				description="Shows a dialog to open, or navigate to, files quickly.">
+				name="%category.name"
+				description="%category.description">
 			</category>
 
 			<command
 				categoryId="com.laboki.eclipse.plugin.fastopen.commands.category"
 				id="com.laboki.eclipse.plugin.fastopen.command.fastopen"
 				defaultHandler="com.laboki.eclipse.plugin.fastopen.Handler"
-				description="Shows a dialog to open, or navigate to, files quickly."
-				name="Fast Open">
+				description="%command.description"
+				name="%command.name">
 			</command>
 	</extension>
 
