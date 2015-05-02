@@ -112,15 +112,10 @@ public final class AccessedFiles extends EventBusInstance {
 				final String path = EditorContext.getPath();
 				if (path.length() == 0) return;
 				this.moveCurrentFileToTopOfList();
-				this.update(this.getAccessedFilesInsertionIndex(), path);
+				this.update(this.getInsertionIndex(), path);
 				AccessedFiles.this.updateAccessedFiles(ImmutableList
 					.copyOf(this.aFiles));
 				AccessedFiles.this.postEvent();
-			}
-
-			private int
-			getAccessedFilesInsertionIndex() {
-				return this.aFiles.size() == 0 ? 0 : 1;
 			}
 
 			private void
@@ -133,6 +128,11 @@ public final class AccessedFiles extends EventBusInstance {
 			update(final int index, final String path) {
 				this.aFiles.remove(path);
 				this.aFiles.add(index, path);
+			}
+
+			private int
+			getInsertionIndex() {
+				return this.aFiles.size() == 0 ? 0 : 1;
 			}
 		}.setRule(AccessedFiles.RULE)
 			.setFamily(EditorContext.UPDATE_ACCESSED_FILES_TASK)
@@ -148,8 +148,13 @@ public final class AccessedFiles extends EventBusInstance {
 
 	protected void
 	postEvent() {
-		EventBus.post(new AccessedFilesEvent(ImmutableList.copyOf(this
-			.getAccessedFiles())));
+		EventBus.post(this.newAccessedFilesEvent());
+	}
+
+	private AccessedFilesEvent
+	newAccessedFilesEvent() {
+		return new AccessedFilesEvent(
+			ImmutableList.copyOf(this.getAccessedFiles()));
 	}
 
 	protected ArrayList<String>
