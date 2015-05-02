@@ -40,16 +40,15 @@ public final class FileResources extends EventBusInstance
 	public static void
 	eventHandler(final WorkspaceResourcesEvent event) {
 		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK);
-		FileResources.indexResources(event);
+		FileResources.indexResources(event.getResources());
 	}
 
 	private static void
-	indexResources(final WorkspaceResourcesEvent event) {
+	indexResources(final ImmutableList<IFile> resources) {
 		new Task() {
 
 			private final Map<String, IFile> fileResourcesMap = Maps.newHashMap();
 			private final List<String> modifiedFiles = Lists.newArrayList();
-			ImmutableList<IFile> resources = event.getResources();
 
 			@Override
 			public void
@@ -61,7 +60,7 @@ public final class FileResources extends EventBusInstance
 
 			private void
 			buildFileResourcesMap() {
-				for (final IFile file : this.resources) {
+				for (final IFile file : resources) {
 					final Optional<String> path = EditorContext.getURIPath(file);
 					if (!path.isPresent()) continue;
 					this.fileResourcesMap.put(path.get(), file);
@@ -70,7 +69,7 @@ public final class FileResources extends EventBusInstance
 
 			private void
 			buildModifiedFilesList() {
-				for (final IFile file : this.resources) {
+				for (final IFile file : resources) {
 					final Optional<String> path = EditorContext.getURIPath(file);
 					if (!path.isPresent()) continue;
 					this.modifiedFiles.add(path.get());
