@@ -485,12 +485,26 @@ public final class Dialog extends EventBusInstance {
 				}.setRule(this.rule).start();
 			} else if ((event.keyCode == SWT.CR) || (event.keyCode == SWT.KEYPAD_CR)) {
 				event.doit = false;
-				Dialog.SHELL.close();
-				Dialog.openFiles();
+				new AsyncTask() {
+
+					@Override
+					public void
+					execute() {
+						Dialog.SHELL.close();
+						Dialog.openFiles();
+					}
+				}.setRule(this.rule).start();
 			} else if ((event.keyCode == SWT.DEL)) {
 				event.doit = false;
-				Dialog.SHELL.close();
-				Dialog.closeFiles();
+				new AsyncTask() {
+
+					@Override
+					public void
+					execute() {
+						Dialog.SHELL.close();
+						Dialog.closeFiles();
+					}
+				}.setRule(this.rule).start();
 			}
 		}
 
@@ -709,9 +723,6 @@ public final class Dialog extends EventBusInstance {
 	openLink(final IFile file) {
 		try {
 			EditorContext.openLink(file);
-		}
-		catch (final PartInitException e) {
-			Dialog.LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 		catch (final CoreException e) {
 			Dialog.LOGGER.log(Level.SEVERE, e.getMessage(), e);

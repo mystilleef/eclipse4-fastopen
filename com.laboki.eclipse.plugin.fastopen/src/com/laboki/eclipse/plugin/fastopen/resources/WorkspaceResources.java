@@ -47,7 +47,7 @@ public final class WorkspaceResources extends EventBusInstance
 	@Subscribe
 	@AllowConcurrentEvents
 	public void
-	indexResources(final IndexResourcesEvent event) {
+	eventHandler(final IndexResourcesEvent event) {
 		new Task() {
 
 			@Override
@@ -74,13 +74,13 @@ public final class WorkspaceResources extends EventBusInstance
 			public void
 			execute() {
 				WorkspaceResources.this.resources.clear();
-				this.updateFilesFromWorkspace();
-				this.sortFilesByModificationTime();
+				this.updateResources();
+				this.sortResources();
 				this.postEvent();
 			}
 
 			private void
-			updateFilesFromWorkspace() {
+			updateResources() {
 				try {
 					this.root.accept(WorkspaceResources.this);
 				}
@@ -90,7 +90,7 @@ public final class WorkspaceResources extends EventBusInstance
 			}
 
 			private void
-			sortFilesByModificationTime() {
+			sortResources() {
 				try {
 					Collections
 						.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
@@ -102,8 +102,13 @@ public final class WorkspaceResources extends EventBusInstance
 
 			private void
 			postEvent() {
-				EventBus.post(new WorkspaceResourcesEvent(ImmutableList
-					.copyOf(WorkspaceResources.this.resources)));
+				EventBus.post(this.newWorkspaceResourcesEvent());
+			}
+
+			private WorkspaceResourcesEvent
+			newWorkspaceResourcesEvent() {
+				return new WorkspaceResourcesEvent(
+					ImmutableList.copyOf(WorkspaceResources.this.resources));
 			}
 		}.setFamily(EditorContext.CORE_WORKSPACE_INDEXER_TASK)
 			.setRule(WorkspaceResources.RULE)
@@ -120,10 +125,15 @@ public final class WorkspaceResources extends EventBusInstance
 	@Override
 	public boolean
 	visit(final IResource resource) throws CoreException {
-		if (EditorContext.isHiddenFile(resource)
-			|| EditorContext.isWierd(resource)) return false;
+		if (WorkspaceResources.invalidResource(resource)) return false;
 		this.updateFiles(resource);
 		return true;
+	}
+
+	private static boolean
+	invalidResource(final IResource resource) {
+		return EditorContext.isHiddenFile(resource)
+			|| EditorContext.isWierd(resource);
 	}
 
 	private void
