@@ -1,3 +1,3 @@
 package com.laboki.eclipse.plugin.fastopen.events;
 
-public final class IndexResourcesEvent {}
+public final class IndexFilesEvent {}
