@@ -528,7 +528,7 @@ public enum EditorContext {
 		}
 	}
 
-	private static boolean
+	public static boolean
 	isTextFile(final IFile file) {
 		return EditorContext.isMediaTypeText(file)
 			|| EditorContext.isContentTypeText(file)
