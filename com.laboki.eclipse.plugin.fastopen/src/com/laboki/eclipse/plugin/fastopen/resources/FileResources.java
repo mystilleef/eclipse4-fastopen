@@ -16,7 +16,7 @@ import com.google.common.collect.Maps;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
-import com.laboki.eclipse.plugin.fastopen.events.IndexResourcesEvent;
+import com.laboki.eclipse.plugin.fastopen.events.IndexFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
@@ -114,7 +114,7 @@ public final class FileResources extends EventBusInstance
 			@Override
 			public void
 			execute() {
-				EventBus.post(new IndexResourcesEvent());
+				EventBus.post(new IndexFilesEvent());
 			}
 		}.setRule(FileResources.RULE)
 			.setFamily(EditorContext.EMIT_INDEX_RESOURCE_TASK)

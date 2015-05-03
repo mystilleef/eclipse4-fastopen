@@ -11,7 +11,7 @@ import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.resources.FileResources;
 import com.laboki.eclipse.plugin.fastopen.resources.RecentResources;
 import com.laboki.eclipse.plugin.fastopen.resources.RecentResourcesFilter;
-import com.laboki.eclipse.plugin.fastopen.resources.WorkspaceResources;
+import com.laboki.eclipse.plugin.fastopen.resources.FilesIndexer;
 import com.laboki.eclipse.plugin.fastopen.ui.Dialog;
 
 public final class Services implements Instance {
@@ -36,7 +36,7 @@ public final class Services implements Instance {
 		this.startService(new AccessedFilesSerializer());
 		this.startService(new RecentFiles());
 		this.startService(new FileResources());
-		this.startService(new WorkspaceResources());
+		this.startService(new FilesIndexer());
 		this.startService(Factory.INSTANCE);
 	}
 
