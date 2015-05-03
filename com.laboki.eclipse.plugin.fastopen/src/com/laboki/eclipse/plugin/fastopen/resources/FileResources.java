@@ -18,7 +18,7 @@ import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.events.FileResourcesMapEvent;
 import com.laboki.eclipse.plugin.fastopen.events.IndexFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ModifiedFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
+import com.laboki.eclipse.plugin.fastopen.events.WorkspaceFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.listeners.OpenerResourceChangeListener;
@@ -38,7 +38,7 @@ public final class FileResources extends EventBusInstance
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void
-	eventHandler(final WorkspaceResourcesEvent event) {
+	eventHandler(final WorkspaceFilesEvent event) {
 		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK);
 		FileResources.indexResources(event.getResources());
 	}

@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.laboki.eclipse.plugin.fastopen.events.IndexFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
+import com.laboki.eclipse.plugin.fastopen.events.WorkspaceFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
@@ -92,11 +92,11 @@ public final class FilesIndexer extends EventBusInstance
 				EventBus.post(this.createEvent());
 			}
 
-			private WorkspaceResourcesEvent
+			private WorkspaceFilesEvent
 			createEvent() {
 				final ImmutableList<IFile> files =
 					ImmutableList.copyOf(FilesIndexer.this.files);
-				return new WorkspaceResourcesEvent(files);
+				return new WorkspaceFilesEvent(files);
 			}
 		}.setFamily(FilesIndexer.FAMILY)
 			.setDelay(FilesIndexer.ONE_SECOND)

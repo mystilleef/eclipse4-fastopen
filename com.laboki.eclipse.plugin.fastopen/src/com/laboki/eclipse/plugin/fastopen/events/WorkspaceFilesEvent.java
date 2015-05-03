@@ -4,11 +4,11 @@ import org.eclipse.core.resources.IFile;
 
 import com.google.common.collect.ImmutableList;
 
-public final class WorkspaceResourcesEvent {
+public final class WorkspaceFilesEvent {
 
 	private final ImmutableList<IFile> resources;
 
-	public WorkspaceResourcesEvent(final ImmutableList<IFile> resources) {
+	public WorkspaceFilesEvent(final ImmutableList<IFile> resources) {
 		this.resources = resources;
 	}
 
