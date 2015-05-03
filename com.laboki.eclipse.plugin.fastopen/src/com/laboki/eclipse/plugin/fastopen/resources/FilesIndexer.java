@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -18,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.events.IndexResourcesEvent;
+import com.laboki.eclipse.plugin.fastopen.events.IndexFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.WorkspaceResourcesEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
@@ -27,128 +26,137 @@ import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
-public final class WorkspaceResources extends EventBusInstance
+public final class FilesIndexer extends EventBusInstance
 	implements
 		IResourceVisitor,
 		Comparator<IFile> {
 
+	private static final String FAMILY = "FastOpen: FilesIndexer task family";
+	private static final int ONE_SECOND = 1000;
 	private static final TaskMutexRule RULE = new TaskMutexRule();
-	protected final List<IFile> resources = Lists.newArrayList();
-	protected final static Logger LOGGER = Logger
-		.getLogger(WorkspaceResources.class.getName());
+	protected final List<IFile> files = Lists.newArrayList();
+	protected final IWorkspaceRoot root = FilesIndexer.getRootWorkspace();
+	protected final static Logger LOGGER = Logger.getLogger(FilesIndexer.class
+		.getName());
 
 	@Override
 	public Instance
 	start() {
-		this.indexResources();
+		this.indexfiles();
 		return super.start();
 	}
 
 	@Subscribe
 	@AllowConcurrentEvents
 	public void
-	eventHandler(final IndexResourcesEvent event) {
-		new Task() {
-
-			@Override
-			public void
-			execute() {
-				EditorContext
-					.cancelJobsBelongingTo(EditorContext.CORE_WORKSPACE_INDEXER_TASK);
-				WorkspaceResources.this.indexResources();
-			}
-		}.setFamily(EditorContext.INDEX_WORKSPACE_RESOURCES_TASK)
-			.setDelay(250)
-			.setRule(WorkspaceResources.RULE)
-			.start();
+	eventHandler(final IndexFilesEvent event) {
+		EditorContext.cancelJobsBelongingTo(FilesIndexer.FAMILY);
+		this.indexfiles();
 	}
 
 	protected void
-	indexResources() {
+	indexfiles() {
 		new Task() {
-
-			private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			private final IWorkspaceRoot root = this.workspace.getRoot();
 
 			@Override
 			public void
 			execute() {
-				WorkspaceResources.this.resources.clear();
-				this.updateResources();
-				this.sortResources();
-				this.postEvent();
+				this.removeFiles();
+				this.updateFiles();
+				this.sortFiles();
+				this.broadcastEvent();
 			}
 
 			private void
-			updateResources() {
+			removeFiles() {
+				FilesIndexer.this.files.clear();
+			}
+
+			private void
+			updateFiles() {
 				try {
-					this.root.accept(WorkspaceResources.this);
+					FilesIndexer.this.root.accept(FilesIndexer.this);
 				}
-				catch (final Exception e) {
-					WorkspaceResources.LOGGER.log(Level.WARNING, e.getMessage(), e);
-				}
-			}
-
-			private void
-			sortResources() {
-				try {
-					Collections
-						.sort(WorkspaceResources.this.resources, WorkspaceResources.this);
-				}
-				catch (final Exception e) {
-					WorkspaceResources.LOGGER.log(Level.WARNING, e.getMessage(), e);
+				catch (final CoreException e) {
+					FilesIndexer.LOGGER.log(Level.WARNING, e.getMessage(), e);
 				}
 			}
 
 			private void
-			postEvent() {
-				EventBus.post(this.newWorkspaceResourcesEvent());
+			sortFiles() {
+				Collections.sort(FilesIndexer.this.files, FilesIndexer.this);
+			}
+
+			private void
+			broadcastEvent() {
+				EventBus.post(this.createEvent());
 			}
 
 			private WorkspaceResourcesEvent
-			newWorkspaceResourcesEvent() {
-				return new WorkspaceResourcesEvent(
-					ImmutableList.copyOf(WorkspaceResources.this.resources));
+			createEvent() {
+				final ImmutableList<IFile> files =
+					ImmutableList.copyOf(FilesIndexer.this.files);
+				return new WorkspaceResourcesEvent(files);
 			}
-		}.setFamily(EditorContext.CORE_WORKSPACE_INDEXER_TASK)
-			.setRule(WorkspaceResources.RULE)
+		}.setFamily(FilesIndexer.FAMILY)
+			.setDelay(FilesIndexer.ONE_SECOND)
+			.setRule(FilesIndexer.RULE)
 			.start();
-	}
-
-	@Override
-	public Instance
-	stop() {
-		this.resources.clear();
-		return super.stop();
 	}
 
 	@Override
 	public boolean
 	visit(final IResource resource) throws CoreException {
-		if (WorkspaceResources.invalidResource(resource)) return false;
 		this.updateFiles(resource);
 		return true;
 	}
 
-	private static boolean
-	invalidResource(final IResource resource) {
-		return EditorContext.isHiddenFile(resource)
-			|| EditorContext.isWierd(resource);
-	}
-
 	private void
 	updateFiles(final IResource resource) {
-		if (EditorContext.isValidResourceFile(resource)) this.resources
-			.add((IFile) resource);
+		if (FilesIndexer.isInvalid(resource)) return;
+		this.files.add((IFile) resource);
+	}
+
+	private static boolean
+	isInvalid(final IResource resource) {
+		return !FilesIndexer.isValid(resource);
+	}
+
+	private static boolean
+	isValid(final IResource resource) {
+		if (FilesIndexer.doesNotExist(resource)) return false;
+		if (FilesIndexer.isNotFile(resource)) return false;
+		return EditorContext.isTextFile((IFile) resource);
+	}
+
+	private static boolean
+	doesNotExist(final IResource resource) {
+		return !resource.exists();
+	}
+
+	private static boolean
+	isNotFile(final IResource resource) {
+		return resource.getType() != IResource.FILE;
 	}
 
 	@Override
 	public int
 	compare(final IFile o1, final IFile o2) {
-		final long lastModified = o1.getLocation().toFile().lastModified();
-		final long lastModified2 = o2.getLocation().toFile().lastModified();
-		return lastModified < lastModified2 ? 1 : (lastModified > lastModified2
-			? -1
-			: 0);
+		final long fmod = o1.getLocation().toFile().lastModified();
+		final long smod = o2.getLocation().toFile().lastModified();
+		return fmod < smod ? 1 : (fmod > smod ? -1 : 0);
+	}
+
+	private static IWorkspaceRoot
+	getRootWorkspace() {
+		return ResourcesPlugin.getWorkspace().getRoot();
+	}
+
+	@Override
+	public Instance
+	stop() {
+		EditorContext.cancelJobsBelongingTo(FilesIndexer.FAMILY);
+		this.files.clear();
+		return super.stop();
 	}
 }
