@@ -207,6 +207,7 @@ public final class Dialog extends EventBusInstance {
 
 	private final class LabelProvider extends StyledCellLabelProvider {
 
+		private static final String UNKNOWN = "unknown";
 		private final String separator = this.getSeparator();
 		private final StyledString.Styler filenameStyler = this
 			.styler(FONT.LARGE_BOLD_FONT, null);
@@ -255,10 +256,10 @@ public final class Dialog extends EventBusInstance {
 		updateCellProperties(	final ViewerCell cell,
 													final IFile file,
 													final StyledString text) {
-			final Image image =
-				FileUtil.getContentTypeImage(Optional.fromNullable(file)).get();
+			final Optional<IFile> optionalFile = Optional.fromNullable(file);
 			cell.setText(text.toString());
-			cell.setImage(image);
+			final Optional<Image> image = FileUtil.getContentTypeImage(optionalFile);
+			if (image.isPresent()) cell.setImage(image.get());
 			cell.setStyleRanges(text.getStyleRanges());
 		}
 
@@ -277,20 +278,26 @@ public final class Dialog extends EventBusInstance {
 
 		private String
 		getContentType(final Optional<IFile> optional) {
-			if (!optional.isPresent()) return "unknown";
-			return FileUtil.getContentTypeName(optional).get();
+			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
+			final Optional<String> name = FileUtil.getContentTypeName(optional);
+			if (!name.isPresent()) return LabelProvider.UNKNOWN;
+			return name.get();
 		}
 
 		private String
 		getTime(final Optional<IFile> optional) {
-			if (!optional.isPresent()) return "unknown";
-			return FileUtil.getModificationTime(optional).get();
+			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
+			final Optional<String> time = FileUtil.getModificationTime(optional);
+			if (!time.isPresent()) return LabelProvider.UNKNOWN;
+			return time.get();
 		}
 
 		private String
 		getFolder(final Optional<IFile> optional) {
-			if (!optional.isPresent()) return "unknown";
-			return FileUtil.getFolder(optional).get();
+			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
+			final Optional<String> folder = FileUtil.getFolder(optional);
+			if (!folder.isPresent()) return LabelProvider.UNKNOWN;
+			return folder.get();
 		}
 
 		private Color
