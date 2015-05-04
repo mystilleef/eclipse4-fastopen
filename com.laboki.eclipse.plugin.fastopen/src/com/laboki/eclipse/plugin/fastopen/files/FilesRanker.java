@@ -31,6 +31,7 @@ public final class FilesRanker extends EventBusInstance {
 			public void
 			execute() {
 				this.updateFiles(event.getFiles());
+				FilesRanker.this.broadcastEvent();
 			}
 
 			private void
@@ -50,7 +51,7 @@ public final class FilesRanker extends EventBusInstance {
 			public void
 			execute() {
 				this.rankFiles(event.getFiles());
-				this.broadcastEvent();
+				FilesRanker.this.broadcastEvent();
 			}
 
 			private void
@@ -85,18 +86,18 @@ public final class FilesRanker extends EventBusInstance {
 				newFiles.add(1, currentFile);
 				return newFiles;
 			}
-
-			private void
-			broadcastEvent() {
-				EventBus.post(this.createEvent());
-			}
-
-			private RankedFilesEvent
-			createEvent() {
-				final ImmutableList<IFile> files =
-					ImmutableList.copyOf(FilesRanker.this.rankedFiles);
-				return new RankedFilesEvent(files);
-			}
 		}.setRule(FilesRanker.RULE).start();
+	}
+
+	protected void
+	broadcastEvent() {
+		EventBus.post(this.createEvent());
+	}
+
+	private RankedFilesEvent
+	createEvent() {
+		final ImmutableList<IFile> files =
+			ImmutableList.copyOf(FilesRanker.this.rankedFiles);
+		return new RankedFilesEvent(files);
 	}
 }
