@@ -30,14 +30,11 @@ public final class Services implements Instance {
 	startServices() {
 		this.startService(new Dialog());
 		this.startService(new FilesFilter());
-		// this.startService(new AccessedFiles());
-		// this.startService(new AccessedFilesSerializer());
-		// this.startService(new RecentFiles());
-		this.startService(new FilesListener());
 		this.startService(new FilesRanker());
 		this.startService(new FilesAccess());
 		this.startService(new Serializer());
 		this.startService(new FilesIndexer());
+		this.startService(new FilesListener());
 		this.startService(Factory.INSTANCE);
 	}
 
