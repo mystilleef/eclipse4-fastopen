@@ -13,7 +13,7 @@ public final class WorkspaceFilesEvent {
 	}
 
 	public ImmutableList<IFile>
-	getResources() {
+	getFiles() {
 		return this.resources;
 	}
 }

@@ -1,10 +1,10 @@
 package com.laboki.eclipse.plugin.fastopen.events;
 
-public final class FilterRecentFilesEvent {
+public final class FilterFilesEvent {
 
 	private final String string;
 
-	public FilterRecentFilesEvent(final String string) {
+	public FilterFilesEvent(final String string) {
 		this.string = string;
 	}
 

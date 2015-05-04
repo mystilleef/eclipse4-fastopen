@@ -4,11 +4,11 @@ import org.eclipse.core.resources.IFile;
 
 import com.google.common.collect.ImmutableList;
 
-public final class AccessedFilesEvent {
+public final class RankedFilesEvent {
 
 	private final ImmutableList<IFile> files;
 
-	public AccessedFilesEvent(final ImmutableList<IFile> files) {
+	public RankedFilesEvent(final ImmutableList<IFile> files) {
 		this.files = files;
 	}
 

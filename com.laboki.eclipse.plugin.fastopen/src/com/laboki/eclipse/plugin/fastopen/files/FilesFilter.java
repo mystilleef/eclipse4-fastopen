@@ -1,14 +1,16 @@
-package com.laboki.eclipse.plugin.fastopen.resources;
+package com.laboki.eclipse.plugin.fastopen.files;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IFile;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
+import com.laboki.eclipse.plugin.fastopen.events.FilterFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.events.FilteredFilesResultEvent;
+import com.laboki.eclipse.plugin.fastopen.events.RankedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
@@ -16,23 +18,24 @@ import com.laboki.eclipse.plugin.fastopen.main.EventBus;
 import com.laboki.eclipse.plugin.fastopen.task.Task;
 import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
-public final class RecentResourcesFilter extends EventBusInstance {
+public final class FilesFilter extends EventBusInstance {
 
+	private static final String FAMILY = "FilesFilter task family";
 	private static final TaskMutexRule RULE = new TaskMutexRule();
-	protected final List<RFile> rFiles = Lists.newArrayList();
+	protected final List<IFile> files = Lists.newArrayList();
 	private static final int PATTERN_FLAGS = Pattern.CASE_INSENSITIVE
 		| Pattern.CANON_EQ
 		| Pattern.UNICODE_CASE;
 
 	@Subscribe
 	public void
-	eventHandler(final FileResourcesEvent event) {
-		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_R_FILES_TASK);
-		this.updateRFiles(event.getrFiles());
+	eventHandler(final RankedFilesEvent event) {
+		EditorContext.cancelJobsBelongingTo(FilesFilter.FAMILY);
+		this.updateFiles(event.getFiles());
 	}
 
 	private void
-	updateRFiles(final ImmutableList<RFile> rFiles) {
+	updateFiles(final ImmutableList<IFile> files) {
 		new Task() {
 
 			@Override
@@ -43,19 +46,16 @@ public final class RecentResourcesFilter extends EventBusInstance {
 
 			private void
 			updateFiles() {
-				RecentResourcesFilter.this.rFiles.clear();
-				RecentResourcesFilter.this.rFiles.addAll(rFiles);
+				FilesFilter.this.files.clear();
+				FilesFilter.this.files.addAll(files);
 			}
-		}.setRule(RecentResourcesFilter.RULE)
-			.setFamily(EditorContext.UPDATE_R_FILES_TASK)
-			.start();
+		}.setRule(FilesFilter.RULE).setFamily(FilesFilter.FAMILY).start();
 	}
 
 	@Subscribe
 	public void
-	eventHandler(final FilterRecentFilesEvent event) {
-		EditorContext
-			.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK);
+	eventHandler(final FilterFilesEvent event) {
+		EditorContext.cancelJobsBelongingTo(FilesFilter.FAMILY);
 		this.filterRecentFiles(event.getString());
 	}
 
@@ -63,8 +63,7 @@ public final class RecentResourcesFilter extends EventBusInstance {
 	filterRecentFiles(final String string) {
 		new Task() {
 
-			private final List<RFile> recentFiles = RecentResourcesFilter.this
-				.getFiles();
+			private final List<IFile> recentFiles = FilesFilter.this.getFiles();
 
 			@Override
 			public void
@@ -85,41 +84,39 @@ public final class RecentResourcesFilter extends EventBusInstance {
 			}
 
 			private void
-			postEvent(final List<RFile> rFiles) {
-				EventBus.post(new FilterRecentFilesResultEvent(ImmutableList
-					.copyOf(rFiles)));
+			postEvent(final List<IFile> files) {
+				EventBus
+					.post(new FilteredFilesResultEvent(ImmutableList.copyOf(files)));
 			}
 
-			private List<RFile>
+			private List<IFile>
 			getFilteredList(final String query) {
-				final List<RFile> filteredList = Lists.newArrayList();
-				for (final RFile rFile : this.recentFiles)
-					if (this.matchFound(rFile, query)) filteredList.add(rFile);
+				final List<IFile> filteredList = Lists.newArrayList();
+				for (final IFile file : this.recentFiles)
+					if (this.matchFound(file, query)) filteredList.add(file);
 				return filteredList;
 			}
 
 			private boolean
-			matchFound(final RFile rFile, final String query) {
+			matchFound(final IFile file, final String query) {
 				if (Pattern
-					.compile(query, RecentResourcesFilter.PATTERN_FLAGS)
-					.matcher(rFile.getName())
+					.compile(query, FilesFilter.PATTERN_FLAGS)
+					.matcher(file.getName())
 					.find()) return true;
 				return false;
 			}
-		}.setFamily(EditorContext.FILTER_RECENT_FILES_TASK)
-			.setRule(RecentResourcesFilter.RULE)
-			.start();
+		}.setFamily(FilesFilter.FAMILY).setRule(FilesFilter.RULE).start();
 	}
 
-	protected List<RFile>
+	protected List<IFile>
 	getFiles() {
-		return Lists.newArrayList(this.rFiles);
+		return Lists.newArrayList(this.files);
 	}
 
 	@Override
 	public Instance
 	stop() {
-		this.rFiles.clear();
+		this.files.clear();
 		return super.stop();
 	}
 }

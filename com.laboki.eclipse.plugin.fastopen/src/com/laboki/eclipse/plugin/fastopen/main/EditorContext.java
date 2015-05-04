@@ -288,6 +288,19 @@ public enum EditorContext {
 		return filepaths.toArray(new String[filepaths.size()]);
 	}
 
+	public static List<IFile>
+	getOpenFiles() {
+		final List<IFile> files = Lists.newArrayList();
+		for (final IEditorReference reference : EditorContext
+			.getActiveEditorReferences()) {
+			final Optional<IFile> file =
+				EditorContext
+					.getFile(Optional.fromNullable(reference.getEditor(false)));
+			if (file.isPresent()) files.add(file.get());
+		}
+		return files;
+	}
+
 	public static Optional<IPartService>
 	getPartService() {
 		final Optional<IWorkbenchWindow> window =

@@ -1,4 +1,4 @@
-package com.laboki.eclipse.plugin.fastopen.resources;
+package com.laboki.eclipse.plugin.fastopen.files;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
@@ -32,7 +33,6 @@ public final class FilesIndexer extends EventBusInstance
 		Comparator<IFile> {
 
 	private static final String FAMILY = "FastOpen: FilesIndexer task family";
-	private static final int ONE_SECOND = 1000;
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	protected final List<IFile> files = Lists.newArrayList();
 	protected final IWorkspaceRoot root = FilesIndexer.getRootWorkspace();
@@ -95,13 +95,10 @@ public final class FilesIndexer extends EventBusInstance
 			private WorkspaceFilesEvent
 			createEvent() {
 				final ImmutableList<IFile> files =
-					ImmutableList.copyOf(FilesIndexer.this.files);
+					ImmutableSet.copyOf(FilesIndexer.this.files).asList();
 				return new WorkspaceFilesEvent(files);
 			}
-		}.setFamily(FilesIndexer.FAMILY)
-			.setDelay(FilesIndexer.ONE_SECOND)
-			.setRule(FilesIndexer.RULE)
-			.start();
+		}.setFamily(FilesIndexer.FAMILY).setRule(FilesIndexer.RULE).start();
 	}
 
 	@Override

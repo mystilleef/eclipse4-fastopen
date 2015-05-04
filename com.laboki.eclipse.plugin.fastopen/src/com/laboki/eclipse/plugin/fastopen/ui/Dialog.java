@@ -29,6 +29,7 @@ import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -41,18 +42,19 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PartInitException;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
-import com.laboki.eclipse.plugin.fastopen.events.FileResourcesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesEvent;
-import com.laboki.eclipse.plugin.fastopen.events.FilterRecentFilesResultEvent;
+import com.laboki.eclipse.plugin.fastopen.context.FileUtil;
+import com.laboki.eclipse.plugin.fastopen.events.FilterFilesEvent;
+import com.laboki.eclipse.plugin.fastopen.events.FilteredFilesResultEvent;
+import com.laboki.eclipse.plugin.fastopen.events.RankedFilesEvent;
 import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.instance.EventBusInstance;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
-import com.laboki.eclipse.plugin.fastopen.resources.RFile;
 import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
@@ -156,7 +158,7 @@ public final class Dialog extends EventBusInstance {
 
 	private final class ContentProvider implements ILazyContentProvider {
 
-		private RFile[] rFiles;
+		private IFile[] files;
 
 		public ContentProvider() {}
 
@@ -169,14 +171,14 @@ public final class Dialog extends EventBusInstance {
 		inputChanged(	final Viewer arg0,
 									final Object oldInput,
 									final Object newInput) {
-			this.rFiles = (RFile[]) newInput;
+			this.files = (IFile[]) newInput;
 		}
 
 		@Override
 		public void
 		updateElement(final int index) {
 			try {
-				Dialog.VIEWER.replace(this.rFiles[index], index);
+				Dialog.VIEWER.replace(this.files[index], index);
 			}
 			catch (final Exception e) {
 				Dialog.LOGGER.log(Level.FINE, e.getMessage(), e);
@@ -244,30 +246,48 @@ public final class Dialog extends EventBusInstance {
 		@Override
 		public void
 		update(final ViewerCell cell) {
-			this.updateCellProperties(cell, (RFile) cell.getElement(), this
-				.createStyledText((RFile) cell.getElement()));
+			this.updateCellProperties(cell, (IFile) cell.getElement(), this
+				.createStyledText((IFile) cell.getElement()));
 			super.update(cell);
 		}
 
 		private void
 		updateCellProperties(	final ViewerCell cell,
-													final RFile file,
+													final IFile file,
 													final StyledString text) {
+			final Image image =
+				FileUtil.getContentTypeImage(Optional.fromNullable(file)).get();
 			cell.setText(text.toString());
-			cell.setImage(file.getContentTypeImage());
+			cell.setImage(image);
 			cell.setStyleRanges(text.getStyleRanges());
 		}
 
 		private StyledString
-		createStyledText(final RFile file) {
+		createStyledText(final IFile file) {
+			final Optional<IFile> _file = Optional.fromNullable(file);
 			final StyledString text = new StyledString();
 			text.append(file.getName() + this.separator, this.filenameStyler);
 			text.append("in  ", this.inStyler);
-			text.append(file.getFolder() + this.separator, this.folderStyler);
+			text.append(this.getFolder(_file) + this.separator, this.folderStyler);
 			text.append("modified  ", this.modifiedStyler);
-			text.append(file.getModificationTime() + "  ", this.timeStyler);
-			text.append(file.getContentTypeString(), this.typeStyler);
+			text.append(this.getTime(_file) + "  ", this.timeStyler);
+			text.append(this.getContentType(_file), this.typeStyler);
 			return text;
+		}
+
+		private String
+		getContentType(final Optional<IFile> optional) {
+			return FileUtil.getContentTypeName(optional).get();
+		}
+
+		private String
+		getTime(final Optional<IFile> optional) {
+			return FileUtil.getModificationTime(optional).get();
+		}
+
+		private String
+		getFolder(final Optional<IFile> optional) {
+			return FileUtil.getFolder(optional).get();
 		}
 
 		private Color
@@ -589,13 +609,13 @@ public final class Dialog extends EventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void
-	eventHandler(final FileResourcesEvent event) {
+	eventHandler(final RankedFilesEvent event) {
 		new AsyncTask() {
 
 			@Override
 			public void
 			execute() {
-				Dialog.updateViewer(event.getrFiles());
+				Dialog.updateViewer(event.getFiles());
 			}
 		}.setRule(Dialog.RULE).start();
 	}
@@ -603,21 +623,21 @@ public final class Dialog extends EventBusInstance {
 	@Subscribe
 	@AllowConcurrentEvents
 	public static void
-	eventHandler(final FilterRecentFilesResultEvent event) {
+	eventHandler(final FilteredFilesResultEvent event) {
 		new AsyncTask() {
 
 			@Override
 			public void
 			execute() {
-				Dialog.updateViewer(event.getrFiles());
+				Dialog.updateViewer(event.getFiles());
 			}
 		}.setRule(Dialog.RULE).start();
 	}
 
 	protected static void
-	updateViewer(final List<RFile> rFiles) {
+	updateViewer(final List<IFile> Files) {
 		try {
-			Dialog._updateViewer(rFiles);
+			Dialog._updateViewer(Files);
 		}
 		catch (final Exception e) {
 			Dialog.LOGGER.log(Level.WARNING, e.getMessage(), e);
@@ -625,10 +645,10 @@ public final class Dialog extends EventBusInstance {
 	}
 
 	private static void
-	_updateViewer(final List<RFile> rFiles) {
+	_updateViewer(final List<IFile> files) {
 		Dialog.VIEWER.getControl().setRedraw(false);
-		Dialog.VIEWER.setInput(rFiles.toArray(new RFile[rFiles.size()]));
-		Dialog.VIEWER.setItemCount(rFiles.size());
+		Dialog.VIEWER.setInput(files.toArray(new IFile[files.size()]));
+		Dialog.VIEWER.setItemCount(files.size());
 		Dialog.VIEWER.getControl().setRedraw(true);
 		Dialog.refresh();
 		Dialog.focusViewer();
@@ -703,8 +723,7 @@ public final class Dialog extends EventBusInstance {
 				@Override
 				public void
 				execute() {
-					Dialog.openFile(((RFile) Dialog.VIEWER.getElementAt(index))
-						.getFile());
+					Dialog.openFile(((IFile) Dialog.VIEWER.getElementAt(index)));
 				}
 			}.start();
 	}
@@ -738,14 +757,14 @@ public final class Dialog extends EventBusInstance {
 				public void
 				execute() {
 					EditorContext
-						.closeEditor(((RFile) Dialog.VIEWER.getElementAt(index)).getFile());
+						.closeEditor(((IFile) Dialog.VIEWER.getElementAt(index)));
 				}
 			}.start();
 	}
 
 	protected static void
 	filterViewer() {
-		EventBus.post(new FilterRecentFilesEvent(Dialog.TEXT.getText().trim()));
+		EventBus.post(new FilterFilesEvent(Dialog.TEXT.getText().trim()));
 	}
 
 	protected static void

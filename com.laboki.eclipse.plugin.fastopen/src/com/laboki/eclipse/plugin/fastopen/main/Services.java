@@ -4,14 +4,13 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.laboki.eclipse.plugin.fastopen.files.AccessedFiles;
-import com.laboki.eclipse.plugin.fastopen.files.AccessedFilesSerializer;
-import com.laboki.eclipse.plugin.fastopen.files.RecentFiles;
+import com.laboki.eclipse.plugin.fastopen.files.FilesAccess;
+import com.laboki.eclipse.plugin.fastopen.files.FilesFilter;
+import com.laboki.eclipse.plugin.fastopen.files.FilesIndexer;
+import com.laboki.eclipse.plugin.fastopen.files.FilesListener;
+import com.laboki.eclipse.plugin.fastopen.files.FilesRanker;
+import com.laboki.eclipse.plugin.fastopen.files.Serializer;
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
-import com.laboki.eclipse.plugin.fastopen.resources.FileResources;
-import com.laboki.eclipse.plugin.fastopen.resources.RecentResources;
-import com.laboki.eclipse.plugin.fastopen.resources.RecentResourcesFilter;
-import com.laboki.eclipse.plugin.fastopen.resources.FilesIndexer;
 import com.laboki.eclipse.plugin.fastopen.ui.Dialog;
 
 public final class Services implements Instance {
@@ -30,12 +29,14 @@ public final class Services implements Instance {
 	private void
 	startServices() {
 		this.startService(new Dialog());
-		this.startService(new RecentResourcesFilter());
-		this.startService(new RecentResources());
-		this.startService(new AccessedFiles());
-		this.startService(new AccessedFilesSerializer());
-		this.startService(new RecentFiles());
-		this.startService(new FileResources());
+		this.startService(new FilesFilter());
+		// this.startService(new AccessedFiles());
+		// this.startService(new AccessedFilesSerializer());
+		// this.startService(new RecentFiles());
+		this.startService(new FilesListener());
+		this.startService(new FilesRanker());
+		this.startService(new FilesAccess());
+		this.startService(new Serializer());
 		this.startService(new FilesIndexer());
 		this.startService(Factory.INSTANCE);
 	}
