@@ -277,16 +277,19 @@ public final class Dialog extends EventBusInstance {
 
 		private String
 		getContentType(final Optional<IFile> optional) {
+			if (!optional.isPresent()) return "unknown";
 			return FileUtil.getContentTypeName(optional).get();
 		}
 
 		private String
 		getTime(final Optional<IFile> optional) {
+			if (!optional.isPresent()) return "unknown";
 			return FileUtil.getModificationTime(optional).get();
 		}
 
 		private String
 		getFolder(final Optional<IFile> optional) {
+			if (!optional.isPresent()) return "unknown";
 			return FileUtil.getFolder(optional).get();
 		}
 
