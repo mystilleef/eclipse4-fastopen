@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: com.laboki.eclipse.plugin.fastopen;singleton:=true
-Bundle-Version: 20150502
+Bundle-Version: 20150504
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.ui;bundle-version="3.104.0",
  org.eclipse.core.runtime;bundle-version="3.8.0",
@@ -42,11 +42,8 @@ Export-Package: com.google.common.annotations,
  com.laboki.eclipse.plugin.fastopen.context;uses:="com.google.common.base",
  com.laboki.eclipse.plugin.fastopen.events;uses:="com.google.common.collect",
  com.laboki.eclipse.plugin.fastopen.files;
-  uses:="org.eclipse.swt.graphics,
-   org.eclipse.core.runtime.content,
-   org.ocpsoft.prettytime,
+  uses:="com.laboki.eclipse.plugin.fastopen.instance,
    org.eclipse.core.resources,
-   com.laboki.eclipse.plugin.fastopen.instance,
    com.laboki.eclipse.plugin.fastopen.events,
    com.google.common.collect",
  com.laboki.eclipse.plugin.fastopen.instance,
