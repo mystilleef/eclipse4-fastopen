@@ -7,6 +7,7 @@ import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 
 public abstract class BaseTask implements Runnable, Instance {
 
+	public static final String FAMILY = "FastOpenPluginTaskFamily";
 	private final TaskJob job;
 	private long delay = 0;
 
@@ -22,6 +23,7 @@ public abstract class BaseTask implements Runnable, Instance {
 	setDefaultProperties() {
 		this.job.setUser(false);
 		this.job.setSystem(true);
+		this.job.setFamily(BaseTask.FAMILY);
 	}
 
 	@Override

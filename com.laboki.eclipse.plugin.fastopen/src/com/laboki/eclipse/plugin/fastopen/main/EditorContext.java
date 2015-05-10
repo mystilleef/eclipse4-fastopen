@@ -55,6 +55,7 @@ import com.google.common.net.MediaType;
 import com.laboki.eclipse.plugin.fastopen.Activator;
 import com.laboki.eclipse.plugin.fastopen.context.ContentTypeContext;
 import com.laboki.eclipse.plugin.fastopen.context.FileContext;
+import com.laboki.eclipse.plugin.fastopen.task.BaseTask;
 
 public enum EditorContext {
 	INSTANCE;
@@ -626,5 +627,15 @@ public enum EditorContext {
 	cancelJobsBelongingTo(final String... jobNames) {
 		for (final String jobName : jobNames)
 			EditorContext.JOB_MANAGER.cancel(jobName);
+	}
+
+	public static void
+	cancelPluginTasks() {
+		EditorContext.JOB_MANAGER.cancel(BaseTask.FAMILY);
+	}
+
+	public static void
+	cancelEventTasks() {
+		EditorContext.JOB_MANAGER.cancel(EventBus.FAMILY);
 	}
 }

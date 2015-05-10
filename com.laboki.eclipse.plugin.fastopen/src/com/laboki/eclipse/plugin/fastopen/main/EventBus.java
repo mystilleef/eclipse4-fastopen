@@ -10,6 +10,7 @@ import com.laboki.eclipse.plugin.fastopen.task.Task;
 public enum EventBus {
 	INSTANCE;
 
+	public static final String FAMILY = "FastOpenEventBusTaskFamily";
 	protected static final AsyncEventBus BUS = new AsyncEventBus(
 		Executors.newCachedThreadPool());
 
@@ -34,6 +35,6 @@ public enum EventBus {
 			execute() {
 				EventBus.BUS.post(object);
 			}
-		}.setPriority(Job.INTERACTIVE).start();
+		}.setFamily(EventBus.FAMILY).setPriority(Job.INTERACTIVE).start();
 	}
 }
