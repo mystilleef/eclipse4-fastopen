@@ -12,18 +12,22 @@ import com.laboki.eclipse.plugin.fastopen.task.Task;
 public enum Factory implements Instance {
 	INSTANCE;
 
-	private static final Optional<IPartService> PART_SERVICE = EditorContext
-		.getPartService();
+	private static final Optional<IPartService> PART_SERVICE =
+		EditorContext.getPartService();
 	private final PartListener partListener = new PartListener();
 
 	@Override
 	public Instance
 	start() {
 		if (!Factory.PART_SERVICE.isPresent()) return this;
-		Factory
-			.emitPartActivationEvent(Factory.PART_SERVICE.get().getActivePart());
+		Factory.emitPartActivationEvent(Factory.getActivePart());
 		Factory.PART_SERVICE.get().addPartListener(this.partListener);
 		return this;
+	}
+
+	private static IWorkbenchPart
+	getActivePart() {
+		return Factory.PART_SERVICE.get().getActivePart();
 	}
 
 	@Override
