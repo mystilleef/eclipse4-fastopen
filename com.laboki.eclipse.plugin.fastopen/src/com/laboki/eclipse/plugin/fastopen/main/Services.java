@@ -17,8 +17,6 @@ public final class Services implements Instance {
 
 	private final List<Instance> instances = Lists.newArrayList();
 
-	public Services() {}
-
 	@Override
 	public Instance
 	start() {

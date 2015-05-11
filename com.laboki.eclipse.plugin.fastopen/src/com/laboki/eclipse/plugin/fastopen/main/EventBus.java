@@ -11,10 +11,8 @@ public enum EventBus {
 	INSTANCE;
 
 	public static final String FAMILY = "FastOpenEventBusTaskFamily";
-	protected static final AsyncEventBus BUS = new AsyncEventBus(
-		Executors.newCachedThreadPool());
-
-	private EventBus() {}
+	protected static final AsyncEventBus BUS =
+		new AsyncEventBus(Executors.newCachedThreadPool());
 
 	public static void
 	register(final Object object) {
