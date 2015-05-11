@@ -30,11 +30,18 @@ public final class FilesFilter extends EventBusInstance {
 	@Subscribe
 	public void
 	eventHandler(final RankedFilesEvent event) {
-		EditorContext.cancelJobsBelongingTo(FilesFilter.FAMILY);
-		this.updateFiles(event.getFiles());
+		new Task() {
+
+			@Override
+			public void
+			execute() {
+				EditorContext.cancelJobsBelongingTo(FilesFilter.FAMILY);
+				FilesFilter.this.updateFiles(event.getFiles());
+			}
+		}.setRule(FilesFilter.RULE).start();
 	}
 
-	private void
+	protected void
 	updateFiles(final ImmutableList<IFile> files) {
 		new Task() {
 
@@ -55,11 +62,18 @@ public final class FilesFilter extends EventBusInstance {
 	@Subscribe
 	public void
 	eventHandler(final FilterFilesEvent event) {
-		EditorContext.cancelJobsBelongingTo(FilesFilter.FAMILY);
-		this.filterRecentFiles(event.getString());
+		new Task() {
+
+			@Override
+			public void
+			execute() {
+				EditorContext.cancelJobsBelongingTo(FilesFilter.FAMILY);
+				FilesFilter.this.filterRecentFiles(event.getString());
+			}
+		}.setRule(FilesFilter.RULE).start();
 	}
 
-	private void
+	protected void
 	filterRecentFiles(final String string) {
 		new Task() {
 
@@ -85,8 +99,7 @@ public final class FilesFilter extends EventBusInstance {
 
 			private void
 			postEvent(final List<IFile> files) {
-				EventBus
-					.post(new FilteredFilesResultEvent(ImmutableList.copyOf(files)));
+				EventBus.post(new FilteredFilesResultEvent(ImmutableList.copyOf(files)));
 			}
 
 			private List<IFile>
@@ -99,8 +112,7 @@ public final class FilesFilter extends EventBusInstance {
 
 			private boolean
 			matchFound(final IFile file, final String query) {
-				if (Pattern
-					.compile(query, FilesFilter.PATTERN_FLAGS)
+				if (Pattern.compile(query, FilesFilter.PATTERN_FLAGS)
 					.matcher(file.getName())
 					.find()) return true;
 				return false;
