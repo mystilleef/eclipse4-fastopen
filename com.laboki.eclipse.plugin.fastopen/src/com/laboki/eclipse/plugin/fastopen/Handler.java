@@ -10,8 +10,6 @@ import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
 
 public final class Handler extends AbstractHandler {
 
-	public Handler() {}
-
 	@Override
 	public Object
 	execute(final ExecutionEvent arg0) throws ExecutionException {
