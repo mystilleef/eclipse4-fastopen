@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import com.laboki.eclipse.plugin.fastopen.instance.Instance;
 
-public abstract class BaseTask implements Runnable, Instance {
+public abstract class BaseTask implements Runnable, Instance, ExecuteTask {
 
 	public static final String FAMILY = "FastOpenPluginTaskFamily";
 	private final TaskJob job;

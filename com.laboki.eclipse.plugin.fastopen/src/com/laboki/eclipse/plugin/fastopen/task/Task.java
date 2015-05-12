@@ -1,6 +1,6 @@
 package com.laboki.eclipse.plugin.fastopen.task;
 
-public abstract class Task extends BaseTask implements ExecuteTask {
+public abstract class Task extends BaseTask {
 
 	@Override
 	protected TaskJob

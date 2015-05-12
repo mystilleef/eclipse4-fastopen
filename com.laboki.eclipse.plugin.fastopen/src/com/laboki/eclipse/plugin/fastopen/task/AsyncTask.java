@@ -2,7 +2,7 @@ package com.laboki.eclipse.plugin.fastopen.task;
 
 import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 
-public abstract class AsyncTask extends BaseTask implements ExecuteTask {
+public abstract class AsyncTask extends BaseTask {
 
 	@Override
 	protected TaskJob
