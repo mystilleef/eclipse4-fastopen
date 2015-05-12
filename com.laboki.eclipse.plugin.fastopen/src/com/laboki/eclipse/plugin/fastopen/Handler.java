@@ -6,14 +6,14 @@ import org.eclipse.core.commands.ExecutionException;
 
 import com.laboki.eclipse.plugin.fastopen.events.ShowFastOpenDialogEvent;
 import com.laboki.eclipse.plugin.fastopen.main.EventBus;
-import com.laboki.eclipse.plugin.fastopen.task.AsyncTask;
+import com.laboki.eclipse.plugin.fastopen.task.Task;
 
 public final class Handler extends AbstractHandler {
 
 	@Override
 	public Object
 	execute(final ExecutionEvent arg0) throws ExecutionException {
-		new AsyncTask() {
+		new Task() {
 
 			@Override
 			public void
