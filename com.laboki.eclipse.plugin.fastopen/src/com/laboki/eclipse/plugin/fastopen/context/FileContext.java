@@ -41,11 +41,8 @@ public enum FileContext {
 
 	public static Optional<IFile>
 	getFile(final String filePathString) {
-		return Optional
-			.fromNullable(ResourcesPlugin
-				.getWorkspace()
-				.getRoot()
-				.getFileForLocation(
-					Path.fromOSString(new java.io.File(filePathString).getAbsolutePath())));
+		return Optional.fromNullable(ResourcesPlugin.getWorkspace()
+			.getRoot()
+			.getFileForLocation(Path.fromOSString(new java.io.File(filePathString).getAbsolutePath())));
 	}
 }

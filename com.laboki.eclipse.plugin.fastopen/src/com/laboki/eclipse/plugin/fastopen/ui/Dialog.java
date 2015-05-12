@@ -67,21 +67,19 @@ public final class Dialog extends EventBusInstance {
 	private static final int PATTERN_FLAGS = Pattern.CASE_INSENSITIVE
 		| Pattern.CANON_EQ
 		| Pattern.UNICODE_CASE;
-	private static final Pattern TEXT_PATTERN = Pattern
-		.compile("\\p{Punct}*|\\w*| *", Dialog.PATTERN_FLAGS);
-	protected static final Shell SHELL = new Shell(
-		EditorContext.getShell(),
+	private static final Pattern TEXT_PATTERN =
+		Pattern.compile("\\p{Punct}*|\\w*| *", Dialog.PATTERN_FLAGS);
+	protected static final Shell SHELL = new Shell(EditorContext.getShell(),
 		SWT.RESIZE | SWT.APPLICATION_MODAL);
 	protected static final Text TEXT = new Text(Dialog.SHELL, SWT.SEARCH
 		| SWT.ICON_CANCEL
 		| SWT.ICON_SEARCH
 		| SWT.NO_FOCUS);
-	protected static final TableViewer VIEWER = new TableViewer(
-		Dialog.SHELL,
+	protected static final TableViewer VIEWER = new TableViewer(Dialog.SHELL,
 		SWT.VIRTUAL | SWT.BORDER | SWT.MULTI);
 	protected static final Table TABLE = Dialog.VIEWER.getTable();
-	protected final static Logger LOGGER = Logger.getLogger(Dialog.class
-		.getName());
+	protected final static Logger LOGGER =
+		Logger.getLogger(Dialog.class.getName());
 
 	public Dialog() {
 		Dialog.arrangeWidgets();
@@ -138,8 +136,7 @@ public final class Dialog extends EventBusInstance {
 
 	private static void
 	setupDialog() {
-		Dialog.SHELL.setTabList(Lists
-			.newArrayList(Dialog.VIEWER.getControl())
+		Dialog.SHELL.setTabList(Lists.newArrayList(Dialog.VIEWER.getControl())
 			.toArray(new Control[1]));
 		Dialog.SHELL.setSize(Dialog.WIDTH, Dialog.HEIGHT);
 	}
@@ -190,8 +187,8 @@ public final class Dialog extends EventBusInstance {
 	setupTable() {
 		Dialog.TABLE.setLinesVisible(true);
 		Dialog.TABLE.setHeaderVisible(false);
-		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width, Dialog.TABLE
-			.getClientArea().height);
+		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width,
+			Dialog.TABLE.getClientArea().height);
 		this.createTableColumn();
 	}
 
@@ -209,18 +206,18 @@ public final class Dialog extends EventBusInstance {
 
 		private static final String UNKNOWN = "unknown";
 		private final String separator = this.getSeparator();
-		private final StyledString.Styler filenameStyler = this
-			.styler(FONT.LARGE_BOLD_FONT, null);
-		private final StyledString.Styler folderStyler = this
-			.styler(FONT.NORMAL_FONT, this.color(SWT.COLOR_DARK_GRAY));
-		private final StyledString.Styler inStyler = this
-			.styler(FONT.ITALIC_FONT, this.color(SWT.COLOR_GRAY));
-		private final StyledString.Styler modifiedStyler = this
-			.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
-		private final StyledString.Styler timeStyler = this
-			.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
-		private final StyledString.Styler typeStyler = this
-			.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
+		private final StyledString.Styler filenameStyler =
+			this.styler(FONT.LARGE_BOLD_FONT, null);
+		private final StyledString.Styler folderStyler =
+			this.styler(FONT.NORMAL_FONT, this.color(SWT.COLOR_DARK_GRAY));
+		private final StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT,
+			this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler modifiedStyler =
+			this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler timeStyler =
+			this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
+		private final StyledString.Styler typeStyler =
+			this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
 
 		public LabelProvider() {
 			this.setOwnerDrawEnabled(true);
@@ -247,8 +244,9 @@ public final class Dialog extends EventBusInstance {
 		@Override
 		public void
 		update(final ViewerCell cell) {
-			this.updateCellProperties(cell, (IFile) cell.getElement(), this
-				.createStyledText((IFile) cell.getElement()));
+			this.updateCellProperties(cell,
+				(IFile) cell.getElement(),
+				this.createStyledText((IFile) cell.getElement()));
 			super.update(cell);
 		}
 
@@ -328,24 +326,22 @@ public final class Dialog extends EventBusInstance {
 	private enum FONT {
 		FONT;
 
-		private static final FontData[] FONT_DATAS = Dialog.TABLE
-			.getFont()
+		private static final FontData[] FONT_DATAS = Dialog.TABLE.getFont()
 			.getFontData();
-		private static final String DEFAULT_FONT_NAME = FONT.FONT_DATAS[0]
-			.getName();
-		private static final int DEFAULT_FONT_HEIGHT = FONT.FONT_DATAS[0]
-			.getHeight();
+		private static final String DEFAULT_FONT_NAME =
+			FONT.FONT_DATAS[0].getName();
+		private static final int DEFAULT_FONT_HEIGHT =
+			FONT.FONT_DATAS[0].getHeight();
 		public static final Font ITALIC_FONT = FONT.makeItalicizedFont();
 		public static final Font LARGE_BOLD_FONT = FONT.makeLargeBoldFont();
 		public static final Font SMALL_BOLD_FONT = FONT.makeSmallBoldFont();
-		public static final Font SMALL_ITALIC_FONT = FONT
-			.makeSmallItalicizedFont();
+		public static final Font SMALL_ITALIC_FONT =
+			FONT.makeSmallItalicizedFont();
 		public static final Font NORMAL_FONT = FONT.makeNormalFont();
 
 		private static Font
 		makeItalicizedFont() {
-			return new Font(
-				EditorContext.DISPLAY,
+			return new Font(EditorContext.DISPLAY,
 				FONT.DEFAULT_FONT_NAME,
 				FONT.DEFAULT_FONT_HEIGHT,
 				SWT.ITALIC);
@@ -353,8 +349,7 @@ public final class Dialog extends EventBusInstance {
 
 		private static Font
 		makeLargeBoldFont() {
-			return new Font(
-				EditorContext.DISPLAY,
+			return new Font(EditorContext.DISPLAY,
 				FONT.DEFAULT_FONT_NAME,
 				FONT.DEFAULT_FONT_HEIGHT + 2,
 				SWT.BOLD);
@@ -362,8 +357,7 @@ public final class Dialog extends EventBusInstance {
 
 		private static Font
 		makeSmallBoldFont() {
-			return new Font(
-				EditorContext.DISPLAY,
+			return new Font(EditorContext.DISPLAY,
 				FONT.DEFAULT_FONT_NAME,
 				FONT.DEFAULT_FONT_HEIGHT - 2,
 				SWT.BOLD);
@@ -371,8 +365,7 @@ public final class Dialog extends EventBusInstance {
 
 		private static Font
 		makeSmallItalicizedFont() {
-			return new Font(
-				EditorContext.DISPLAY,
+			return new Font(EditorContext.DISPLAY,
 				FONT.DEFAULT_FONT_NAME,
 				FONT.DEFAULT_FONT_HEIGHT - 2,
 				SWT.ITALIC);
@@ -380,8 +373,7 @@ public final class Dialog extends EventBusInstance {
 
 		private static Font
 		makeNormalFont() {
-			return new Font(
-				EditorContext.DISPLAY,
+			return new Font(EditorContext.DISPLAY,
 				FONT.DEFAULT_FONT_NAME,
 				FONT.DEFAULT_FONT_HEIGHT,
 				SWT.NORMAL);
@@ -717,9 +709,9 @@ public final class Dialog extends EventBusInstance {
 	delete(final int end) {
 		final int start =
 			end
-				- (Dialog.TEXT.getSelectionText().length() > 0 ? Dialog.TEXT
-					.getSelectionText()
-					.length() : 1);
+				- (Dialog.TEXT.getSelectionText().length() > 0
+					? Dialog.TEXT.getSelectionText().length()
+					: 1);
 		Dialog.TEXT.setSelection(start, end);
 		Dialog.TEXT.cut();
 		Dialog.TEXT.setSelection(start, start);
@@ -766,8 +758,7 @@ public final class Dialog extends EventBusInstance {
 				@Override
 				public void
 				execute() {
-					EditorContext
-						.closeEditor(((IFile) Dialog.VIEWER.getElementAt(index)));
+					EditorContext.closeEditor(((IFile) Dialog.VIEWER.getElementAt(index)));
 				}
 			}.start();
 	}

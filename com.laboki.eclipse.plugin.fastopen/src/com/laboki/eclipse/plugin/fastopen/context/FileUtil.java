@@ -40,8 +40,8 @@ public enum FileUtil {
 		final Optional<IContainer> parent =
 			Optional.fromNullable(file.get().getParent());
 		if (!parent.isPresent()) return Optional.absent();
-		return Optional.fromNullable(CharMatcher.anyOf(File.separator).trimFrom(
-			parent.get().getFullPath().toOSString()));
+		return Optional.fromNullable(CharMatcher.anyOf(File.separator)
+			.trimFrom(parent.get().getFullPath().toOSString()));
 	}
 
 	public static Optional<IContentType>
@@ -62,26 +62,22 @@ public enum FileUtil {
 		final Optional<IContentType> type =
 			ContentTypeContext.getContentTypeFromFile(file);
 		if (!type.isPresent()) return Optional.absent();
-		return Optional.fromNullable(EditorContext.getImage(file
-			.get()
+		return Optional.fromNullable(EditorContext.getImage(file.get()
 			.getFullPath()
 			.toOSString(), type.get()));
 	}
 
 	public static Optional<String>
 	getModificationTime(final Optional<IFile> file) {
-		final Optional<Long> lastModified =
-			FileUtil.getLastModified(file);
+		final Optional<Long> lastModified = FileUtil.getLastModified(file);
 		if (!lastModified.isPresent()) return Optional.absent();
-		return Optional.fromNullable(FileUtil.TIME.format(new Date(
-			lastModified.get())));
+		return Optional.fromNullable(FileUtil.TIME.format(new Date(lastModified.get())));
 	}
 
 	public static Optional<Long>
 	getLastModified(final Optional<IFile> file) {
 		if (!file.isPresent()) return Optional.absent();
-		return Optional.fromNullable(file
-			.get()
+		return Optional.fromNullable(file.get()
 			.getLocation()
 			.toFile()
 			.lastModified());

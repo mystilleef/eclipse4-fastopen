@@ -24,8 +24,8 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 		"Eclipse Fast Open Plugin: find changed resource task";
 	protected final IResourceDeltaVisitor handler;
 	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-	protected final static Logger LOGGER = Logger
-		.getLogger(OpenerResourceChangeListener.class.getName());
+	protected final static Logger LOGGER =
+		Logger.getLogger(OpenerResourceChangeListener.class.getName());
 
 	public OpenerResourceChangeListener(final IResourceDeltaVisitor handler) {
 		this.handler = handler;
@@ -34,8 +34,8 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 	@Override
 	public void
 	add() {
-		this.workspace
-			.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+		this.workspace.addResourceChangeListener(this,
+			IResourceChangeEvent.POST_CHANGE);
 	}
 
 	@Override
@@ -68,8 +68,9 @@ public final class OpenerResourceChangeListener extends AbstractOpenerListener
 					delta.accept(OpenerResourceChangeListener.this.handler);
 				}
 				catch (final CoreException e) {
-					OpenerResourceChangeListener.LOGGER
-						.log(Level.WARNING, "Failed to find resource delta changes", e);
+					OpenerResourceChangeListener.LOGGER.log(Level.WARNING,
+						"Failed to find resource delta changes",
+						e);
 				}
 			}
 		}.setRule(OpenerResourceChangeListener.RULE)

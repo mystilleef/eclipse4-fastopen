@@ -81,12 +81,12 @@ public enum EditorContext {
 	public static final Display DISPLAY = PlatformUI.getWorkbench().getDisplay();
 	public static final String PLUGIN_NAME =
 		"com.laboki.eclipse.plugin.fastopen";
-	private static final IContentType CONTENT_TYPE_TEXT = Platform
-		.getContentTypeManager()
-		.getContentType("org.eclipse.core.runtime.text");
+	private static final IContentType CONTENT_TYPE_TEXT =
+		Platform.getContentTypeManager()
+			.getContentType("org.eclipse.core.runtime.text");
 	public static final IJobManager JOB_MANAGER = Job.getJobManager();
-	private static final Logger LOGGER = Logger.getLogger(EditorContext.class
-		.getName());
+	private static final Logger LOGGER =
+		Logger.getLogger(EditorContext.class.getName());
 
 	private EditorContext() {}
 
@@ -108,18 +108,15 @@ public enum EditorContext {
 		if (!page.isPresent()) return;
 		final Optional<String> editorID = EditorContext.getEditorID(file);
 		if (!editorID.isPresent()) return;
-		page
-			.get()
-			.closeEditors(page
-				.get()
-				.findEditors(new FileEditorInput(file), editorID.get(), IWorkbenchPage.MATCH_ID
-					| IWorkbenchPage.MATCH_INPUT), true);
+		page.get().closeEditors(page.get().findEditors(new FileEditorInput(file),
+			editorID.get(),
+			IWorkbenchPage.MATCH_ID | IWorkbenchPage.MATCH_INPUT),
+			true);
 	}
 
 	public static Object
 	deserialize(final String filePath) {
-		return EditorContext.readObjectInput(EditorContext
-			.tryToGetNewObjectInputStream(filePath));
+		return EditorContext.readObjectInput(EditorContext.tryToGetNewObjectInputStream(filePath));
 	}
 
 	public static void
@@ -140,8 +137,7 @@ public enum EditorContext {
 	public static IEditorPart[]
 	getActiveEditorParts() {
 		final List<IEditorPart> parts = Lists.newArrayList();
-		for (final IEditorReference editorReference : EditorContext
-			.getActiveEditorReferences()) {
+		for (final IEditorReference editorReference : EditorContext.getActiveEditorReferences()) {
 			final IEditorPart editorPart =
 				EditorContext.getEditorPart(editorReference);
 			if (EditorContext.isValidPart(editorPart)) parts.add(editorPart);
@@ -213,8 +209,7 @@ public enum EditorContext {
 
 	private static Optional<IWorkbenchWindow>
 	getActiveWorkbenchWindow() {
-		return Optional.fromNullable(EditorContext
-			.getWorkbench()
+		return Optional.fromNullable(EditorContext.getWorkbench()
 			.getActiveWorkbenchWindow());
 	}
 
@@ -260,8 +255,7 @@ public enum EditorContext {
 	getFilePathFromEditorReference(final IEditorReference file) {
 		try {
 			final Optional<String> path =
-				EditorContext.getURIPath(((IFileEditorInput) file
-					.getEditorInput()
+				EditorContext.getURIPath(((IFileEditorInput) file.getEditorInput()
 					.getAdapter(IFileEditorInput.class)).getFile());
 			if (!path.isPresent()) return "";
 			return path.get();
@@ -273,8 +267,7 @@ public enum EditorContext {
 
 	public static Image
 	getImage(final String filename, final IContentType contentType) {
-		return EditorContext
-			.getWorkbench()
+		return EditorContext.getWorkbench()
 			.getEditorRegistry()
 			.getImageDescriptor(filename, contentType)
 			.createImage();
@@ -283,8 +276,7 @@ public enum EditorContext {
 	public static String[]
 	getOpenEditorFilePaths() {
 		final List<String> filepaths = Lists.newArrayList();
-		for (final IEditorReference file : EditorContext
-			.getActiveEditorReferences())
+		for (final IEditorReference file : EditorContext.getActiveEditorReferences())
 			EditorContext.populateOpenEditorFilePaths(filepaths, file);
 		return filepaths.toArray(new String[filepaths.size()]);
 	}
@@ -292,11 +284,9 @@ public enum EditorContext {
 	public static List<IFile>
 	getOpenFiles() {
 		final List<IFile> files = Lists.newArrayList();
-		for (final IEditorReference reference : EditorContext
-			.getActiveEditorReferences()) {
+		for (final IEditorReference reference : EditorContext.getActiveEditorReferences()) {
 			final Optional<IFile> file =
-				EditorContext
-					.getFile(Optional.fromNullable(reference.getEditor(false)));
+				EditorContext.getFile(Optional.fromNullable(reference.getEditor(false)));
 			if (file.isPresent()) files.add(file.get());
 		}
 		return files;
@@ -307,8 +297,7 @@ public enum EditorContext {
 		final Optional<IWorkbenchWindow> window =
 			EditorContext.getActiveWorkbenchWindow();
 		if (!window.isPresent()) return Optional.absent();
-		return Optional.fromNullable((IPartService) window
-			.get()
+		return Optional.fromNullable((IPartService) window.get()
 			.getService(IPartService.class));
 	}
 
@@ -338,8 +327,7 @@ public enum EditorContext {
 
 	public static Shell
 	getShell() {
-		return EditorContext
-			.getWorkbench()
+		return EditorContext.getWorkbench()
 			.getModalDialogShellProvider()
 			.getShell();
 	}
@@ -428,8 +416,8 @@ public enum EditorContext {
 	openLink(final IFile file) throws PartInitException, CoreException {
 		final Optional<IWorkbenchPage> page = EditorContext.getActivePage();
 		if (!page.isPresent()) return;
-		IDE.openEditorOnFileStore(page.get(), EFS.getStore(file
-			.getRawLocationURI()));
+		IDE.openEditorOnFileStore(page.get(),
+			EFS.getStore(file.getRawLocationURI()));
 	}
 
 	public static void
@@ -448,8 +436,8 @@ public enum EditorContext {
 	public static void
 	serialize(final String filePath, final Object serializable) {
 		try {
-			EditorContext.writeSerializableToFile(serializable, EditorContext
-				.getObjectOutput(filePath));
+			EditorContext.writeSerializableToFile(serializable,
+				EditorContext.getObjectOutput(filePath));
 		}
 		catch (final Exception e) {
 			EditorContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
@@ -480,8 +468,7 @@ public enum EditorContext {
 	getContentTypeFromMediaType(final IFile file) {
 		final Optional<MediaType> mediaType = EditorContext.getMediaType(file);
 		if (!mediaType.isPresent()) return Optional.absent();
-		return Optional.fromNullable(Platform
-			.getContentTypeManager()
+		return Optional.fromNullable(Platform.getContentTypeManager()
 			.getContentType(mediaType.get().toString().trim()));
 	}
 
@@ -515,8 +502,7 @@ public enum EditorContext {
 
 	private static ObjectOutput
 	getObjectOutput(final String filePath) throws Exception {
-		return new ObjectOutputStream(new BufferedOutputStream(
-			new FileOutputStream(filePath)));
+		return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filePath)));
 	}
 
 	private static boolean
@@ -615,18 +601,20 @@ public enum EditorContext {
 
 	public static void
 	cancelAllJobs() {
-		EditorContext
-			.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK, EditorContext.INDEX_WORKSPACE_RESOURCES_TASK, EditorContext.EMIT_INDEX_RESOURCE_TASK);
-		EditorContext
-			.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK, EditorContext.EMIT_UPDATED_RECENT_FILES_TASK, EditorContext.CORE_WORKSPACE_INDEXER_TASK);
-		EditorContext
-			.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK, EditorContext.UPDATE_R_FILES_TASK);
+		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK,
+			EditorContext.INDEX_WORKSPACE_RESOURCES_TASK,
+			EditorContext.EMIT_INDEX_RESOURCE_TASK);
+		EditorContext.cancelJobsBelongingTo(EditorContext.UPDATE_ACCESSED_FILES_TASK,
+			EditorContext.EMIT_UPDATED_RECENT_FILES_TASK,
+			EditorContext.CORE_WORKSPACE_INDEXER_TASK);
+		EditorContext.cancelJobsBelongingTo(EditorContext.FILTER_RECENT_FILES_TASK,
+			EditorContext.UPDATE_R_FILES_TASK);
 	}
 
 	public static void
-	cancelJobsBelongingTo(final String... jobNames) {
-		for (final String jobName : jobNames)
-			EditorContext.JOB_MANAGER.cancel(jobName);
+	cancelJobsBelongingTo(final String... families) {
+		for (final String family : families)
+			EditorContext.JOB_MANAGER.cancel(family);
 	}
 
 	public static void

@@ -15,8 +15,8 @@ import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 public enum ContentTypeContext {
 	INSTANCE;
 
-	private static final Logger LOGGER = Logger
-		.getLogger(ContentTypeContext.class.getName());
+	private static final Logger LOGGER =
+		Logger.getLogger(ContentTypeContext.class.getName());
 
 	public static Optional<IContentType>
 	getContentType() {

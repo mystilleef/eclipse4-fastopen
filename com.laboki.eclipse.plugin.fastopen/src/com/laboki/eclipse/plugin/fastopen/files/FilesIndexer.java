@@ -36,8 +36,8 @@ public final class FilesIndexer extends EventBusInstance
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	protected final List<IFile> files = Lists.newArrayList();
 	protected final IWorkspaceRoot root = FilesIndexer.getRootWorkspace();
-	protected final static Logger LOGGER = Logger.getLogger(FilesIndexer.class
-		.getName());
+	protected final static Logger LOGGER =
+		Logger.getLogger(FilesIndexer.class.getName());
 
 	@Override
 	public Instance
