@@ -4,8 +4,6 @@ import com.laboki.eclipse.plugin.fastopen.main.EditorContext;
 
 public abstract class AsyncTask extends BaseTask implements ExecuteTask {
 
-	public AsyncTask() {}
-
 	@Override
 	protected TaskJob
 	newTaskJob() {
