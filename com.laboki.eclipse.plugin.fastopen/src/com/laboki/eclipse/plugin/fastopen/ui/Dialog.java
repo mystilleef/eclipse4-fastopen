@@ -199,7 +199,7 @@ public final class Dialog extends EventBusInstance {
 		col.getColumn().setWidth(Dialog.TABLE.getClientArea().width);
 		col.getColumn().setResizable(true);
 		col.setLabelProvider(new LabelProvider());
-		if (!EditorContext.isWindows()) col.getColumn().pack();
+		if (EditorContext.isLinux()) col.getColumn().pack();
 	}
 
 	private final class LabelProvider extends StyledCellLabelProvider {
@@ -318,8 +318,8 @@ public final class Dialog extends EventBusInstance {
 
 		private String
 		getSeparator() {
-			if (EditorContext.isWindows()) return "  ";
-			return System.getProperty("line.separator");
+			if (EditorContext.isLinux()) return System.getProperty("line.separator");
+			return "  ";
 		}
 	}
 

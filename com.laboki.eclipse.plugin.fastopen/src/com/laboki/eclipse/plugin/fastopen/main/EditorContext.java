@@ -599,6 +599,16 @@ public enum EditorContext {
 		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
 	}
 
+	public static boolean
+	isLinux() {
+		return Platform.getOS().equals("linux");
+	}
+
+	public static boolean
+	isNotLinux() {
+		return !EditorContext.isLinux();
+	}
+
 	public static void
 	cancelAllJobs() {
 		EditorContext.cancelJobsBelongingTo(EditorContext.INDEX_RESOURCES_TASK,
