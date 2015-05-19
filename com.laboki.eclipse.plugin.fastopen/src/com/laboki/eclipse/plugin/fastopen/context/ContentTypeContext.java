@@ -69,7 +69,7 @@ public enum ContentTypeContext {
 		try {
 			return ContentTypeContext.tryToGetContentDescriptionFromFile(file);
 		}
-		catch (final CoreException e) {
+		catch (final Exception e) {
 			ContentTypeContext.LOGGER.log(Level.WARNING, e.getMessage(), e);
 			return Optional.absent();
 		}
