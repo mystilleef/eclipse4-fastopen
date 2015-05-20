@@ -96,9 +96,15 @@ public final class FilesFilter extends EventBusInstance {
 
 			private void
 			filterFiles(final String string) {
-				this.postEvent(this.getFilteredList(this.getCamelCaseQuery(string)));
+				this.postEvent(this.getFilteredList(this.getQuery(string)));
 			}
 
+			private String
+			getQuery(final String string) {
+				return ".*" + Joiner.on(".*").join(string.split("")) + ".*";
+			}
+
+			@SuppressWarnings("unused")
 			private String
 			getCamelCaseQuery(final String string) {
 				final String[] camelCaseString =
