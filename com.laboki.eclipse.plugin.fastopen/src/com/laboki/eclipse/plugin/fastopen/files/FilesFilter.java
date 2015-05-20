@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
@@ -20,6 +21,8 @@ import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class FilesFilter extends EventBusInstance {
 
+	private static final String CAMEL_CASE_PATTERN =
+		"(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])";
 	private static final String FAMILY = "FilesFilter task family";
 	private static final TaskMutexRule RULE = new TaskMutexRule();
 	protected final List<IFile> files = Lists.newArrayList();
@@ -93,8 +96,14 @@ public final class FilesFilter extends EventBusInstance {
 
 			private void
 			filterFiles(final String string) {
-				final String query = ".*" + Pattern.quote(string) + ".*";
-				this.postEvent(this.getFilteredList(query));
+				this.postEvent(this.getFilteredList(this.getCamelCaseQuery(string)));
+			}
+
+			private String
+			getCamelCaseQuery(final String string) {
+				final String[] camelCaseString =
+					string.split(FilesFilter.CAMEL_CASE_PATTERN);
+				return ".*" + Joiner.on(".*").join(camelCaseString) + ".*";
 			}
 
 			private void
