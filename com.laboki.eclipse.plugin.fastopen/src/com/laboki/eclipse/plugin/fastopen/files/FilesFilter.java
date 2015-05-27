@@ -21,7 +21,7 @@ import com.laboki.eclipse.plugin.fastopen.task.TaskMutexRule;
 
 public final class FilesFilter extends EventBusInstance {
 
-	private static final String CAMEL_CASE_PATTERN =
+	@SuppressWarnings("unused") private static final String CAMEL_CASE_PATTERN =
 		"(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])";
 	private static final String FAMILY = "FilesFilter task family";
 	private static final TaskMutexRule RULE = new TaskMutexRule();
@@ -96,20 +96,12 @@ public final class FilesFilter extends EventBusInstance {
 
 			private void
 			filterFiles(final String string) {
-				this.postEvent(this.getFilteredList(this.getQuery(string)));
+				this.postEvent(this.getFilteredList(this.buildQuery(string, "")));
 			}
 
 			private String
-			getQuery(final String string) {
-				return ".*" + Joiner.on(".*").join(string.split("")) + ".*";
-			}
-
-			@SuppressWarnings("unused")
-			private String
-			getCamelCaseQuery(final String string) {
-				final String[] camelCaseString =
-					string.split(FilesFilter.CAMEL_CASE_PATTERN);
-				return ".*" + Joiner.on(".*").join(camelCaseString) + ".*";
+			buildQuery(final String string, final String pattern) {
+				return ".*" + Joiner.on(".*").join(string.split(pattern)) + ".*";
 			}
 
 			private void
