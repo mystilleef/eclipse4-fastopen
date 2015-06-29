@@ -81,253 +81,11 @@ public final class Dialog extends EventBusInstance {
 	protected final static Logger LOGGER =
 		Logger.getLogger(Dialog.class.getName());
 
-	public Dialog() {
-		Dialog.arrangeWidgets();
-		Dialog.setupDialog();
-		Dialog.setupText();
-		this.setupViewer();
-		this.addListeners();
-	}
-
-	private static void
-	arrangeWidgets() {
-		Dialog.setDialogLayout();
-		Dialog.setTextLayout();
-		Dialog.setViewerLayout();
-		Dialog.SHELL.pack();
-		Dialog.TABLE.pack();
-	}
-
-	private static void
-	setDialogLayout() {
-		final GridLayout layout = new GridLayout(1, true);
-		Dialog.spaceDialogLayout(layout);
-		Dialog.SHELL.setLayout(layout);
-		Dialog.SHELL.setLayoutData(Dialog.createFillGridData());
-	}
-
-	private static void
-	spaceDialogLayout(final GridLayout layout) {
-		layout.marginLeft = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.marginTop = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.marginRight = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.marginBottom = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.horizontalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
-		layout.verticalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
-	}
-
-	private static GridData
-	createFillGridData() {
-		return new GridData(GridData.FILL, GridData.FILL, true, true, 1, 1);
-	}
-
-	private static void
-	setTextLayout() {
-		final GridData textGridData = new GridData();
-		textGridData.horizontalAlignment = GridData.FILL;
-		textGridData.grabExcessHorizontalSpace = true;
-		Dialog.TEXT.setLayoutData(textGridData);
-	}
-
-	private static void
-	setViewerLayout() {
-		Dialog.VIEWER.getTable().setLayoutData(Dialog.createFillGridData());
-	}
-
-	private static void
-	setupDialog() {
-		Dialog.SHELL.setTabList(Lists.newArrayList(Dialog.VIEWER.getControl())
-			.toArray(new Control[1]));
-		Dialog.SHELL.setSize(Dialog.WIDTH, Dialog.HEIGHT);
-	}
-
-	private static void
-	setupText() {
-		Dialog.TEXT.setMessage("start typing to filter files...");
-	}
-
-	private void
-	setupViewer() {
-		this.setupTable();
-		Dialog.VIEWER.setContentProvider(this.new ContentProvider());
-		Dialog.VIEWER.setUseHashlookup(true);
-	}
-
-	private final class ContentProvider implements ILazyContentProvider {
-
-		private IFile[] files;
-
-		public ContentProvider() {}
-
-		@Override
-		public void
-		dispose() {}
-
-		@Override
-		public void
-		inputChanged(	final Viewer arg0,
-									final Object oldInput,
-									final Object newInput) {
-			this.files = (IFile[]) newInput;
-		}
-
-		@Override
-		public void
-		updateElement(final int index) {
-			try {
-				Dialog.VIEWER.replace(this.files[index], index);
-			}
-			catch (final Exception e) {
-				Dialog.LOGGER.log(Level.FINE, e.getMessage(), e);
-			}
-		}
-	}
-
-	private void
-	setupTable() {
-		Dialog.TABLE.setLinesVisible(true);
-		Dialog.TABLE.setHeaderVisible(false);
-		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width,
-			Dialog.TABLE.getClientArea().height);
-		this.createTableColumn();
-	}
-
-	private void
-	createTableColumn() {
-		final TableViewerColumn col =
-			new TableViewerColumn(Dialog.VIEWER, SWT.RIGHT | SWT.LEFT | SWT.CENTER);
-		col.getColumn().setWidth(Dialog.TABLE.getClientArea().width);
-		col.getColumn().setResizable(true);
-		col.setLabelProvider(new LabelProvider());
-		if (EditorContext.isLinux()) col.getColumn().pack();
-	}
-
-	private final class LabelProvider extends StyledCellLabelProvider {
-
-		private static final String UNKNOWN = "unknown";
-		private final String separator = this.getSeparator();
-		private final StyledString.Styler filenameStyler =
-			this.styler(FONT.LARGE_BOLD_FONT, null);
-		private final StyledString.Styler folderStyler =
-			this.styler(FONT.NORMAL_FONT, this.color(SWT.COLOR_DARK_GRAY));
-		private final StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT,
-			this.color(SWT.COLOR_GRAY));
-		private final StyledString.Styler modifiedStyler =
-			this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
-		private final StyledString.Styler timeStyler =
-			this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
-		private final StyledString.Styler typeStyler =
-			this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
-
-		public LabelProvider() {
-			this.setOwnerDrawEnabled(true);
-		}
-
-		@Override
-		protected StyleRange
-		prepareStyleRange(final StyleRange styleRange, final boolean applyColors) {
-			return super.prepareStyleRange(styleRange, applyColors);
-		}
-
-		@Override
-		protected void
-		paint(final Event event, final Object element) {
-			super.paint(event, element);
-		}
-
-		@Override
-		protected void
-		measure(final Event event, final Object element) {
-			super.measure(event, element);
-		}
-
-		@Override
-		public void
-		update(final ViewerCell cell) {
-			this.updateCellProperties(cell,
-				(IFile) cell.getElement(),
-				this.createStyledText((IFile) cell.getElement()));
-			super.update(cell);
-		}
-
-		private void
-		updateCellProperties(	final ViewerCell cell,
-													final IFile file,
-													final StyledString text) {
-			final Optional<IFile> optionalFile = Optional.fromNullable(file);
-			cell.setText(text.toString());
-			final Optional<Image> image = FileUtil.getContentTypeImage(optionalFile);
-			if (image.isPresent()) cell.setImage(image.get());
-			cell.setStyleRanges(text.getStyleRanges());
-		}
-
-		private StyledString
-		createStyledText(final IFile file) {
-			final Optional<IFile> _file = Optional.fromNullable(file);
-			final StyledString text = new StyledString();
-			text.append(file.getName() + this.separator, this.filenameStyler);
-			text.append("in  ", this.inStyler);
-			text.append(this.getFolder(_file) + this.separator, this.folderStyler);
-			text.append("modified  ", this.modifiedStyler);
-			text.append(this.getTime(_file) + "  ", this.timeStyler);
-			text.append(this.getContentType(_file), this.typeStyler);
-			return text;
-		}
-
-		private String
-		getContentType(final Optional<IFile> optional) {
-			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
-			final Optional<String> name = FileUtil.getContentTypeName(optional);
-			if (!name.isPresent()) return LabelProvider.UNKNOWN;
-			return name.get();
-		}
-
-		private String
-		getTime(final Optional<IFile> optional) {
-			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
-			final Optional<String> time = FileUtil.getModificationTime(optional);
-			if (!time.isPresent()) return LabelProvider.UNKNOWN;
-			return time.get();
-		}
-
-		private String
-		getFolder(final Optional<IFile> optional) {
-			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
-			final Optional<String> folder = FileUtil.getFolder(optional);
-			if (!folder.isPresent()) return LabelProvider.UNKNOWN;
-			return folder.get();
-		}
-
-		private Color
-		color(final int color) {
-			return Display.getCurrent().getSystemColor(color);
-		}
-
-		private StyledString.Styler
-		styler(final Font font, final Color color) {
-			return new StyledString.Styler() {
-
-				@Override
-				public void
-				applyStyles(final TextStyle textStyle) {
-					textStyle.font = font;
-					textStyle.foreground = color;
-				}
-			};
-		}
-
-		private String
-		getSeparator() {
-			if (EditorContext.isLinux()) return System.getProperty("line.separator");
-			return "  ";
-		}
-	}
-
 	private enum FONT {
 		FONT;
 
-		private static final FontData[] FONT_DATAS = Dialog.TABLE.getFont()
-			.getFontData();
+		private static final FontData[] FONT_DATAS =
+			Dialog.TABLE.getFont().getFontData();
 		private static final String DEFAULT_FONT_NAME =
 			FONT.FONT_DATAS[0].getName();
 		private static final int DEFAULT_FONT_HEIGHT =
@@ -380,6 +138,99 @@ public final class Dialog extends EventBusInstance {
 		}
 	}
 
+	public Dialog() {
+		Dialog.arrangeWidgets();
+		Dialog.setupDialog();
+		Dialog.setupText();
+		this.setupViewer();
+		this.addListeners();
+	}
+
+	private static void
+	arrangeWidgets() {
+		Dialog.setDialogLayout();
+		Dialog.setTextLayout();
+		Dialog.setViewerLayout();
+		Dialog.TABLE.layout();
+		Dialog.TABLE.pack();
+		Dialog.SHELL.layout();
+		Dialog.SHELL.pack();
+	}
+
+	private static void
+	setDialogLayout() {
+		final GridLayout layout = new GridLayout(1, true);
+		Dialog.spaceDialogLayout(layout);
+		Dialog.SHELL.setLayout(layout);
+		Dialog.SHELL.setLayoutData(Dialog.createFillGridData());
+	}
+
+	private static void
+	spaceDialogLayout(final GridLayout layout) {
+		layout.marginLeft = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.marginTop = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.marginRight = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.marginBottom = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.horizontalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
+		layout.verticalSpacing = Dialog.SPACING_SIZE_IN_PIXELS;
+	}
+
+	private static void
+	setTextLayout() {
+		final GridData textGridData = new GridData();
+		textGridData.horizontalAlignment = GridData.FILL;
+		textGridData.grabExcessHorizontalSpace = true;
+		Dialog.TEXT.setLayoutData(textGridData);
+	}
+
+	private static void
+	setViewerLayout() {
+		Dialog.VIEWER.getTable().setLayoutData(Dialog.createFillGridData());
+	}
+
+	private static GridData
+	createFillGridData() {
+		return new GridData(GridData.FILL, GridData.FILL, true, true, 1, 1);
+	}
+
+	private static void
+	setupDialog() {
+		Dialog.SHELL.setTabList(Lists.newArrayList(Dialog.VIEWER.getControl())
+			.toArray(new Control[1]));
+		Dialog.SHELL.setSize(Dialog.WIDTH, Dialog.HEIGHT);
+	}
+
+	private static void
+	setupText() {
+		Dialog.TEXT.setMessage("start typing to filter files...");
+	}
+
+	private void
+	setupViewer() {
+		this.setupTable();
+		Dialog.VIEWER.setContentProvider(this.new ContentProvider());
+		Dialog.VIEWER.setUseHashlookup(true);
+	}
+
+	private void
+	setupTable() {
+		Dialog.TABLE.setLinesVisible(true);
+		Dialog.TABLE.setHeaderVisible(false);
+		Dialog.TABLE.setSize(Dialog.TABLE.getClientArea().width,
+			Dialog.TABLE.getClientArea().height);
+		this.createTableColumn();
+	}
+
+	private void
+	createTableColumn() {
+		final TableViewerColumn col =
+			new TableViewerColumn(Dialog.VIEWER, SWT.RIGHT | SWT.LEFT | SWT.CENTER);
+		col.getColumn().setWidth(Dialog.TABLE.getClientArea().width);
+		col.getColumn().setResizable(true);
+		col.setLabelProvider(new LabelProvider());
+		// if (EditorContext.isLinux()) col.getColumn().pack();
+	}
+
 	private void
 	addListeners() {
 		Dialog.SHELL.addShellListener(new DialogShellListener());
@@ -390,6 +241,366 @@ public final class Dialog extends EventBusInstance {
 		Dialog.TEXT.addModifyListener(new TextModifyListener());
 		Dialog.VIEWER.addDoubleClickListener(new ViewerDoubleClickListener());
 		Dialog.listenForTextSelection();
+	}
+
+	private static void
+	listenForTextSelection() {
+		Dialog.SHELL.getDisplay().addFilter(SWT.KeyDown, new Listener() {
+
+			@Override
+			public void
+			handleEvent(final Event event) {
+				if (this.isCtrlL(event)) new AsyncTask() {
+
+					@Override
+					public void
+					execute() {
+						selectText();
+					}
+				}.start();
+			}
+
+			private boolean
+			isCtrlL(final Event event) {
+				return (Character.toUpperCase((char) event.keyCode) == 'L')
+					&& ((event.stateMask & SWT.CTRL) == SWT.CTRL);
+			}
+
+			protected void
+			selectText() {
+				Dialog.TEXT.selectAll();
+			}
+		});
+	}
+
+	@Override
+	public Instance
+	stop() {
+		Dialog.SHELL.dispose();
+		return super.stop();
+	}
+
+	@Subscribe
+	@AllowConcurrentEvents
+	public static void
+	eventHandler(final RankedFilesEvent event) {
+		new AsyncTask() {
+
+			@Override
+			public void
+			execute() {
+				Dialog.updateViewer(event.getFiles());
+			}
+		}.setRule(Dialog.RULE).start();
+	}
+
+	@Subscribe
+	@AllowConcurrentEvents
+	public static void
+	eventHandler(final FilteredFilesResultEvent event) {
+		new AsyncTask() {
+
+			@Override
+			public void
+			execute() {
+				Dialog.updateViewer(event.getFiles());
+			}
+		}.setRule(Dialog.RULE).start();
+	}
+
+	@Subscribe
+	@AllowConcurrentEvents
+	public static void
+	eventHandler(final ShowFastOpenDialogEvent event) {
+		new AsyncTask() {
+
+			@Override
+			public void
+			execute() {
+				Dialog.refresh();
+				Dialog.SHELL.open();
+				Dialog.focusViewer();
+			}
+		}.start();
+	}
+
+	protected static void
+	updateViewer(final List<IFile> Files) {
+		try {
+			Dialog._updateViewer(Files);
+		}
+		catch (final Exception e) {
+			Dialog.LOGGER.log(Level.WARNING, e.getMessage(), e);
+		}
+	}
+
+	private static void
+	_updateViewer(final List<IFile> files) {
+		Dialog.VIEWER.getControl().setRedraw(false);
+		Dialog.VIEWER.setInput(files.toArray(new IFile[files.size()]));
+		Dialog.VIEWER.setItemCount(files.size());
+		Dialog.VIEWER.getControl().setRedraw(true);
+		Dialog.refresh();
+		Dialog.focusViewer();
+	}
+
+	protected static void
+	refocusViewer() {
+		Dialog._focusViewer();
+		Dialog.TABLE.setSelection(Dialog.TABLE.getSelectionIndex());
+	}
+
+	protected static boolean
+	isValidCharacter(final String character) {
+		return Dialog.TEXT_PATTERN.matcher(character).matches();
+	}
+
+	protected static void
+	updateText(final char character) {
+		Dialog.TEXT.insert(String.valueOf(character));
+	}
+
+	protected static void
+	backspace() {
+		final int end = Dialog.TEXT.getCaretPosition();
+		if (end < 1) return;
+		Dialog.delete(end);
+	}
+
+	private static void
+	delete(final int end) {
+		final int start =
+			end
+				- (Dialog.TEXT.getSelectionText().length() > 0
+					? Dialog.TEXT.getSelectionText().length()
+					: 1);
+		Dialog.TEXT.setSelection(start, end);
+		Dialog.TEXT.cut();
+		Dialog.TEXT.setSelection(start, start);
+	}
+
+	protected static void
+	openFiles() {
+		for (final int index : Dialog.TABLE.getSelectionIndices())
+			new AsyncTask() {
+
+				@Override
+				public void
+				execute() {
+					Dialog.openFile(((IFile) Dialog.VIEWER.getElementAt(index)));
+				}
+			}.start();
+	}
+
+	protected static void
+	openFile(final IFile file) {
+		try {
+			EditorContext.openEditor(file);
+		}
+		catch (final PartInitException e) {
+			Dialog.openLink(file);
+		}
+	}
+
+	private static void
+	openLink(final IFile file) {
+		try {
+			EditorContext.openLink(file);
+		}
+		catch (final CoreException e) {
+			Dialog.LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+	}
+
+	protected static void
+	closeFiles() {
+		for (final int index : Dialog.TABLE.getSelectionIndices())
+			new AsyncTask() {
+
+				@Override
+				public void
+				execute() {
+					EditorContext
+						.closeEditor(((IFile) Dialog.VIEWER.getElementAt(index)));
+				}
+			}.start();
+	}
+
+	protected static void
+	filterViewer() {
+		EventBus.post(new FilterFilesEvent(Dialog.TEXT.getText().trim()));
+	}
+
+	protected static void
+	focusViewer() {
+		Dialog._focusViewer();
+		Dialog.TABLE.setSelection(Dialog.TABLE.getTopIndex());
+	}
+
+	private static void
+	_focusViewer() {
+		Dialog.TABLE.setFocus();
+		Dialog.TABLE.forceFocus();
+	}
+
+	public static void
+	reset() {
+		Dialog.TEXT.setText("");
+	}
+
+	protected static void
+	refresh() {
+		Dialog.VIEWER.refresh(true, true);
+	}
+
+	private final class ContentProvider implements ILazyContentProvider {
+
+		private IFile[] files;
+
+		public ContentProvider() {}
+
+		@Override
+		public void
+		dispose() {}
+
+		@Override
+		public void
+		inputChanged(	final Viewer arg0,
+									final Object oldInput,
+									final Object newInput) {
+			this.files = (IFile[]) newInput;
+		}
+
+		@Override
+		public void
+		updateElement(final int index) {
+			try {
+				Dialog.VIEWER.replace(this.files[index], index);
+			}
+			catch (final Exception e) {
+				Dialog.LOGGER.log(Level.FINE, e.getMessage(), e);
+			}
+		}
+	}
+
+	private final class LabelProvider extends StyledCellLabelProvider {
+
+		private static final String UNKNOWN = "unknown";
+		private final String separator = this.getSeparator();
+		private final StyledString.Styler filenameStyler =
+			this.styler(FONT.LARGE_BOLD_FONT, null);
+		private final StyledString.Styler folderStyler =
+			this.styler(FONT.NORMAL_FONT, this.color(SWT.COLOR_DARK_GRAY));
+		private final StyledString.Styler inStyler = this.styler(FONT.ITALIC_FONT,
+			this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler modifiedStyler =
+			this.styler(FONT.SMALL_ITALIC_FONT, this.color(SWT.COLOR_GRAY));
+		private final StyledString.Styler timeStyler =
+			this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_RED));
+		private final StyledString.Styler typeStyler =
+			this.styler(FONT.SMALL_BOLD_FONT, this.color(SWT.COLOR_DARK_BLUE));
+
+		private Color
+		color(final int color) {
+			return Display.getCurrent().getSystemColor(color);
+		}
+
+		private StyledString.Styler
+		styler(final Font font, final Color color) {
+			return new StyledString.Styler() {
+
+				@Override
+				public void
+				applyStyles(final TextStyle textStyle) {
+					textStyle.font = font;
+					textStyle.foreground = color;
+				}
+			};
+		}
+
+		private String
+		getSeparator() {
+			if (EditorContext.isLinux()) return System.getProperty("line.separator");
+			return "  ";
+		}
+
+		public LabelProvider() {
+			this.setOwnerDrawEnabled(true);
+		}
+
+		@Override
+		public void
+		update(final ViewerCell cell) {
+			final IFile file = (IFile) cell.getElement();
+			this.updateCellProperties(cell, file, this.createStyledText(file));
+			super.update(cell);
+		}
+
+		private void
+		updateCellProperties(	final ViewerCell cell,
+													final IFile file,
+													final StyledString text) {
+			final Optional<IFile> optionalFile = Optional.fromNullable(file);
+			cell.setText(text.toString());
+			final Optional<Image> image = FileUtil.getContentTypeImage(optionalFile);
+			if (image.isPresent()) cell.setImage(image.get());
+			cell.setStyleRanges(text.getStyleRanges());
+		}
+
+		private StyledString
+		createStyledText(final IFile file) {
+			final Optional<IFile> _file = Optional.fromNullable(file);
+			final StyledString text = new StyledString();
+			text.append(file.getName() + this.separator, this.filenameStyler);
+			text.append("in ", this.inStyler);
+			text.append(this.getFolder(_file) + this.separator, this.folderStyler);
+			text.append("modified ", this.modifiedStyler);
+			text.append(this.getTime(_file) + " ", this.timeStyler);
+			text.append(this.getContentType(_file), this.typeStyler);
+			return text;
+		}
+
+		private String
+		getFolder(final Optional<IFile> optional) {
+			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
+			final Optional<String> folder = FileUtil.getFolder(optional);
+			if (!folder.isPresent()) return LabelProvider.UNKNOWN;
+			return folder.get();
+		}
+
+		private String
+		getTime(final Optional<IFile> optional) {
+			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
+			final Optional<String> time = FileUtil.getModificationTime(optional);
+			if (!time.isPresent()) return LabelProvider.UNKNOWN;
+			return time.get();
+		}
+
+		private String
+		getContentType(final Optional<IFile> optional) {
+			if (!optional.isPresent()) return LabelProvider.UNKNOWN;
+			final Optional<String> name = FileUtil.getContentTypeName(optional);
+			if (!name.isPresent()) return LabelProvider.UNKNOWN;
+			return name.get();
+		}
+
+		@Override
+		protected StyleRange
+		prepareStyleRange(final StyleRange styleRange, final boolean applyColors) {
+			return super.prepareStyleRange(styleRange, applyColors);
+		}
+
+		@Override
+		protected void
+		measure(final Event event, final Object element) {
+			super.measure(event, element);
+		}
+
+		@Override
+		protected void
+		paint(final Event event, final Object element) {
+			super.paint(event, element);
+		}
 	}
 
 	private final class DialogShellListener implements ShellListener {
@@ -576,214 +787,5 @@ public final class Dialog extends EventBusInstance {
 				}
 			}.setRule(this.rule).start();
 		}
-	}
-
-	private static void
-	listenForTextSelection() {
-		Dialog.SHELL.getDisplay().addFilter(SWT.KeyDown, new Listener() {
-
-			@Override
-			public void
-			handleEvent(final Event event) {
-				if (this.isCtrlL(event)) new AsyncTask() {
-
-					@Override
-					public void
-					execute() {
-						selectText();
-					}
-				}.start();
-			}
-
-			private boolean
-			isCtrlL(final Event event) {
-				return (Character.toUpperCase((char) event.keyCode) == 'L')
-					&& ((event.stateMask & SWT.CTRL) == SWT.CTRL);
-			}
-
-			protected void
-			selectText() {
-				Dialog.TEXT.selectAll();
-			}
-		});
-	}
-
-	@Subscribe
-	@AllowConcurrentEvents
-	public static void
-	eventHandler(final RankedFilesEvent event) {
-		new AsyncTask() {
-
-			@Override
-			public void
-			execute() {
-				Dialog.updateViewer(event.getFiles());
-			}
-		}.setRule(Dialog.RULE).start();
-	}
-
-	@Subscribe
-	@AllowConcurrentEvents
-	public static void
-	eventHandler(final FilteredFilesResultEvent event) {
-		new AsyncTask() {
-
-			@Override
-			public void
-			execute() {
-				Dialog.updateViewer(event.getFiles());
-			}
-		}.setRule(Dialog.RULE).start();
-	}
-
-	protected static void
-	updateViewer(final List<IFile> Files) {
-		try {
-			Dialog._updateViewer(Files);
-		}
-		catch (final Exception e) {
-			Dialog.LOGGER.log(Level.WARNING, e.getMessage(), e);
-		}
-	}
-
-	private static void
-	_updateViewer(final List<IFile> files) {
-		Dialog.VIEWER.getControl().setRedraw(false);
-		Dialog.VIEWER.setInput(files.toArray(new IFile[files.size()]));
-		Dialog.VIEWER.setItemCount(files.size());
-		Dialog.VIEWER.getControl().setRedraw(true);
-		Dialog.refresh();
-		Dialog.focusViewer();
-	}
-
-	@Subscribe
-	@AllowConcurrentEvents
-	public static void
-	eventHandler(final ShowFastOpenDialogEvent event) {
-		new AsyncTask() {
-
-			@Override
-			public void
-			execute() {
-				Dialog.refresh();
-				Dialog.SHELL.open();
-				Dialog.focusViewer();
-			}
-		}.start();
-	}
-
-	protected static void
-	focusViewer() {
-		Dialog._focusViewer();
-		Dialog.TABLE.setSelection(Dialog.TABLE.getTopIndex());
-	}
-
-	public static void
-	reset() {
-		Dialog.TEXT.setText("");
-	}
-
-	protected static void
-	refresh() {
-		Dialog.VIEWER.refresh(true, true);
-	}
-
-	protected static boolean
-	isValidCharacter(final String character) {
-		return Dialog.TEXT_PATTERN.matcher(character).matches();
-	}
-
-	protected static void
-	updateText(final char character) {
-		Dialog.TEXT.insert(String.valueOf(character));
-	}
-
-	protected static void
-	backspace() {
-		final int end = Dialog.TEXT.getCaretPosition();
-		if (end < 1) return;
-		Dialog.delete(end);
-	}
-
-	private static void
-	delete(final int end) {
-		final int start =
-			end
-				- (Dialog.TEXT.getSelectionText().length() > 0
-					? Dialog.TEXT.getSelectionText().length()
-					: 1);
-		Dialog.TEXT.setSelection(start, end);
-		Dialog.TEXT.cut();
-		Dialog.TEXT.setSelection(start, start);
-	}
-
-	protected static void
-	openFiles() {
-		for (final int index : Dialog.TABLE.getSelectionIndices())
-			new AsyncTask() {
-
-				@Override
-				public void
-				execute() {
-					Dialog.openFile(((IFile) Dialog.VIEWER.getElementAt(index)));
-				}
-			}.start();
-	}
-
-	protected static void
-	openFile(final IFile file) {
-		try {
-			EditorContext.openEditor(file);
-		}
-		catch (final PartInitException e) {
-			Dialog.openLink(file);
-		}
-	}
-
-	private static void
-	openLink(final IFile file) {
-		try {
-			EditorContext.openLink(file);
-		}
-		catch (final CoreException e) {
-			Dialog.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-	}
-
-	protected static void
-	closeFiles() {
-		for (final int index : Dialog.TABLE.getSelectionIndices())
-			new AsyncTask() {
-
-				@Override
-				public void
-				execute() {
-					EditorContext.closeEditor(((IFile) Dialog.VIEWER.getElementAt(index)));
-				}
-			}.start();
-	}
-
-	protected static void
-	filterViewer() {
-		EventBus.post(new FilterFilesEvent(Dialog.TEXT.getText().trim()));
-	}
-
-	protected static void
-	refocusViewer() {
-		Dialog._focusViewer();
-		Dialog.TABLE.setSelection(Dialog.TABLE.getSelectionIndex());
-	}
-
-	private static void
-	_focusViewer() {
-		Dialog.TABLE.setFocus();
-		Dialog.TABLE.forceFocus();
-	}
-
-	@Override
-	public Instance
-	stop() {
-		Dialog.SHELL.dispose();
-		return super.stop();
 	}
 }
