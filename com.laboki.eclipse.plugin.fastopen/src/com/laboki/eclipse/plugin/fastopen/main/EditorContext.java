@@ -255,8 +255,8 @@ public enum EditorContext {
 	getFilePathFromEditorReference(final IEditorReference file) {
 		try {
 			final Optional<String> path =
-				EditorContext.getURIPath(((IFileEditorInput) file.getEditorInput()
-					.getAdapter(IFileEditorInput.class)).getFile());
+				EditorContext.getURIPath(file.getEditorInput()
+					.getAdapter(IFileEditorInput.class).getFile());
 			if (!path.isPresent()) return "";
 			return path.get();
 		}
@@ -297,7 +297,7 @@ public enum EditorContext {
 		final Optional<IWorkbenchWindow> window =
 			EditorContext.getActiveWorkbenchWindow();
 		if (!window.isPresent()) return Optional.absent();
-		return Optional.fromNullable((IPartService) window.get()
+		return Optional.fromNullable(window.get()
 			.getService(IPartService.class));
 	}
 
