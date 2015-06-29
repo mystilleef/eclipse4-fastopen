@@ -95,12 +95,6 @@ public final class Serializer extends EventBusInstance {
 		}.setRule(Serializer.RULE).start();
 	}
 
-	protected static void
-	serialize(final Collection<String> files) {
-		if (files.isEmpty()) return;
-		EditorContext.serialize(Serializer.PATH, files);
-	}
-
 	@SuppressWarnings("unchecked")
 	protected static List<String>
 	deserialize() {
@@ -108,6 +102,12 @@ public final class Serializer extends EventBusInstance {
 			(List<String>) EditorContext.deserialize(Serializer.PATH);
 		if ((files == null) || files.isEmpty()) return Lists.newArrayList();
 		return files;
+	}
+
+	protected static void
+	serialize(final Collection<String> files) {
+		if (files.isEmpty()) return;
+		EditorContext.serialize(Serializer.PATH, files);
 	}
 
 	protected static List<String>
